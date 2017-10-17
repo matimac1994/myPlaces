@@ -1,8 +1,11 @@
 package com.maciejak.myplaces.ui;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,7 +20,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        MapFragment.OnFragmentInteractionListener{
 
     private ActionBarDrawerToggle mActionBarDrawerToggle;
 
@@ -86,6 +90,9 @@ public class MainActivity extends BaseActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        Fragment fragment;
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
         switch (id){
             case R.id.nav_about:
                 Toast.makeText(this, "O aplikacji", Toast.LENGTH_SHORT).show();
@@ -94,16 +101,21 @@ public class MainActivity extends BaseActivity
                 Toast.makeText(this, "Wylogowano", Toast.LENGTH_SHORT).show();
                 this.finish();
                 break;
+            case R.id.nav_map:
+                fragment = MapFragment.newInstance();
+                //TODO move outside of switch/case
+                fragmentManager.beginTransaction()
+                        .replace(R.id.contentFrameLayout, fragment)
+                        .commit();
+                break;
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    @OnClick(R.id.splash_screen)
-    public void goToSplashScreen(){
-        Intent intent = new Intent(this, SplashScreenActivity.class);
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
-        startActivity(intent);
     }
 }

@@ -9,6 +9,11 @@
         android:roundIcon="@mipmap/myplaces_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
         <activity
             android:name=".ui.MainActivity"
             android:label="@string/app_name"
@@ -19,10 +24,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.SplashScreenActivity"
-            android:screenOrientation="portrait">
-
-        </activity>
+        <activity
+            android:name=".ui.SplashScreenActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
