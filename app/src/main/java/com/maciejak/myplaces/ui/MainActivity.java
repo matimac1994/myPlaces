@@ -9,24 +9,46 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.maciejak.myplaces.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        MapFragment.OnFragmentInteractionListener{
+        MapFragment.OnFragmentInteractionListener,
+        MyPlacesListFragment.OnFragmentInteractionListener,
+        PlaceSelectionListener {
 
     private ActionBarDrawerToggle mActionBarDrawerToggle;
 
     @BindView(R.id.nav_view) NavigationView mNavigationView;
     @BindView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+
+    private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(
+            new LatLng(37.398160, -122.180831), new LatLng(37.430610, -121.972090));
+    private static final int REQUEST_SELECT_PLACE = 1000;
+    public static final String SELECTED_FAVOURITE_PLACE_NAME = "MainActivity SELECTED_FAVOURITE_PLACE_NAME";
+    public static final String SELECTED_FAVOURITE_PLACE_LATLNG = "MainActivity SELECTED_FAVOURITE_PLACE_LATLNG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +61,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void setupControls(){
-        setSupportActionBar(mToolbar);
+        super.setupToolbar();
 
         mActionBarDrawerToggle = this.setupDrawerToggle();
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
@@ -48,6 +70,30 @@ public class MainActivity extends BaseActivity
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
+        showDefaultFragment();
+        setupSettingsButton();
+
+    }
+
+    private void showDefaultFragment(){
+        mNavigationView.setCheckedItem(R.id.nav_list_places);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = MyPlacesListFragment.newInstance();
+        fragmentManager.beginTransaction()
+                .replace(R.id.contentFrameLayout, fragment)
+                .commit();
+    }
+
+    private void setupSettingsButton(){
+        ImageButton settingsButton = (ImageButton) mNavigationView.getHeaderView(0).findViewById(R.id.settings_button);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO change to settings activity
+                Intent intent = new Intent(getApplicationContext(), SplashScreenActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private ActionBarDrawerToggle setupDrawerToggle(){
@@ -65,23 +111,29 @@ public class MainActivity extends BaseActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.search_menu, menu);
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_search) {
+            // Method #3
+            try {
+                Intent intent = new PlaceAutocomplete.IntentBuilder
+                        (PlaceAutocomplete.MODE_FULLSCREEN)
+                        .setBoundsBias(BOUNDS_MOUNTAIN_VIEW)
+                        .build(MainActivity.this);
+                startActivityForResult(intent, REQUEST_SELECT_PLACE);
+            } catch (GooglePlayServicesRepairableException |
+                    GooglePlayServicesNotAvailableException e) {
+                e.printStackTrace();
+            }
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -101,9 +153,14 @@ public class MainActivity extends BaseActivity
                 Toast.makeText(this, "Wylogowano", Toast.LENGTH_SHORT).show();
                 this.finish();
                 break;
+            case R.id.nav_list_places:
+                fragment = MyPlacesListFragment.newInstance();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.contentFrameLayout, fragment)
+                        .commit();
+                break;
             case R.id.nav_map:
                 fragment = MapFragment.newInstance();
-                //TODO move outside of switch/case
                 fragmentManager.beginTransaction()
                         .replace(R.id.contentFrameLayout, fragment)
                         .commit();
@@ -117,5 +174,31 @@ public class MainActivity extends BaseActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onPlaceSelected(Place place) {
+        Intent intent = new Intent(this, FavouritePlaceMapActivity.class);
+        intent.putExtra(SELECTED_FAVOURITE_PLACE_NAME, place.getName());
+        intent.putExtra(SELECTED_FAVOURITE_PLACE_LATLNG, place.getLatLng());
+        startActivity(intent);
+    }
+
+    @Override
+    public void onError(Status status) {
+
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_SELECT_PLACE) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlaceAutocomplete.getPlace(this, data);
+                this.onPlaceSelected(place);
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                this.onError(status);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

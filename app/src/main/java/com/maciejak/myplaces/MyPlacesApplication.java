@@ -2,20 +2,31 @@ package com.maciejak.myplaces;
 
 import android.app.Application;
 
+import com.maciejak.myplaces.helpers.GoogleApiClientHelper;
+
 /**
  * Created by Mati on 15.10.2017.
  */
 
 public class MyPlacesApplication extends Application {
 
-    MyPlacesApplication myPlacesApplication;
+    private static MyPlacesApplication myPlacesApplication;
+    private GoogleApiClientHelper mGoogleApiClientHelper;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         myPlacesApplication = this;
+        mGoogleApiClientHelper = new GoogleApiClientHelper(this);
     }
 
-    public MyPlacesApplication getInstance(){return myPlacesApplication;}
+    public static synchronized MyPlacesApplication getInstance(){return myPlacesApplication;}
+
+    public GoogleApiClientHelper getGoogleApiClientHelperInstance() {
+        return this.mGoogleApiClientHelper;
+    }
+    public static GoogleApiClientHelper getGoogleApiClientHelper() {
+        return getInstance().getGoogleApiClientHelperInstance();
+    }
 }

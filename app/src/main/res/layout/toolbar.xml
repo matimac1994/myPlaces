@@ -10,4 +10,5 @@
     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     android:background="@color/logoColor">
+
 </android.support.v7.widget.Toolbar>

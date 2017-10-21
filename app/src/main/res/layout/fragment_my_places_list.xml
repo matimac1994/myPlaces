@@ -1,16 +1,11 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             xmlns:fab="http://schemas.android.com/apk/res-auto"
-             tools:context="com.maciejak.myplaces.ui.MapFragment">
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             tools:context="com.maciejak.myplaces.ui.MyPlacesListFragment"
+             xmlns:fab="http://schemas.android.com/apk/res-auto">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/my_places_map_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        class="com.google.android.gms.maps.SupportMapFragment" />
 
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/add_place_menu"
