@@ -2,6 +2,7 @@ package com.maciejak.myplaces.ui;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -77,7 +78,8 @@ public class FavouritePlaceMapActivity extends BaseActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.favourite_place_map_action_done:
-                Toast.makeText(this, "You really love this place", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, FavouritePlaceFormAddActivity.class);
+                startActivity(intent);
                 break;
             case R.id.favourite_place_map_action_info:
                 showInfoAlertDialog();
