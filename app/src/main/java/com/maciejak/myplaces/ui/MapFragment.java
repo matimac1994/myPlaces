@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,28 +15,44 @@ import android.widget.Toast;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.maciejak.myplaces.MyPlacesApplication;
 import com.maciejak.myplaces.R;
+import com.maciejak.myplaces.models.Place;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import org.jetbrains.annotations.Contract;
 
-public class MapFragment extends BaseFragment implements OnMapReadyCallback {
+import java.util.ArrayList;
+import java.util.List;
 
-    private OnFragmentInteractionListener mListener;
+public class MapFragment extends BaseFragment implements OnMapReadyCallback,
+        GoogleMap.OnCameraIdleListener{
 
     private GoogleMap mMap;
     private Location mLocation;
+
+    List<Place> mPlaceList;
+    LatLngBounds mBounds;
+    List<Marker> mMarkersOnMap;
+    BitmapDescriptor mMarkerIcon;
+    UiSettings mUiSettings;
 
     public MapFragment() {
         // Required empty public constructor
     }
 
-    @Contract(" -> !null")
     public static MapFragment newInstance() {
-
         return new MapFragment();
     }
 
@@ -49,6 +66,9 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
+        mMarkerIcon = BitmapDescriptorFactory.fromResource(R.drawable.heart_red);
+        mMarkersOnMap = new ArrayList<>();
+
         FloatingActionMenu floatingActionMenu = (FloatingActionMenu) view.findViewById(R.id.add_place_menu);
         configFloatingActionMenu(getContext(), floatingActionMenu);
 
@@ -59,53 +79,62 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mUiSettings = mMap.getUiSettings();
+        mMap.setOnCameraIdleListener(this);
+        mBounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+        refreshMarkersOnMap(mBounds);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mBounds, 50));
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshMarkersOnMap(mBounds);
     }
+
+    private void refreshMarkersOnMap(LatLngBounds bounds){
+        removeOldMarkers();
+        if (checkReady()){
+            if (mPlaceList.size() > 0){
+                LatLng latLng;
+                for (Place place : mPlaceList){
+                    latLng = new LatLng(place.getLatitude(), place.getLongitude());
+                    if (bounds.contains(latLng)){
+                        addMarkerToMap(latLng);
+                    }
+                }
+            }
+        }
+    }
+
+    private void removeOldMarkers() {
+        for (Marker marker : mMarkersOnMap){
+            marker.remove();
+        }
+        mMarkersOnMap.clear();
+    }
+
+    private void addMarkerToMap(LatLng latLng) {
+        Marker marker = mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .icon(mMarkerIcon));
+        mMarkersOnMap.add(marker);
+    }
+
 
     @Override
     public void onStart() {
         MyPlacesApplication.getGoogleApiClientHelper().connect();
+        mPlaceList = SQLite.select().from(Place.class).queryList();
         super.onStart();
     }
 
@@ -114,4 +143,16 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
         MyPlacesApplication.getGoogleApiClientHelper().disconnect();
         super.onStop();
     }
+
+    private boolean checkReady() {
+        return (mMap != null);
+    }
+
+    @Override
+    public void onCameraIdle() {
+        mBounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+        refreshMarkersOnMap(mBounds);
+        Log.i("Tag", "onCameraIdle");
+    }
+
 }

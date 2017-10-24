@@ -16,18 +16,20 @@ import com.maciejak.myplaces.R;
 
 public class BaseFragment extends Fragment {
 
+    FloatingActionMenu mFloatingActionMenu;
     FloatingActionButton mAddPlaceFromMyLocationActionButton;
     FloatingActionButton mAddPlaceFromMapActionButton;
 
     protected void configFloatingActionMenu(Context context, FloatingActionMenu floatingActionMenu){
+        mFloatingActionMenu = floatingActionMenu;
 
         mAddPlaceFromMyLocationActionButton = configFromMyLocationActionButton(context);
         mAddPlaceFromMapActionButton = configFromMapActionButton(context);
 
-        floatingActionMenu.addMenuButton(mAddPlaceFromMyLocationActionButton);
-        floatingActionMenu.addMenuButton(mAddPlaceFromMapActionButton);
+        mFloatingActionMenu.addMenuButton(mAddPlaceFromMyLocationActionButton);
+        mFloatingActionMenu.addMenuButton(mAddPlaceFromMapActionButton);
 
-        floatingActionMenu.setClosedOnTouchOutside(true);
+        mFloatingActionMenu.setClosedOnTouchOutside(true);
 
     }
 
@@ -53,6 +55,7 @@ public class BaseFragment extends Fragment {
         fabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mFloatingActionMenu.close(true);
                 Intent intent = new Intent(context, FavouritePlaceMapActivity.class);
                 startActivity(intent);
             }

@@ -5,9 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,19 +24,22 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.utils.PermissionUtils;
 
-public class FavouritePlaceMapActivity extends BaseActivity
-        implements OnMapReadyCallback,
+public class FavouritePlaceMapActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleMap.OnMarkerDragListener,
         GoogleMap.OnMapLongClickListener {
 
     GoogleMap mMap;
     UiSettings mUiSettings;
+
     String mPlaceName;
     LatLng mPlaceLatLng;
 
     Marker lastAddedMarker;
 
     private static final int MY_LOCATION_PERMISSION_REQUEST_CODE = 1;
+    public static final String SELECTED_FAVOURITE_PLACE_NAME = "FavouritePlaceMapActivity SELECTED_FAVOURITE_PLACE_NAME";
+    public static final String SELECTED_FAVOURITE_PLACE_LATLNG = "FavouritePlaceMapActivity SELECTED_FAVOURITE_PLACE_LATLNG";
+    public static final Integer ADD_PLACE_DONE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +79,7 @@ public class FavouritePlaceMapActivity extends BaseActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.favourite_place_map_action_done:
-                Intent intent = new Intent(this, FavouritePlaceFormAddActivity.class);
-                startActivity(intent);
+                moveToAddPlaceForm();
                 break;
             case R.id.favourite_place_map_action_info:
                 showInfoAlertDialog();
@@ -87,6 +87,32 @@ public class FavouritePlaceMapActivity extends BaseActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ADD_PLACE_DONE){
+            if (resultCode == RESULT_OK){
+                this.finish();
+            }
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void moveToAddPlaceForm(){
+        if (lastAddedMarker !=null) {
+            Intent intent = new Intent(this, FavouritePlaceFormAddActivity.class);
+
+            if (mPlaceName != null)
+                intent.putExtra(SELECTED_FAVOURITE_PLACE_NAME, mPlaceName);
+
+            intent.putExtra(SELECTED_FAVOURITE_PLACE_LATLNG, lastAddedMarker.getPosition());
+            startActivityForResult(intent, ADD_PLACE_DONE);
+        }
+        else {
+            Toast.makeText(this, getString(R.string.favourite_place_map_done_no_marker), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private boolean checkReady() {

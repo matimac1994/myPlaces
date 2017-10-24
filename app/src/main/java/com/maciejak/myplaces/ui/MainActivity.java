@@ -33,8 +33,6 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        MapFragment.OnFragmentInteractionListener,
-        MyPlacesListFragment.OnFragmentInteractionListener,
         PlaceSelectionListener {
 
     private ActionBarDrawerToggle mActionBarDrawerToggle;
@@ -169,11 +167,6 @@ public class MainActivity extends BaseActivity
 
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 
     @Override
