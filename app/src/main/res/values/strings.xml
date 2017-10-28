@@ -41,6 +41,10 @@
     <string name="edit">Edytuj</string>
     <string name="delete">Usuń</string>
     <string name="details">Szczegóły</string>
+    <string name="dialog_gps_is_off">Aplikacja nie działa w pełni gdy GPS jest wyłączony</string>
+    <string name="yes">Tak</string>
+    <string name="back">Cofnij</string>
+    <string name="are_you_sure_to_delete">Jesteś pewny że chcesz usunąć?</string>
 
     <array name="pick_photos_array">
         <item>Wybierz zdjęcie z galerii</item>

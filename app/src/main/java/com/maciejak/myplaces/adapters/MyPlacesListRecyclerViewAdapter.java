@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.models.Place;
@@ -27,19 +28,30 @@ public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlac
     private List<Place> mPlaces;
     private Context mContext;
     LayoutInflater mInflater;
+    View.OnClickListener mOnClickListener;
 
-    public MyPlacesListRecyclerViewAdapter(Context context, List<Place> places) {
+    public MyPlacesListRecyclerViewAdapter(Context context, List<Place> places, View.OnClickListener onClickListener) {
         this.mPlaces = places;
         this.mContext = context;
         this.mInflater = LayoutInflater.from(context);
+        this.mOnClickListener = onClickListener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
         view = this.mInflater.inflate(R.layout.row_favourite_my_places, parent, false);
+        view.setOnClickListener(mOnClickListener);
 
-        return new MyPlacesListRecyclerViewAdapter.ViewHolder(view);
+        MyPlacesListRecyclerViewAdapter.ViewHolder holder = new MyPlacesListRecyclerViewAdapter.ViewHolder(view);
+        holder.mDetailsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext, "CLICK", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return holder;
     }
 
     @Override

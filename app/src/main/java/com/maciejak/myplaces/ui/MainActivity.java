@@ -42,8 +42,6 @@ public class MainActivity extends BaseActivity
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(
-            new LatLng(37.398160, -122.180831), new LatLng(37.430610, -121.972090));
     private static final int REQUEST_SELECT_PLACE = 1000;
     public static final String SELECTED_FAVOURITE_PLACE_NAME = "MainActivity SELECTED_FAVOURITE_PLACE_NAME";
     public static final String SELECTED_FAVOURITE_PLACE_LATLNG = "MainActivity SELECTED_FAVOURITE_PLACE_LATLNG";
@@ -123,7 +121,6 @@ public class MainActivity extends BaseActivity
             try {
                 Intent intent = new PlaceAutocomplete.IntentBuilder
                         (PlaceAutocomplete.MODE_FULLSCREEN)
-                        .setBoundsBias(BOUNDS_MOUNTAIN_VIEW)
                         .build(MainActivity.this);
                 startActivityForResult(intent, REQUEST_SELECT_PLACE);
             } catch (GooglePlayServicesRepairableException |

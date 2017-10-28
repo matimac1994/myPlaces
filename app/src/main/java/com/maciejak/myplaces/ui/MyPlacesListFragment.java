@@ -1,8 +1,12 @@
 package com.maciejak.myplaces.ui;
 
+import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +23,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MyPlacesListFragment extends BaseFragment{
+public class MyPlacesListFragment extends BaseFragment implements View.OnClickListener{
 
     List<Place> mPlaces;
 
@@ -55,11 +59,53 @@ public class MyPlacesListFragment extends BaseFragment{
         configFloatingActionMenu(getContext(), floatingActionMenu);
 
         mPlaces = new ArrayList<>();
+        setupRecyclerView();
+    }
+
+    private void setupRecyclerView() {
         mMyPlacesListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                final int position = viewHolder.getAdapterPosition();
+
+                if (direction == ItemTouchHelper.LEFT){
+
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage(getString(R.string.are_you_sure_to_delete));
+
+                    builder.setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mMyPlacesListRecycelerViewAdapter.notifyItemRemoved(position);
+                            Place place = mPlaces.get(position);
+                            place.delete();
+                        }
+                    }).setNegativeButton(getString(R.string.back), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mMyPlacesListRecycelerViewAdapter.notifyItemChanged(position);
+                        }
+                    });
+
+                    AlertDialog dialog = builder.show();
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.Red));
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.Green));
+                }
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(mMyPlacesListRecyclerView);
     }
 
     private void populateRecyclerView(List<Place> places){
-        mMyPlacesListRecycelerViewAdapter = new MyPlacesListRecyclerViewAdapter(getActivity(), places);
+        mMyPlacesListRecycelerViewAdapter = new MyPlacesListRecyclerViewAdapter(getActivity(), places, this);
         mMyPlacesListRecyclerView.setAdapter(mMyPlacesListRecycelerViewAdapter);
         mMyPlacesListRecycelerViewAdapter.notifyDataSetChanged();
     }
@@ -69,5 +115,10 @@ public class MyPlacesListFragment extends BaseFragment{
         super.onStart();
         mPlaces = SQLite.select().from(Place.class).queryList();
         populateRecyclerView(mPlaces);
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 }
