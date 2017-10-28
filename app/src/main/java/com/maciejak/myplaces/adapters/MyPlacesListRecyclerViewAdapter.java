@@ -43,15 +43,7 @@ public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlac
         view = this.mInflater.inflate(R.layout.row_favourite_my_places, parent, false);
         view.setOnClickListener(mOnClickListener);
 
-        MyPlacesListRecyclerViewAdapter.ViewHolder holder = new MyPlacesListRecyclerViewAdapter.ViewHolder(view);
-        holder.mDetailsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(mContext, "CLICK", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        return holder;
+        return new MyPlacesListRecyclerViewAdapter.ViewHolder(view);
     }
 
     @Override
@@ -81,13 +73,14 @@ public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlac
         return mPlaces.size();
     }
 
+    public Place getItem(int position){
+        return mPlaces.get(position);
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder{
 
         @BindView(R.id.row_favourite_my_place_image) ImageView mImageView;
         @BindView(R.id.row_favourite_my_place_title) TextView mTitle;
-        @BindView(R.id.row_favourite_my_place_button_delete) Button mDeleteButton;
-        @BindView(R.id.row_favourite_my_place_button_edit) Button mEditButton;
-        @BindView(R.id.row_favourite_my_place_button_details) Button mDetailsButton;
 
         public ViewHolder(View itemView) {
             super(itemView);

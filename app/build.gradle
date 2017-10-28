@@ -46,8 +46,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:11.0.4'
     compile 'com.google.android.gms:play-services-places:11.0.4'
     compile 'com.android.support:support-v4:26.+'
+    compile 'org.jetbrains:annotations-java5:15.0'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.github.Raizlabs.DBFlow:dbflow-processor:4.1.2'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-    compile 'org.jetbrains:annotations-java5:15.0'
 }
