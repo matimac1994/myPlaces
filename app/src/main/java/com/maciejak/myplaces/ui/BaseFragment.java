@@ -55,7 +55,7 @@ public class BaseFragment extends Fragment {
         fabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mFloatingActionMenu.close(true);
+                mFloatingActionMenu.close(false);
                 Intent intent = new Intent(context, FavouritePlaceMapActivity.class);
                 startActivity(intent);
             }

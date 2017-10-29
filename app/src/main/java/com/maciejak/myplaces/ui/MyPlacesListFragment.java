@@ -91,10 +91,7 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
                         place.delete();
                         mPlaces.remove(position);
                         mMyPlacesListRecycelerViewAdapter.notifyItemRemoved(position);
-                        if (mPlaces.isEmpty()){
-                            mEmptyView.setVisibility(View.VISIBLE);
-                            mMyPlacesListRecyclerView.setVisibility(View.GONE);
-                        }
+                        manageVisibility(mPlaces);
                     }
                 }).setNegativeButton(getString(R.string.back), new DialogInterface.OnClickListener() {
                     @Override
@@ -118,20 +115,23 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
         mMyPlacesListRecycelerViewAdapter.notifyDataSetChanged();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
-    public void onStart() {
-        super.onStart();
-        mPlaces = SQLite.select().from(Place.class).queryList();
-        if (mPlaces.isEmpty()){
+    private void manageVisibility(List<Place> places){
+        if (places.isEmpty()){
             mEmptyView.setVisibility(View.VISIBLE);
             mMyPlacesListRecyclerView.setVisibility(View.GONE);
         }
         else {
             mEmptyView.setVisibility(View.GONE);
             mMyPlacesListRecyclerView.setVisibility(View.VISIBLE);
-            populateRecyclerView(mPlaces);
+            populateRecyclerView(places);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mPlaces = SQLite.select().from(Place.class).queryList();
+        manageVisibility(mPlaces);
     }
 
     @Override
