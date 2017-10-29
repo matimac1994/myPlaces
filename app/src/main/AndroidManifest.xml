@@ -47,7 +47,9 @@
         <activity
             android:name=".ui.FavouritePlaceFormAddActivity"
             android:label="@string/title_activity_favourite_place_form_add"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan"
+            >
         </activity>
 
         <receiver

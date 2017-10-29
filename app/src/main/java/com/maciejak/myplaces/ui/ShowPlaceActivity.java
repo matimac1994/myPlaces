@@ -19,5 +19,6 @@ public class ShowPlaceActivity extends AppCompatActivity {
 
         placeId = this.getIntent().getLongExtra(PLACE_ID, 0);
 
+
     }
 }

@@ -3,7 +3,9 @@ package com.maciejak.myplaces.ui;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +13,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.maciejak.myplaces.R;
@@ -30,6 +33,9 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
 
     @BindView(R.id.my_places_list_recycler_view)
     RecyclerView mMyPlacesListRecyclerView;
+
+    @BindView(R.id.my_places_list_empty_view)
+    LinearLayout mEmptyView;
 
     MyPlacesListRecyclerViewAdapter mMyPlacesListRecycelerViewAdapter;
 
@@ -85,6 +91,10 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
                         place.delete();
                         mPlaces.remove(position);
                         mMyPlacesListRecycelerViewAdapter.notifyItemRemoved(position);
+                        if (mPlaces.isEmpty()){
+                            mEmptyView.setVisibility(View.VISIBLE);
+                            mMyPlacesListRecyclerView.setVisibility(View.GONE);
+                        }
                     }
                 }).setNegativeButton(getString(R.string.back), new DialogInterface.OnClickListener() {
                     @Override
@@ -108,11 +118,20 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
         mMyPlacesListRecycelerViewAdapter.notifyDataSetChanged();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onStart() {
         super.onStart();
         mPlaces = SQLite.select().from(Place.class).queryList();
-        populateRecyclerView(mPlaces);
+        if (mPlaces.isEmpty()){
+            mEmptyView.setVisibility(View.VISIBLE);
+            mMyPlacesListRecyclerView.setVisibility(View.GONE);
+        }
+        else {
+            mEmptyView.setVisibility(View.GONE);
+            mMyPlacesListRecyclerView.setVisibility(View.VISIBLE);
+            populateRecyclerView(mPlaces);
+        }
     }
 
     @Override

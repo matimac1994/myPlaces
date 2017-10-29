@@ -51,10 +51,10 @@ public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlac
 
         Place place = mPlaces.get(position);
         if (place.getPhotos().size()>0){
-            String image = place.getPhotos().get(0).getImage();
+            String mapPhoto = place.getMapPhoto();
 
             Picasso.with(mContext)
-                    .load(image)
+                    .load(mapPhoto)
                     .centerCrop()
                     .fit()
                     .into(holder.mImageView);

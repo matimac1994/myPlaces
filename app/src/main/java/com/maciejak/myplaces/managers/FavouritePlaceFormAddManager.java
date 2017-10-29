@@ -15,7 +15,7 @@ import java.util.List;
 
 public class FavouritePlaceFormAddManager {
 
-    public void savePlace(String title, LatLng position, String note, String description, List<Uri> photosUri){
+    public void savePlace(String title, LatLng position, String note, String description,Uri mapPhoto, List<Uri> photosUri){
 
         Place place = new Place();
 
@@ -24,6 +24,7 @@ public class FavouritePlaceFormAddManager {
         place.setLongitude(position.longitude);
         place.setNote(note);
         place.setDescription(description);
+        place.setMapPhoto(mapPhoto.toString());
 
         List<PlacePhoto> photos = new ArrayList<>();
         for (Uri photoUri : photosUri){

@@ -36,6 +36,9 @@ public class Place extends BaseModel {
     @Column
     String description;
 
+    @Column
+    String mapPhoto;
+
     List<PlacePhoto> photos;
 
     @OneToMany(methods = {OneToMany.Method.ALL}, variableName = "photos")
@@ -99,6 +102,14 @@ public class Place extends BaseModel {
 
     public void setPhotos(List<PlacePhoto> photos) {
         this.photos = photos;
+    }
+
+    public String getMapPhoto() {
+        return mapPhoto;
+    }
+
+    public void setMapPhoto(String mapPhoto) {
+        this.mapPhoto = mapPhoto;
     }
 
     @Override

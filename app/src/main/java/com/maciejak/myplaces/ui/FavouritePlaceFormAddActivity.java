@@ -69,6 +69,7 @@ public class FavouritePlaceFormAddActivity extends BaseActivity implements OnMap
     AddPlacePhotosRecyclerViewAdapter mAddPlacePhotosRecyclerViewAdapter;
 
     List<Uri> mPhotos;
+    Uri mapPhoto;
 
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final int RESULT_TAKE_PHOTO= 2;
@@ -207,7 +208,7 @@ public class FavouritePlaceFormAddActivity extends BaseActivity implements OnMap
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
                     os.flush();
                     os.close();
-                    mPhotos.add(Uri.fromFile(file));
+                    mapPhoto = Uri.fromFile(file);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -269,6 +270,7 @@ public class FavouritePlaceFormAddActivity extends BaseActivity implements OnMap
                 mPlaceLatLng,
                 placeNote.getText().toString(),
                 placeDescription.getText().toString(),
+                mapPhoto,
                 mPhotos);
 
         Toast.makeText(this, "Zapisano", Toast.LENGTH_SHORT).show();
