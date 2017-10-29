@@ -4,7 +4,7 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              xmlns:fab="http://schemas.android.com/apk/res-auto"
-             tools:context="com.maciejak.myplaces.ui.MapFragment">
+             tools:context="com.maciejak.myplaces.ui.fragment.MapFragment">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/my_places_map_fragment"

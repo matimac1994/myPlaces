@@ -1,11 +1,8 @@
-package com.maciejak.myplaces.ui;
+package com.maciejak.myplaces.ui.fragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,8 +14,9 @@ import android.widget.LinearLayout;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.adapters.MyPlacesListRecyclerViewAdapter;
-import com.maciejak.myplaces.models.Place;
+import com.maciejak.myplaces.ui.activity.ShowPlaceActivity;
+import com.maciejak.myplaces.ui.adapter.MyPlacesListRecyclerViewAdapter;
+import com.maciejak.myplaces.model.Place;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;

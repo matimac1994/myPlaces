@@ -1,7 +1,6 @@
-package com.maciejak.myplaces.adapters;
+package com.maciejak.myplaces.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

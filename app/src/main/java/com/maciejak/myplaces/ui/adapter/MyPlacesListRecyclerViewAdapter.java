@@ -1,17 +1,15 @@
-package com.maciejak.myplaces.adapters;
+package com.maciejak.myplaces.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.models.Place;
+import com.maciejak.myplaces.model.Place;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -50,15 +48,13 @@ public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlac
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         Place place = mPlaces.get(position);
-        if (place.getPhotos().size()>0){
-            String mapPhoto = place.getMapPhoto();
+        String mapPhoto = place.getMapPhoto();
 
-            Picasso.with(mContext)
-                    .load(mapPhoto)
-                    .centerCrop()
-                    .fit()
-                    .into(holder.mImageView);
-        }
+        Picasso.with(mContext)
+                .load(mapPhoto)
+                .centerCrop()
+                .fit()
+                .into(holder.mImageView);
         if (place.getTitle() == null || place.getTitle().equals("")){
             holder.mTitle.setVisibility(View.GONE);
         }

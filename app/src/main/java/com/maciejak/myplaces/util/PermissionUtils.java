@@ -1,4 +1,4 @@
-package com.maciejak.myplaces.utils;
+package com.maciejak.myplaces.util;
 
 
 import android.Manifest;

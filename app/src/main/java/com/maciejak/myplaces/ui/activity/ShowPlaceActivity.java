@@ -1,4 +1,4 @@
-package com.maciejak.myplaces.ui;
+package com.maciejak.myplaces.ui.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package com.maciejak.myplaces.ui;
+package com.maciejak.myplaces.ui.activity;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -22,7 +22,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.utils.PermissionUtils;
+import com.maciejak.myplaces.util.PermissionUtils;
 
 public class FavouritePlaceMapActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleMap.OnMarkerDragListener,

@@ -1,8 +1,6 @@
-package com.maciejak.myplaces.ui;
+package com.maciejak.myplaces.ui.activity;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,7 +13,6 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -30,8 +27,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.adapters.AddPlacePhotosRecyclerViewAdapter;
-import com.maciejak.myplaces.managers.FavouritePlaceFormAddManager;
+import com.maciejak.myplaces.ui.adapter.AddPlacePhotosRecyclerViewAdapter;
+import com.maciejak.myplaces.manager.FavouritePlaceFormAddManager;
 
 import java.io.File;
 import java.io.FileOutputStream;

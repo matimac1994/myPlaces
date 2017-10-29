@@ -1,4 +1,4 @@
-package com.maciejak.myplaces.receivers;
+package com.maciejak.myplaces.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package com.maciejak.myplaces.ui;
+package com.maciejak.myplaces.ui.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.view.View;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.maciejak.myplaces.R;
+import com.maciejak.myplaces.ui.activity.FavouritePlaceMapActivity;
 
 
 /**

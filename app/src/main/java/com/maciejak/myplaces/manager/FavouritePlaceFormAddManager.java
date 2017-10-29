@@ -1,10 +1,10 @@
-package com.maciejak.myplaces.managers;
+package com.maciejak.myplaces.manager;
 
 import android.net.Uri;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.maciejak.myplaces.models.Place;
-import com.maciejak.myplaces.models.PlacePhoto;
+import com.maciejak.myplaces.model.Place;
+import com.maciejak.myplaces.model.PlacePhoto;
 
 import java.util.ArrayList;
 import java.util.List;

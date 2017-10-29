@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.maciejak.myplaces.ui.FavouritePlaceFormAddActivity"
+    tools:context="com.maciejak.myplaces.ui.activity.FavouritePlaceFormAddActivity"
     tools:showIn="@layout/activity_favourite_place_form_add">
 
     <LinearLayout

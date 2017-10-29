@@ -1,4 +1,4 @@
-package com.maciejak.myplaces.helpers;
+package com.maciejak.myplaces.helper;
 
 import android.content.Context;
 import android.os.Bundle;

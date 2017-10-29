@@ -1,4 +1,4 @@
-package com.maciejak.myplaces.models;
+package com.maciejak.myplaces.model;
 
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
