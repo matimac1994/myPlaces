@@ -27,8 +27,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.maciejak.myplaces.R;
+import com.maciejak.myplaces.repository.PlaceRepository;
 import com.maciejak.myplaces.ui.adapter.AddPlacePhotosRecyclerViewAdapter;
-import com.maciejak.myplaces.manager.FavouritePlaceFormAddManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -70,7 +70,7 @@ public class FavouritePlaceFormAddActivity extends BaseActivity implements OnMap
 
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final int RESULT_TAKE_PHOTO= 2;
-    private FavouritePlaceFormAddManager manager;
+    private PlaceRepository mPlaceRepository;
     private String mCurrentPhotoPath;
     private List<String> photoPaths;
     private Uri photoURI;
@@ -262,8 +262,8 @@ public class FavouritePlaceFormAddActivity extends BaseActivity implements OnMap
 
     private void addPlaceDone() {
 
-        manager = new FavouritePlaceFormAddManager();
-        manager.savePlace(placeTitle.getText().toString(),
+        mPlaceRepository = new PlaceRepository();
+        mPlaceRepository.savePlace(placeTitle.getText().toString(),
                 mPlaceLatLng,
                 placeNote.getText().toString(),
                 placeDescription.getText().toString(),

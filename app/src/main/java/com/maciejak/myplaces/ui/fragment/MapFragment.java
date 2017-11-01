@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.maciejak.myplaces.MyPlacesApplication;
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.model.Place;
+import com.maciejak.myplaces.repository.PlaceRepository;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
     List<Marker> mMarkersOnMap;
     BitmapDescriptor mMarkerIcon;
     UiSettings mUiSettings;
+    PlaceRepository mPlaceRepository;
 
     public MapFragment() {
         // Required empty public constructor
@@ -59,7 +61,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
 
         mMarkerIcon = BitmapDescriptorFactory.fromResource(R.drawable.heart_red);
         mMarkersOnMap = new ArrayList<>();
-
+        mPlaceRepository = new PlaceRepository();
         FloatingActionMenu floatingActionMenu = (FloatingActionMenu) view.findViewById(R.id.add_place_menu);
         configFloatingActionMenu(getContext(), floatingActionMenu);
 
@@ -125,7 +127,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
     @Override
     public void onStart() {
         MyPlacesApplication.getGoogleApiClientHelper().connect();
-        mPlaceList = SQLite.select().from(Place.class).queryList();
+        mPlaceList = mPlaceRepository.getPlaces();
         super.onStart();
     }
 

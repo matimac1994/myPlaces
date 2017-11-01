@@ -45,6 +45,9 @@
     <string name="yes">Tak</string>
     <string name="back">Cofnij</string>
     <string name="are_you_sure_to_delete">Jesteś pewny że chcesz usunąć?</string>
+    <string name="description">Opis</string>
+    <string name="note">Notatka</string>
+    <string name="deleted">Usunięto</string>
 
     <array name="pick_photos_array">
         <item>Wybierz zdjęcie z galerii</item>
