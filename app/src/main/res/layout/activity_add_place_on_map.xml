@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.maciejak.myplaces.ui.activity.FavouritePlaceMapActivity"
+    tools:context="com.maciejak.myplaces.ui.activity.AddPlaceOnMapActivity"
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
@@ -17,7 +17,7 @@
         android:background="@color/logoColor"/>
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/add_place_map_fragment"
+              android:id="@+id/add_place_on_map_fragment"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               class="com.google.android.gms.maps.SupportMapFragment"/>

@@ -1,6 +1,7 @@
 package com.maciejak.myplaces.ui.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -92,7 +93,9 @@ public class ShowPlaceActivity extends BaseActivity {
 
     @OnClick(R.id.show_place_edit_fab)
     public void editOnClick(){
-        Toast.makeText(this, "Edycja", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, EditPlaceActivity.class);
+        intent.putExtra(EditPlaceActivity.PLACE_ID, mPlace.getId());
+        startActivity(intent);
     }
 
     @OnClick(R.id.show_place_delete_fab)

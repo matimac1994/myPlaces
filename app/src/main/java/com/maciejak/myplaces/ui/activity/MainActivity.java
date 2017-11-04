@@ -166,7 +166,7 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onPlaceSelected(Place place) {
-        Intent intent = new Intent(this, FavouritePlaceMapActivity.class);
+        Intent intent = new Intent(this, AddPlaceOnMapActivity.class);
         intent.putExtra(SELECTED_FAVOURITE_PLACE_NAME, place.getName());
         intent.putExtra(SELECTED_FAVOURITE_PLACE_LATLNG, place.getLatLng());
         startActivity(intent);

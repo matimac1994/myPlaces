@@ -8,7 +8,7 @@ import android.view.View;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.ui.activity.FavouritePlaceMapActivity;
+import com.maciejak.myplaces.ui.activity.AddPlaceOnMapActivity;
 
 
 /**
@@ -56,7 +56,7 @@ public class BaseFragment extends Fragment {
         fabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, FavouritePlaceMapActivity.class);
+                Intent intent = new Intent(context, AddPlaceOnMapActivity.class);
                 startActivity(intent);
                 mFloatingActionMenu.close(true);
             }

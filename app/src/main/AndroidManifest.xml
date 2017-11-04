@@ -44,13 +44,12 @@
         <activity
             android:name=".ui.activity.SplashScreenActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.FavouritePlaceMapActivity"/>
+        <activity android:name=".ui.activity.AddPlaceOnMapActivity"/>
         <activity
-            android:name=".ui.activity.FavouritePlaceFormAddActivity"
+            android:name=".ui.activity.AddPlaceActivity"
             android:label="@string/title_activity_favourite_place_form_add"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan"
-            >
+            android:windowSoftInputMode="adjustPan">
         </activity>
 
         <receiver
@@ -65,6 +64,8 @@
         </receiver>
 
         <activity android:name=".ui.activity.ShowPlaceActivity">
+        </activity>
+        <activity android:name=".ui.activity.EditPlaceActivity">
         </activity>
     </application>
 

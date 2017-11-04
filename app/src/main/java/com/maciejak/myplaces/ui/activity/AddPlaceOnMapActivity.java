@@ -24,7 +24,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.util.PermissionUtils;
 
-public class FavouritePlaceMapActivity extends BaseActivity implements OnMapReadyCallback,
+public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleMap.OnMarkerDragListener,
         GoogleMap.OnMapLongClickListener {
 
@@ -37,14 +37,14 @@ public class FavouritePlaceMapActivity extends BaseActivity implements OnMapRead
     Marker lastAddedMarker;
 
     private static final int MY_LOCATION_PERMISSION_REQUEST_CODE = 1;
-    public static final String SELECTED_FAVOURITE_PLACE_NAME = "FavouritePlaceMapActivity SELECTED_FAVOURITE_PLACE_NAME";
-    public static final String SELECTED_FAVOURITE_PLACE_LATLNG = "FavouritePlaceMapActivity SELECTED_FAVOURITE_PLACE_LATLNG";
+    public static final String SELECTED_FAVOURITE_PLACE_NAME = "AddPlaceOnMapActivity SELECTED_FAVOURITE_PLACE_NAME";
+    public static final String SELECTED_FAVOURITE_PLACE_LATLNG = "AddPlaceOnMapActivity SELECTED_FAVOURITE_PLACE_LATLNG";
     public static final Integer ADD_PLACE_DONE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_favourite_place_map);
+        setContentView(R.layout.activity_add_place_on_map);
 
         mPlaceName = this.getIntent().getStringExtra(MainActivity.SELECTED_FAVOURITE_PLACE_NAME);
         mPlaceLatLng = this.getIntent().getParcelableExtra(MainActivity.SELECTED_FAVOURITE_PLACE_LATLNG);
@@ -61,7 +61,7 @@ public class FavouritePlaceMapActivity extends BaseActivity implements OnMapRead
         }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.add_place_map_fragment);
+                .findFragmentById(R.id.add_place_on_map_fragment);
         mapFragment.getMapAsync(this);
 
     }
@@ -102,7 +102,7 @@ public class FavouritePlaceMapActivity extends BaseActivity implements OnMapRead
 
     private void moveToAddPlaceForm(){
         if (lastAddedMarker !=null) {
-            Intent intent = new Intent(this, FavouritePlaceFormAddActivity.class);
+            Intent intent = new Intent(this, AddPlaceActivity.class);
 
             if (mPlaceName != null)
                 intent.putExtra(SELECTED_FAVOURITE_PLACE_NAME, mPlaceName);
