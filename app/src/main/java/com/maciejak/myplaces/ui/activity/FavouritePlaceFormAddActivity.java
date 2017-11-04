@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -29,10 +32,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.repository.PlaceRepository;
 import com.maciejak.myplaces.ui.adapter.AddPlacePhotosRecyclerViewAdapter;
+import com.maciejak.myplaces.util.RealPathUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -133,7 +138,8 @@ public class FavouritePlaceFormAddActivity extends BaseActivity implements OnMap
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which){
                             case 0:
-                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                                intent.setType("image/*");
                                 startActivityForResult(intent, RESULT_LOAD_IMAGE);
                                 break;
                             case 1:
@@ -153,9 +159,20 @@ public class FavouritePlaceFormAddActivity extends BaseActivity implements OnMap
             case RESULT_LOAD_IMAGE:
                 if(resultCode==RESULT_OK)
                 {
-                    Uri selectedImg = data.getData();
-                    mPhotos.add(selectedImg);
-                    populateRecyclerView(mPhotos);
+                    java.io.OutputStream os;
+                    try {
+                        Uri selectedImg = data.getData();
+                        File file = createImageFile();
+                        Bitmap bitmapPhoto = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImg);
+                        os = new FileOutputStream(file);
+                        bitmapPhoto.compress(Bitmap.CompressFormat.JPEG, 75, os);
+                        os.flush();
+                        os.close();
+                        mPhotos.add(Uri.fromFile(file));
+                        populateRecyclerView(mPhotos);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                 }
                 break;
@@ -223,7 +240,7 @@ public class FavouritePlaceFormAddActivity extends BaseActivity implements OnMap
 
 
     private void pickPhotoFromCamera() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE_SECURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             java.io.File photoFile = null;
             try {
@@ -246,7 +263,7 @@ public class FavouritePlaceFormAddActivity extends BaseActivity implements OnMap
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        java.io.File storageDir = getExternalCacheDir();
+        java.io.File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         java.io.File image = java.io.File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */

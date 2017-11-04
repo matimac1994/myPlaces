@@ -1,18 +1,24 @@
 package com.maciejak.myplaces.ui.activity;
 
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repository.PlaceRepository;
+import com.maciejak.myplaces.ui.adapter.ShowPlaceViewPagerAdapter;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,6 +37,14 @@ public class ShowPlaceActivity extends BaseActivity {
     @BindView(R.id.show_place_collapsing_toolbar)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
 
+    @BindView(R.id.show_place_image_view)
+    ImageView mImageView;
+
+    @BindView(R.id.show_place_view_pager)
+    ViewPager mViewPager;
+
+    ShowPlaceViewPagerAdapter mShowPlaceViewPagerAdapter;
+
     long placeId;
     Place mPlace;
     PlaceRepository mPlaceRepository;
@@ -47,6 +61,7 @@ public class ShowPlaceActivity extends BaseActivity {
     private void setupControls() {
         placeId = this.getIntent().getLongExtra(PLACE_ID, 0);
         mPlaceRepository = new PlaceRepository();
+
         super.setupToolbar();
     }
 
@@ -54,6 +69,25 @@ public class ShowPlaceActivity extends BaseActivity {
         mCollapsingToolbarLayout.setTitle(mPlace.getTitle());
         mNoteTextView.setText(mPlace.getNote());
         mDescriptionTextView.setText(mPlace.getDescription());
+
+        if (mPlace.getPhotos().size() == 0){
+            mImageView.setVisibility(View.VISIBLE);
+            mViewPager.setVisibility(View.GONE);
+
+            Picasso.with(this)
+                    .load(Uri.parse(mPlace.getMapPhoto()))
+                    .centerCrop()
+                    .fit()
+                    .into(mImageView);
+        }
+        else {
+            mImageView.setVisibility(View.GONE);
+            mViewPager.setVisibility(View.VISIBLE);
+
+            mShowPlaceViewPagerAdapter = new ShowPlaceViewPagerAdapter(this, mPlace.getPhotos());
+            mViewPager.setAdapter(mShowPlaceViewPagerAdapter);
+        }
+
     }
 
     @OnClick(R.id.show_place_edit_fab)
