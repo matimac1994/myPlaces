@@ -38,7 +38,7 @@ public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlac
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
-        view = this.mInflater.inflate(R.layout.row_favourite_my_places, parent, false);
+        view = this.mInflater.inflate(R.layout.row_my_places_list, parent, false);
         view.setOnClickListener(mOnClickListener);
 
         return new MyPlacesListRecyclerViewAdapter.ViewHolder(view);
@@ -75,8 +75,8 @@ public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlac
 
     class ViewHolder extends RecyclerView.ViewHolder{
 
-        @BindView(R.id.row_favourite_my_place_image) ImageView mImageView;
-        @BindView(R.id.row_favourite_my_place_title) TextView mTitle;
+        @BindView(R.id.row_my_places_list_image) ImageView mImageView;
+        @BindView(R.id.row_my_places_list_title) TextView mTitle;
 
         public ViewHolder(View itemView) {
             super(itemView);

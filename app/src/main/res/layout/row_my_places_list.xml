@@ -9,17 +9,17 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/row_favourite_my_place_image"
+            android:id="@+id/row_my_places_list_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_alignParentTop="true"
             android:scaleType="centerCrop"/>
 
         <TextView
-            android:id="@+id/row_favourite_my_place_title"
+            android:id="@+id/row_my_places_list_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/row_favourite_my_place_image"
+            android:layout_below="@+id/row_my_places_list_image"
             android:maxLines="3"
             android:padding="8dp"
             android:text=""

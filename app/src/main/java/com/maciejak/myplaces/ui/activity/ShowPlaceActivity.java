@@ -60,10 +60,9 @@ public class ShowPlaceActivity extends BaseActivity {
     }
 
     private void setupControls() {
+        super.setupToolbar();
         placeId = this.getIntent().getLongExtra(PLACE_ID, 0);
         mPlaceRepository = new PlaceRepository();
-
-        super.setupToolbar();
     }
 
     private void fillControls(){
@@ -96,6 +95,7 @@ public class ShowPlaceActivity extends BaseActivity {
         Intent intent = new Intent(this, EditPlaceActivity.class);
         intent.putExtra(EditPlaceActivity.PLACE_ID, mPlace.getId());
         startActivity(intent);
+
     }
 
     @OnClick(R.id.show_place_delete_fab)

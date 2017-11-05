@@ -112,15 +112,4 @@ public class Place extends BaseModel {
         this.mapPhoto = mapPhoto;
     }
 
-    @Override
-    public boolean save() {
-        boolean res = super.save();
-        if (photos != null){
-            for (PlacePhoto photo : photos){
-                photo.setPlace(this);
-                photo.save();
-            }
-        }
-        return res;
-    }
 }

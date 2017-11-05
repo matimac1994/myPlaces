@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.maciejak.myplaces.R;
@@ -31,7 +32,7 @@ public class AddPlacePhotosRecyclerViewAdapter extends RecyclerView.Adapter<AddP
     public AddPlacePhotosRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view;
-        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_favourite_place_form_add_photo, parent, false);
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_add_place_photo, parent, false);
 
         return new ViewHolder(view);
     }
@@ -53,15 +54,26 @@ public class AddPlacePhotosRecyclerViewAdapter extends RecyclerView.Adapter<AddP
         return mPhotos.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private ImageView mImageView;
+        private ImageButton mImageButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            this.mImageView = (ImageView)itemView.findViewById(R.id.add_place_form_photo_image);
+            this.mImageView = (ImageView)itemView.findViewById(R.id.row_add_place_photo_image);
+            this.mImageButton = (ImageButton)itemView.findViewById(R.id.row_add_place_delete_button);
 
+            this.mImageButton.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            mPhotos.remove(position);
+            notifyItemRemoved(position);
         }
     }
 }

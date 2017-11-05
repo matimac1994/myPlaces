@@ -65,7 +65,8 @@
 
         <activity android:name=".ui.activity.ShowPlaceActivity">
         </activity>
-        <activity android:name=".ui.activity.EditPlaceActivity">
+        <activity android:name=".ui.activity.EditPlaceActivity"
+                  android:windowSoftInputMode="adjustPan">
         </activity>
     </application>
 

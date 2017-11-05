@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.maciejak.myplaces.R;
+import com.maciejak.myplaces.model.PlacePhoto;
+import com.maciejak.myplaces.repository.PlacePhotoRepository;
 import com.maciejak.myplaces.ui.activity.ShowPlaceActivity;
 import com.maciejak.myplaces.ui.adapter.MyPlacesListRecyclerViewAdapter;
 import com.maciejak.myplaces.model.Place;

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/row_add_place_photo_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:layout_margin="1dp"/>
+
+    <ImageButton
+        android:id="@+id/row_add_place_delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_close_white_24dp"
+        android:backgroundTint="@color/Red"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        />
+
+</RelativeLayout>

@@ -11,7 +11,12 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -50,9 +55,6 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
 
     Marker mMarker;
 
-    @BindView(R.id.add_place_photos_recycler_view)
-    RecyclerView addPlaceFormPhotosRecyclerView;
-
     @BindView(R.id.add_place_title)
     EditText placeTitle;
 
@@ -62,6 +64,8 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
     @BindView(R.id.add_place_describe)
     EditText placeDescription;
 
+    @BindView(R.id.add_place_photos_recycler_view)
+    RecyclerView addPlacePhotosRecyclerView;
     AddPlacePhotosRecyclerViewAdapter mAddPlacePhotosRecyclerViewAdapter;
 
     List<Uri> mPhotos;
@@ -69,8 +73,6 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
 
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final int RESULT_TAKE_PHOTO= 2;
-    private PlaceRepository mPlaceRepository;
-    private String mCurrentPhotoPath;
     private List<String> photoPaths;
     private Uri photoURI;
 
@@ -98,14 +100,21 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
             collapsingToolbar.setTitle("Dodaj miejsce");
 
         //config RecyclerView
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
-            addPlaceFormPhotosRecyclerView.setLayoutManager(layoutManager);
+
         mPhotos = new ArrayList<>();
         photoPaths = new ArrayList<>();
+        setUpRecyclerView(mPhotos);
 
         SupportMapFragment mapFragment = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.add_place_map);
         mapFragment.getView().setClickable(false);
         mapFragment.getMapAsync(this);
+    }
+
+    private void setUpRecyclerView(List<Uri> photos){
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, OrientationHelper.HORIZONTAL, false);
+        addPlacePhotosRecyclerView.setLayoutManager(layoutManager);
+        mAddPlacePhotosRecyclerViewAdapter = new AddPlacePhotosRecyclerViewAdapter(this, photos);
+        addPlacePhotosRecyclerView.setAdapter(mAddPlacePhotosRecyclerViewAdapter);
     }
 
     @Override
@@ -125,7 +134,7 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
                         os.flush();
                         os.close();
                         mPhotos.add(Uri.fromFile(file));
-                        populateRecyclerView(mPhotos);
+                        mAddPlacePhotosRecyclerViewAdapter.notifyDataSetChanged();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -136,18 +145,12 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
                 if(resultCode==RESULT_OK)
                 {
                     mPhotos.add(photoURI);
-                    populateRecyclerView(mPhotos);
+                    mAddPlacePhotosRecyclerViewAdapter.notifyDataSetChanged();
 
                 }
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private void populateRecyclerView(List<Uri> photos){
-        mAddPlacePhotosRecyclerViewAdapter = new AddPlacePhotosRecyclerViewAdapter(this, photos);
-        addPlaceFormPhotosRecyclerView.setAdapter(mAddPlacePhotosRecyclerViewAdapter);
-        mAddPlacePhotosRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -167,10 +170,29 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
         }
     }
 
-    @OnClick(R.id.add_place_done_fab)
-    public void addPlaceDoneOnClick(){
-        mPlaceRepository = new PlaceRepository();
-        mPlaceRepository.savePlace(placeTitle.getText().toString(),
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.edit_place_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.edit_place_action_done:
+                addPlaceDone();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void addPlaceDone() {
+        PlaceRepository placeRepository = new PlaceRepository();
+        placeRepository.savePlace(placeTitle.getText().toString(),
                 mPlaceLatLng,
                 placeNote.getText().toString(),
                 placeDescription.getText().toString(),
@@ -262,8 +284,8 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        photoPaths.add(mCurrentPhotoPath);
+        String currentPhotoPath = image.getAbsolutePath();
+        photoPaths.add(currentPhotoPath);
         return image;
     }
 

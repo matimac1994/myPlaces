@@ -32,13 +32,13 @@ public class PlaceRepository {
         for (Uri photoUri : photosUri){
             PlacePhoto placePhoto = new PlacePhoto();
             placePhoto.setImage(photoUri.toString());
+            placePhoto.setPlace(place);
             placePhoto.save();
             photos.add(placePhoto);
         }
 
         place.setPhotos(photos);
         place.save();
-
     }
 
     public Place getPlaceById(long placeId){
@@ -47,5 +47,16 @@ public class PlaceRepository {
 
     public List<Place> getPlaces(){
         return SQLite.select().from(Place.class).queryList();
+    }
+
+    public void editPlace(Place place, String title, String note, String description, List<PlacePhoto> photos, List<PlacePhoto> photosToDelete) {
+        for (PlacePhoto placePhoto : photosToDelete){
+            placePhoto.delete();
+        }
+        place.setTitle(title);
+        place.setNote(note);
+        place.setDescription(description);
+        place.setPhotos(photos);
+        place.save();
     }
 }
