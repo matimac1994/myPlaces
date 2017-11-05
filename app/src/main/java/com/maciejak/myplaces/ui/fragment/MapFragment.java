@@ -23,7 +23,6 @@ import com.maciejak.myplaces.MyPlacesApplication;
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repository.PlaceRepository;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,20 +57,26 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
+        setupControls(view);
+        return view;
+    }
+
+
+    private void setupControls(View view){
+
+        getActivity().setTitle(R.string.map);
 
         mMarkerIcon = BitmapDescriptorFactory.fromResource(R.drawable.heart_red);
         mMarkersOnMap = new ArrayList<>();
         mPlaceRepository = new PlaceRepository();
+
         FloatingActionMenu floatingActionMenu = (FloatingActionMenu) view.findViewById(R.id.add_place_menu);
         configFloatingActionMenu(getContext(), floatingActionMenu);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.my_places_map_fragment);
         mapFragment.getMapAsync(this);
-
-        return view;
     }
-
 
     @Override
     public void onDetach() {
@@ -127,7 +132,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
     @Override
     public void onStart() {
         MyPlacesApplication.getGoogleApiClientHelper().connect();
-        mPlaceList = mPlaceRepository.getPlaces();
+        mPlaceList = mPlaceRepository.getAllPlaces();
         super.onStart();
     }
 

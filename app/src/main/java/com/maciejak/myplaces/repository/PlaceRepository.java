@@ -45,7 +45,7 @@ public class PlaceRepository {
         return SQLite.select().from(Place.class).where(Place_Table.id.eq(placeId)).querySingle();
     }
 
-    public List<Place> getPlaces(){
+    public List<Place> getAllPlaces(){
         return SQLite.select().from(Place.class).queryList();
     }
 

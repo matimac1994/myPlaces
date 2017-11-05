@@ -14,12 +14,10 @@ import android.widget.LinearLayout;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.model.PlacePhoto;
-import com.maciejak.myplaces.repository.PlacePhotoRepository;
+import com.maciejak.myplaces.repository.PlaceRepository;
 import com.maciejak.myplaces.ui.activity.ShowPlaceActivity;
 import com.maciejak.myplaces.ui.adapter.MyPlacesListRecyclerViewAdapter;
 import com.maciejak.myplaces.model.Place;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +62,8 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
     private void setupControls(View view) {
         FloatingActionMenu floatingActionMenu = (FloatingActionMenu) view.findViewById(R.id.add_place_menu);
         configFloatingActionMenu(getContext(), floatingActionMenu);
+
+        getActivity().setTitle(R.string.list_of_favourites);
 
         mPlaces = new ArrayList<>();
         setupRecyclerView();
@@ -130,7 +130,8 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
     @Override
     public void onStart() {
         super.onStart();
-        mPlaces = SQLite.select().from(Place.class).queryList();
+        PlaceRepository placeRepository = new PlaceRepository();
+        mPlaces = placeRepository.getAllPlaces();
         manageVisibility(mPlaces);
     }
 
