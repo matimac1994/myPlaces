@@ -30,8 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
-        PlaceSelectionListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private ActionBarDrawerToggle mActionBarDrawerToggle;
 
@@ -39,10 +38,6 @@ public class MainActivity extends BaseActivity
     @BindView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-
-    private static final int REQUEST_SELECT_PLACE = 1000;
-    public static final String SELECTED_FAVOURITE_PLACE_NAME = "MainActivity SELECTED_FAVOURITE_PLACE_NAME";
-    public static final String SELECTED_FAVOURITE_PLACE_LATLNG = "MainActivity SELECTED_FAVOURITE_PLACE_LATLNG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,16 +110,6 @@ public class MainActivity extends BaseActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_search) {
-            // Method #3
-            try {
-                Intent intent = new PlaceAutocomplete.IntentBuilder
-                        (PlaceAutocomplete.MODE_FULLSCREEN)
-                        .build(MainActivity.this);
-                startActivityForResult(intent, REQUEST_SELECT_PLACE);
-            } catch (GooglePlayServicesRepairableException |
-                    GooglePlayServicesNotAvailableException e) {
-                e.printStackTrace();
-            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -162,31 +147,5 @@ public class MainActivity extends BaseActivity
 
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    public void onPlaceSelected(Place place) {
-        Intent intent = new Intent(this, AddPlaceOnMapActivity.class);
-        intent.putExtra(SELECTED_FAVOURITE_PLACE_NAME, place.getName());
-        intent.putExtra(SELECTED_FAVOURITE_PLACE_LATLNG, place.getLatLng());
-        startActivity(intent);
-    }
-
-    @Override
-    public void onError(Status status) {
-
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_SELECT_PLACE) {
-            if (resultCode == RESULT_OK) {
-                Place place = PlaceAutocomplete.getPlace(this, data);
-                this.onPlaceSelected(place);
-            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-                Status status = PlaceAutocomplete.getStatus(this, data);
-                this.onError(status);
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }

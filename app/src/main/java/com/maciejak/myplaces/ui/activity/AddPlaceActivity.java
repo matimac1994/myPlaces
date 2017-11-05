@@ -50,7 +50,6 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
     GoogleMap mMap;
     UiSettings mUiSettings;
 
-    String mPlaceName;
     LatLng mPlaceLatLng;
 
     Marker mMarker;
@@ -82,7 +81,6 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_add_place);
         ButterKnife.bind(this);
 
-        mPlaceName = this.getIntent().getStringExtra(AddPlaceOnMapActivity.SELECTED_FAVOURITE_PLACE_NAME);
         mPlaceLatLng = this.getIntent().getParcelableExtra(AddPlaceOnMapActivity.SELECTED_FAVOURITE_PLACE_LATLNG);
 
         setupControls();
@@ -94,10 +92,7 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
 
         CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.add_place_collapsing_toolbar);
-        if (mPlaceName != null)
-            collapsingToolbar.setTitle(mPlaceName);
-        else
-            collapsingToolbar.setTitle("Dodaj miejsce");
+        collapsingToolbar.setTitle(getString(R.string.add_place));
 
         //config RecyclerView
 

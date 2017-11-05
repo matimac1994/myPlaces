@@ -26,8 +26,9 @@
     <string name="location_permission_denied">By wykorzystać wszystkie możliwości aplikacji MyPlaces włącz lokalizację</string>
     <string name="permission_required_toast">Włączenie lokalizacji jest wymagane do poprawnego działania aplikacji</string>
     <string name="permission_rationale_location">Dostęp do lokalizacji urządzenia jest wymagany</string>
-    <string name="add_place_form_my_location_button_label">Dodaj miejsce w którym jestem</string>
-    <string name="add_place_form_map_button_label">Dodaj miejsce z mapy</string>
+    <string name="add_place_from_my_location_button_label">Dodaj miejsce w którym jestem</string>
+    <string name="add_place_from_map_button_label">Dodaj miejsce z mapy</string>
+    <string name="add_place_from_search_button_label">Wyszukaj miejsce</string>
     <string name="title_activity_favourite_place_form_add">FavouritePlaceFormAddActivity</string>
     <string name="action_settings">Settings</string>
     <string name="favourite_place_map_done_no_marker">Wybierz miejsce na mapie</string>
@@ -50,6 +51,7 @@
     <string name="deleted">Usunięto</string>
     <string name="edit_place">Edycja miejsca</string>
     <string name="saved">Zapisano</string>
+    <string name="go_to_place">Przejdź do miejsca</string>
 
     <array name="pick_photos_array">
         <item>Wybierz zdjęcie z galerii</item>

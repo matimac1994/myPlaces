@@ -35,7 +35,7 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
     @BindView(R.id.my_places_list_empty_view)
     LinearLayout mEmptyView;
 
-    MyPlacesListRecyclerViewAdapter mMyPlacesListRecycelerViewAdapter;
+    MyPlacesListRecyclerViewAdapter mMyPlacesListRecyclerViewAdapter;
 
     public MyPlacesListFragment() {
         // Required empty public constructor
@@ -71,7 +71,7 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
 
     private void setupRecyclerView() {
         mMyPlacesListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
@@ -84,21 +84,13 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setMessage(getString(R.string.are_you_sure_to_delete));
 
-                builder.setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Place place = mMyPlacesListRecycelerViewAdapter.getItem(position);
-                        place.delete();
-                        mPlaces.remove(position);
-                        mMyPlacesListRecycelerViewAdapter.notifyItemRemoved(position);
-                        manageVisibility(mPlaces);
-                    }
-                }).setNegativeButton(getString(R.string.back), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mMyPlacesListRecycelerViewAdapter.notifyItemChanged(position);
-                    }
-                });
+                builder.setPositiveButton(getString(R.string.delete), (dialog, which) -> {
+                    Place place = mMyPlacesListRecyclerViewAdapter.getItem(position);
+                    place.delete();
+                    mPlaces.remove(position);
+                    mMyPlacesListRecyclerViewAdapter.notifyItemRemoved(position);
+                    manageVisibility(mPlaces);
+                }).setNegativeButton(getString(R.string.back), (dialog, which) -> mMyPlacesListRecyclerViewAdapter.notifyItemChanged(position));
 
                 AlertDialog dialog = builder.show();
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.Red));
@@ -110,9 +102,9 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
     }
 
     private void populateRecyclerView(List<Place> places){
-        mMyPlacesListRecycelerViewAdapter = new MyPlacesListRecyclerViewAdapter(getActivity(), places, this);
-        mMyPlacesListRecyclerView.setAdapter(mMyPlacesListRecycelerViewAdapter);
-        mMyPlacesListRecycelerViewAdapter.notifyDataSetChanged();
+        mMyPlacesListRecyclerViewAdapter = new MyPlacesListRecyclerViewAdapter(getActivity(), places, this);
+        mMyPlacesListRecyclerView.setAdapter(mMyPlacesListRecyclerViewAdapter);
+        mMyPlacesListRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     private void manageVisibility(List<Place> places){
@@ -138,7 +130,7 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
     @Override
     public void onClick(View v) {
         int itemPosition = mMyPlacesListRecyclerView.getChildAdapterPosition(v);
-        Place place = mMyPlacesListRecycelerViewAdapter.getItem(itemPosition);
+        Place place = mMyPlacesListRecyclerViewAdapter.getItem(itemPosition);
         int viewId = v.getId();
         switch (viewId){
             case R.id.card_view:

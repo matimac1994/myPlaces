@@ -1,5 +1,6 @@
 package com.maciejak.myplaces.ui.fragment;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -23,12 +25,16 @@ import com.maciejak.myplaces.MyPlacesApplication;
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repository.PlaceRepository;
+import com.maciejak.myplaces.ui.activity.ShowPlaceActivity;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class MapFragment extends BaseFragment implements OnMapReadyCallback,
-        GoogleMap.OnCameraIdleListener{
+        GoogleMap.OnCameraIdleListener,
+        GoogleMap.OnMarkerClickListener,
+        GoogleMap.OnInfoWindowClickListener{
 
     private GoogleMap mMap;
     private Location mLocation;
@@ -69,7 +75,6 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
         mMarkerIcon = BitmapDescriptorFactory.fromResource(R.drawable.heart_red);
         mMarkersOnMap = new ArrayList<>();
         mPlaceRepository = new PlaceRepository();
-
         FloatingActionMenu floatingActionMenu = (FloatingActionMenu) view.findViewById(R.id.add_place_menu);
         configFloatingActionMenu(getContext(), floatingActionMenu);
 
@@ -87,7 +92,11 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mUiSettings = mMap.getUiSettings();
+
         mMap.setOnCameraIdleListener(this);
+        mMap.setOnMarkerClickListener(this);
+        mMap.setOnInfoWindowClickListener(this);
+
         mBounds = mMap.getProjection().getVisibleRegion().latLngBounds;
         refreshMarkersOnMap(mBounds);
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mBounds, 50));
@@ -100,34 +109,59 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
     }
 
     private void refreshMarkersOnMap(LatLngBounds bounds){
-        removeOldMarkers();
+
+        // TODO: 05.11.2017 Do this stuff asynchrous 
+        removeOldMarkers(bounds);
         if (checkReady()){
             if (mPlaceList.size() > 0){
                 LatLng latLng;
                 for (Place place : mPlaceList){
                     latLng = new LatLng(place.getLatitude(), place.getLongitude());
                     if (bounds.contains(latLng)){
-                        addMarkerToMap(latLng);
+                        addMarkerToMap(place);
                     }
                 }
             }
         }
     }
 
-    private void removeOldMarkers() {
-        for (Marker marker : mMarkersOnMap){
-            marker.remove();
+    private void removeOldMarkers(LatLngBounds bounds) {
+        for (Iterator<Marker> iterator = mMarkersOnMap.iterator(); iterator.hasNext();){
+            Marker marker = iterator.next();
+            if (!bounds.contains(marker.getPosition())){
+                iterator.remove();
+                marker.remove();
+            }
         }
-        mMarkersOnMap.clear();
     }
 
-    private void addMarkerToMap(LatLng latLng) {
-        Marker marker = mMap.addMarker(new MarkerOptions()
-                .position(latLng)
-                .icon(mMarkerIcon));
+    private void addMarkerToMap(Place place) {
+        for (Marker marker : mMarkersOnMap){
+            if (marker.getTag().equals(place.getId())){
+                return;
+            }
+        }
+        MarkerOptions markerOptions = addOptionsToMarker(place);
+        Marker marker = mMap.addMarker(markerOptions);
+        marker.setTag(place.getId());
         mMarkersOnMap.add(marker);
     }
 
+    private MarkerOptions addOptionsToMarker(Place place){
+        MarkerOptions markerOptions = new MarkerOptions();
+        if (!place.getTitle().equals("")){
+            markerOptions.title(place.getTitle());
+        }
+        else {
+            markerOptions.title(getString(R.string.go_to_place));
+        }
+
+        markerOptions.position(new LatLng(place.getLatitude(), place.getLongitude()))
+                .draggable(false)
+                .icon(mMarkerIcon);
+        return markerOptions;
+
+    }
 
     @Override
     public void onStart() {
@@ -150,7 +184,20 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
     public void onCameraIdle() {
         mBounds = mMap.getProjection().getVisibleRegion().latLngBounds;
         refreshMarkersOnMap(mBounds);
-        Log.i("Tag", "onCameraIdle");
     }
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+        marker.showInfoWindow();
+        return true;
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        marker.hideInfoWindow();
+        Intent intent = new Intent(getContext(), ShowPlaceActivity.class);
+        intent.putExtra(ShowPlaceActivity.PLACE_ID, (long)marker.getTag());
+        startActivity(intent);
+    }
 }

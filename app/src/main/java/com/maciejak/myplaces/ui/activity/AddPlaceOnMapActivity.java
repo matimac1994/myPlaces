@@ -31,13 +31,11 @@ public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCal
     GoogleMap mMap;
     UiSettings mUiSettings;
 
-    String mPlaceName;
     LatLng mPlaceLatLng;
 
     Marker lastAddedMarker;
 
     private static final int MY_LOCATION_PERMISSION_REQUEST_CODE = 1;
-    public static final String SELECTED_FAVOURITE_PLACE_NAME = "AddPlaceOnMapActivity SELECTED_FAVOURITE_PLACE_NAME";
     public static final String SELECTED_FAVOURITE_PLACE_LATLNG = "AddPlaceOnMapActivity SELECTED_FAVOURITE_PLACE_LATLNG";
     public static final Integer ADD_PLACE_DONE = 1;
 
@@ -46,19 +44,14 @@ public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_place_on_map);
 
-        mPlaceName = this.getIntent().getStringExtra(MainActivity.SELECTED_FAVOURITE_PLACE_NAME);
-        mPlaceLatLng = this.getIntent().getParcelableExtra(MainActivity.SELECTED_FAVOURITE_PLACE_LATLNG);
+        mPlaceLatLng = this.getIntent().getParcelableExtra(SELECTED_FAVOURITE_PLACE_LATLNG);
         setupControls();
     }
 
     private void setupControls() {
         super.setupToolbar();
 
-        if (mPlaceName != null) {
-            getSupportActionBar().setTitle(mPlaceName);
-        } else {
-            getSupportActionBar().setTitle(R.string.add_place);
-        }
+        getSupportActionBar().setTitle(R.string.add_place);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.add_place_on_map_fragment);
@@ -103,10 +96,6 @@ public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCal
     private void moveToAddPlaceForm(){
         if (lastAddedMarker !=null) {
             Intent intent = new Intent(this, AddPlaceActivity.class);
-
-            if (mPlaceName != null)
-                intent.putExtra(SELECTED_FAVOURITE_PLACE_NAME, mPlaceName);
-
             intent.putExtra(SELECTED_FAVOURITE_PLACE_LATLNG, lastAddedMarker.getPosition());
             startActivityForResult(intent, ADD_PLACE_DONE);
         }
