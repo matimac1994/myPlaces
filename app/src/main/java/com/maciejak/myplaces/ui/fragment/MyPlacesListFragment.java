@@ -60,9 +60,6 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
     }
 
     private void setupControls(View view) {
-        FloatingActionMenu floatingActionMenu = (FloatingActionMenu) view.findViewById(R.id.add_place_menu);
-        configFloatingActionMenu(getContext(), floatingActionMenu);
-
         getActivity().setTitle(R.string.list_of_favourites);
 
         mPlaces = new ArrayList<>();
@@ -89,6 +86,7 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
                     place.delete();
                     mPlaces.remove(position);
                     mMyPlacesListRecyclerViewAdapter.notifyItemRemoved(position);
+                    mMyPlacesListRecyclerView.scrollToPosition(position-1);
                     manageVisibility(mPlaces);
                 }).setNegativeButton(getString(R.string.back), (dialog, which) -> mMyPlacesListRecyclerViewAdapter.notifyItemChanged(position));
 
@@ -139,5 +137,12 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
                 startActivity(intent);
                 break;
         }
+    }
+
+    @Override
+    protected void actionAfterAddPlaceDone(Intent data) {
+        super.actionAfterAddPlaceDone(data);
+        mMyPlacesListRecyclerViewAdapter.notifyItemInserted(mMyPlacesListRecyclerViewAdapter.getItemCount());
+        mMyPlacesListRecyclerView.smoothScrollToPosition(mMyPlacesListRecyclerViewAdapter.getItemCount());
     }
 }

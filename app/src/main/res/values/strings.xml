@@ -52,6 +52,8 @@
     <string name="edit_place">Edycja miejsca</string>
     <string name="saved">Zapisano</string>
     <string name="go_to_place">Przejdź do miejsca</string>
+    <string name="cannot_find_location_alert">Nie znamy Twojej lokalizacji, wybierz miejsce na mapie</string>
+    <string name="last_known_location">Ostatnia znana lokalizacja</string>
 
     <array name="pick_photos_array">
         <item>Wybierz zdjęcie z galerii</item>

@@ -47,6 +47,9 @@ import butterknife.OnClick;
 
 public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback{
 
+    public static final String PLACE_LAT_LNG = "AddPlaceActivity LatLng";
+    public static final String ADD_PLACE_ACTIVITY_DATA = "AddPlaceActivity Data";
+
     GoogleMap mMap;
     UiSettings mUiSettings;
 
@@ -81,7 +84,7 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_add_place);
         ButterKnife.bind(this);
 
-        mPlaceLatLng = this.getIntent().getParcelableExtra(AddPlaceOnMapActivity.SELECTED_FAVOURITE_PLACE_LATLNG);
+        mPlaceLatLng = this.getIntent().getParcelableExtra(PLACE_LAT_LNG);
 
         setupControls();
 
@@ -195,7 +198,7 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
                 mPhotos);
 
         Toast.makeText(this, "Zapisano", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent("AddPlaceOnMapActivity.ADD_PLACE_DONE");
+        Intent intent = new Intent(ADD_PLACE_ACTIVITY_DATA);
         setResult(Activity.RESULT_OK ,intent);
         this.finish();
     }

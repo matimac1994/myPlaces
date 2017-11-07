@@ -1,14 +1,25 @@
 package com.maciejak.myplaces.helper;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.maciejak.myplaces.model.Place;
+import com.maciejak.myplaces.util.Const;
+import com.maciejak.myplaces.util.PermissionUtils;
 
 /**
  * Created by Mati on 19.10.2017.

@@ -1,6 +1,7 @@
 package com.maciejak.myplaces.ui.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -38,6 +39,7 @@ public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCal
     private static final int MY_LOCATION_PERMISSION_REQUEST_CODE = 1;
     public static final String SELECTED_FAVOURITE_PLACE_LATLNG = "AddPlaceOnMapActivity SELECTED_FAVOURITE_PLACE_LATLNG";
     public static final Integer ADD_PLACE_DONE = 1;
+    public static final String ADD_PLACE_ON_MAP_DATA = "AddPlaceOnMapActivity Data";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +88,8 @@ public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCal
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ADD_PLACE_DONE){
             if (resultCode == RESULT_OK){
+                Intent intent = new Intent(ADD_PLACE_ON_MAP_DATA);
+                setResult(Activity.RESULT_OK ,intent);
                 this.finish();
             }
         }
@@ -96,7 +100,7 @@ public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCal
     private void moveToAddPlaceForm(){
         if (lastAddedMarker !=null) {
             Intent intent = new Intent(this, AddPlaceActivity.class);
-            intent.putExtra(SELECTED_FAVOURITE_PLACE_LATLNG, lastAddedMarker.getPosition());
+            intent.putExtra(AddPlaceActivity.PLACE_LAT_LNG, lastAddedMarker.getPosition());
             startActivityForResult(intent, ADD_PLACE_DONE);
         }
         else {
@@ -143,20 +147,6 @@ public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCal
             mMap.setMyLocationEnabled(true);
         }
 
-    }
-
-    public void requestLocationPermission(int requestCode) {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)) {
-            // Display a dialog with rationale.
-            PermissionUtils.RationaleDialog
-                    .newInstance(requestCode, false).show(
-                    getSupportFragmentManager(), "dialog");
-        } else {
-            // Location permission has not been granted yet, request it.
-            PermissionUtils.requestPermission(this, requestCode,
-                    Manifest.permission.ACCESS_FINE_LOCATION, false);
-        }
     }
 
     @Override

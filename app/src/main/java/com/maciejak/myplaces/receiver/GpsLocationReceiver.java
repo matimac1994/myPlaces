@@ -20,7 +20,7 @@ public class GpsLocationReceiver extends BroadcastReceiver {
                     Toast.LENGTH_SHORT).show();
             LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
             if( !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ) {
-                showAlertGpsOff(context);
+//                showAlertGpsOff(context);
             }else{
                 Toast.makeText(context, "GPS Włączony ;)", Toast.LENGTH_SHORT).show();
             }
@@ -29,17 +29,17 @@ public class GpsLocationReceiver extends BroadcastReceiver {
 
     }
 
-    private void showAlertGpsOff(Context context){
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(R.string.dialog_gps_is_off)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                    }
-                });
-        AlertDialog dialog =  builder.create();
-        dialog.show();
-
-    }
+//    private void showAlertGpsOff(Context context){
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//        builder.setMessage(R.string.dialog_gps_is_off)
+//                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//        AlertDialog dialog =  builder.create();
+//        dialog.show();
+//
+//    }
 }
