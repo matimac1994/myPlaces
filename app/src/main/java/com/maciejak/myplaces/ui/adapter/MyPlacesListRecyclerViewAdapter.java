@@ -88,11 +88,11 @@ public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlac
         notifyItemInserted(position);
     }
 
-    public void onItemRemove(final RecyclerView.ViewHolder viewHolder, final RecyclerView recyclerView){
+    public void onItemRemove(final RecyclerView.ViewHolder viewHolder, final RecyclerView recyclerView, View layout){
         Place deletedPlace = mPlaces.get(viewHolder.getAdapterPosition());
         final int position = viewHolder.getAdapterPosition();
         Snackbar snackbar = Snackbar
-                .make(recyclerView, mContext.getString(R.string.deleted), Snackbar.LENGTH_LONG)
+                .make(layout, mContext.getString(R.string.deleted), Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo, view -> {
                     if (position == 0 || position == getItemCount())
                         recyclerView.scrollToPosition(position);

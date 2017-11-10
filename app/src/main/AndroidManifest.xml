@@ -72,9 +72,11 @@
 
         <service android:name=".service.DeletePlacesService"/>
 
-        <activity android:name=".ui.activity.LoginActivity">
+        <activity android:name=".ui.activity.LoginActivity"
+            android:theme="@style/LoginTheme">
         </activity>
-        <activity android:name=".ui.activity.RegisterActivity">
+        <activity android:name=".ui.activity.RegisterActivity"
+                  android:theme="@style/LoginTheme">
         </activity>
         <activity android:name=".ui.activity.SettingsActivity">
         </activity>

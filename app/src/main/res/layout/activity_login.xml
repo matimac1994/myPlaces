@@ -4,16 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:theme="@style/AppTheme.NoActionBar"
     tools:context="com.maciejak.myplaces.ui.activity.LoginActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:orientation="vertical">
 
         <ImageView
+            android:paddingTop="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/splash"/>
@@ -21,18 +24,84 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:padding="16dp">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                android:theme="@style/TextInputLayout">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/login_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/login_email"
+                    android:inputType="textAutoComplete"
+                    app:backgroundTint="@color/logoColor"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                android:theme="@style/TextInputLayout">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/login_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/login_password"
+                    android:inputType="textPassword"
+                    app:backgroundTint="@color/logoColor"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
 
 
+                <Button
+                    android:id="@+id/login_login_button"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:theme="@style/AppTheme.ButtonLogin"
+                    android:text="@string/login"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
 
+                <Button
+                    android:id="@+id/login_register_button"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:theme="@style/AppTheme.ButtonRegister"
+                    style="?android:borderlessButtonStyle"
+                    android:text="@string/register"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
 
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/login_locally_use_text"
+                android:paddingTop="16dp"
+                android:textColor="@color/Black"
+                android:text="@string/login_locally_use"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
 
-
-
-
     </LinearLayout>
-
 
 </android.support.v4.widget.NestedScrollView>

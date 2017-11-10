@@ -55,6 +55,20 @@
     <string name="cannot_find_location_alert">Nie znamy Twojej lokalizacji, wybierz miejsce na mapie</string>
     <string name="last_known_location">Ostatnia znana lokalizacja</string>
     <string name="undo">Cofnij</string>
+    <string name="login_password">Hasło</string>
+    <string name="login_email">Email</string>
+    <string name="register">Zarejestruj</string>
+    <string name="login">Zaloguj</string>
+    <string name="login_locally_use">Korzystaj z aplikacji bez logowania</string>
+    <string name="login_locally_use_alert_title">Ostrzeżenie</string>
+    <string name="login_locally_use_alert_message">Używając aplikacje lokalnie stracisz zapisane miejsca i zdjęcia po odinstalowaniu aplikacji!</string>
+    <string name="understand">Rozumiem</string>
+    <string name="cancel">Anuluj</string>
+    <string name="register_email">Email</string>
+    <string name="register_password">Hasło</string>
+    <string name="register_confirm_password">Powtórz hasło</string>
+    <string name="my_places_no_places">Brak ulubionych miejsc :(</string>
+    <string name="my_places_list_no_places_info">Dodaj jakieś klikając plusa na prawym dolnym rogu.</string>
 
     <array name="pick_photos_array">
         <item>Wybierz zdjęcie z galerii</item>

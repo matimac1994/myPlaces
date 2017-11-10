@@ -2,49 +2,39 @@ package com.maciejak.myplaces.ui.fragment;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.maciejak.myplaces.MyPlacesApplication;
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.helper.GoogleApiClientHelper;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repository.PlaceRepository;
 import com.maciejak.myplaces.ui.activity.ShowPlaceActivity;
-import com.maciejak.myplaces.util.Const;
+import com.maciejak.myplaces.util.PermissionUtils;
 
-import java.security.Provider;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MapFragment extends BaseFragment implements OnMapReadyCallback,
+public class MapFragment extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnCameraIdleListener,
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnInfoWindowClickListener,
@@ -121,6 +111,18 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
             requestLocationPermission(MY_LOCATION_PERMISSION_REQUEST_CODE);
         } else {
             mMap.setMyLocationEnabled(true);
+        }
+    }
+    public void requestLocationPermission(int requestCode) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION)) {
+            // Display a dialog with rationale.
+            PermissionUtils.RationaleDialog
+                    .newInstance(requestCode, false).show(this.getFragmentManager(),"dialog");
+        } else {
+            // Location permission has not been granted yet, request it.
+            PermissionUtils.requestPermission((AppCompatActivity)getActivity(), requestCode,
+                    Manifest.permission.ACCESS_FINE_LOCATION, false);
         }
     }
 
@@ -222,9 +224,19 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
         startActivity(intent);
     }
 
+
     @Override
-    protected void actionAfterAddPlaceDone(Intent data) {
-        super.actionAfterAddPlaceDone(data);
-        refreshMarkersOnMap();
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
     }
 }

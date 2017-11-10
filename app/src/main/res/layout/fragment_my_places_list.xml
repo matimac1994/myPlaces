@@ -2,9 +2,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             tools:context="com.maciejak.myplaces.ui.fragment.MyPlacesListFragment"
-             xmlns:fab="http://schemas.android.com/apk/res-auto">
+             tools:context="com.maciejak.myplaces.ui.fragment.MyPlacesListFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_places_list_recycler_view"
@@ -24,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="Brak ulubionych miejsc :("
+            android:text="@string/my_places_no_places"
             android:textSize="22sp"
             android:paddingStart="32dp"
             android:paddingEnd="32dp"
@@ -34,23 +32,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="Dodaj jakieś klikając plusa na prawym dolnym rogu."
+            android:text="@string/my_places_list_no_places_info"
             android:textSize="18sp"/>
 
     </LinearLayout>
-
-    <com.github.clans.fab.FloatingActionMenu
-        app:layout_behavior="com.maciejak.myplaces.helper.FloatingActionMenuBehavior"
-        android:id="@+id/add_place_menu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom|end"
-        android:src="@drawable/ic_add_white_24dp"
-        android:layout_margin="@dimen/fab_margin"
-        android:clickable="true"
-        app:backgroundTint="@color/logoColor"
-        fab:menu_labels_ellipsize="end"
-        fab:menu_labels_singleLine="true"/>
-
 
 </android.support.design.widget.CoordinatorLayout>

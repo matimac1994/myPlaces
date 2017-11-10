@@ -39,4 +39,36 @@
         <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
 
+    <style name="LoginTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="colorControlNormal">@color/logoColor</item>
+        <item name="colorControlActivated">@color/logoColor</item>
+            <item name="colorControlHighlight">@color/logoColor</item>
+    </style>
+
+    <style name="AppTheme.ButtonLogin"  parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/logoColor</item>
+        <item name="android:textColor">@color/White</item>
+    </style>
+
+    <style name="AppTheme.ButtonRegister" parent="Widget.AppCompat.Button.Borderless">
+        <item name="colorButtonNormal">@color/White</item>
+        <item name="android:textColor">@color/Black</item>
+    </style>
+
+    <!--<style name="CustomActivityAnimation" parent="@android:style/Animation.Activity">-->
+        <!--<item name="android:activityOpenEnterAnimation">@anim/enter_from_right</item>-->
+        <!--<item name="android:activityOpenExitAnimation">@anim/exit_to_left</item>-->
+        <!--<item name="android:activityCloseEnterAnimation">@anim/enter_from_left</item>-->
+        <!--<item name="android:activityCloseExitAnimation">@anim/exit_to_right</item>-->
+    <!--</style>-->
+
+    <style name="TextInputLayout" parent="TextAppearance.AppCompat">
+        <item name="android:textColorHint">@color/logoColor</item>
+        <item name="colorAccent">@color/logoColor</item>
+        <item name="colorControlNormal">@color/logoColor</item>
+        <item name="colorControlActivated">@color/logoColor</item>
+    </style>
+
 </resources>

@@ -3,10 +3,8 @@ package com.maciejak.myplaces.ui.fragment;
 import android.app.IntentService;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,7 +29,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MyPlacesListFragment extends BaseFragment implements View.OnClickListener{
+public class MyPlacesListFragment extends Fragment implements View.OnClickListener{
 
     List<Place> mPlaces;
 
@@ -82,24 +80,8 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                mMyPlacesListRecyclerViewAdapter.onItemRemove(viewHolder, mMyPlacesListRecyclerView);
 
-//                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//                builder.setMessage(getString(R.string.are_you_sure_to_delete));
-//
-//                builder.setPositiveButton(getString(R.string.delete), (dialog, which) -> {
-//                    Place place = mMyPlacesListRecyclerViewAdapter.getItem(position);
-//                    place.delete();
-//                    mPlaces.remove(position);
-//                    Toast.makeText(getContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
-//                    mMyPlacesListRecyclerViewAdapter.notifyItemRemoved(position);
-//                    mMyPlacesListRecyclerView.scrollToPosition(position-1);
-//                    manageVisibility(mPlaces);
-//                }).setNegativeButton(getString(R.string.back), (dialog, which) -> mMyPlacesListRecyclerViewAdapter.notifyItemChanged(position));
-//
-//                AlertDialog dialog = builder.show();
-//                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.Red));
-//                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.Green));
+                mMyPlacesListRecyclerViewAdapter.onItemRemove(viewHolder, mMyPlacesListRecyclerView, getActivity().findViewById(R.id.coordinatorLayout));
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
@@ -164,13 +146,13 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
 
     }
 
-    @Override
-    protected void actionAfterAddPlaceDone(Intent data) {
-        super.actionAfterAddPlaceDone(data);
-        if (mPlaces!=null){
-            populateRecyclerView(mPlaces);
-            mMyPlacesListRecyclerViewAdapter.notifyItemInserted(mMyPlacesListRecyclerViewAdapter.getItemCount());
-            mMyPlacesListRecyclerView.smoothScrollToPosition(mMyPlacesListRecyclerViewAdapter.getItemCount());
-        }
-    }
+//    @Override
+//    protected void actionAfterAddPlaceDone(Intent data) {
+//        super.actionAfterAddPlaceDone(data);
+//        if (mPlaces!=null){
+//            populateRecyclerView(mPlaces);
+//            mMyPlacesListRecyclerViewAdapter.notifyItemInserted(mMyPlacesListRecyclerViewAdapter.getItemCount());
+//            mMyPlacesListRecyclerView.smoothScrollToPosition(mMyPlacesListRecyclerViewAdapter.getItemCount());
+//        }
+//    }
 }

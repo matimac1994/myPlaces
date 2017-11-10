@@ -3,7 +3,6 @@
              xmlns:app="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             xmlns:fab="http://schemas.android.com/apk/res-auto"
              tools:context="com.maciejak.myplaces.ui.fragment.MapFragment">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -11,20 +10,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         class="com.google.android.gms.maps.SupportMapFragment" />
-
-
-
-    <com.github.clans.fab.FloatingActionMenu
-        android:id="@+id/add_place_menu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom|end"
-        android:src="@drawable/ic_add_white_24dp"
-        android:layout_margin="@dimen/fab_margin"
-        android:clickable="true"
-        app:backgroundTint="@color/logoColor"
-        fab:menu_labels_ellipsize="end"
-        fab:menu_labels_singleLine="true"/>
-
 
 </FrameLayout>
