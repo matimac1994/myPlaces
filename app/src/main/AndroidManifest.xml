@@ -47,20 +47,17 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan"/>
-
         <activity android:name=".ui.activity.AddPlaceOnMapActivity"/>
-
         <activity
             android:name=".ui.activity.AddPlaceActivity"
             android:label="@string/title_activity_favourite_place_form_add"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan">
         </activity>
-
         <activity android:name=".ui.activity.ShowPlaceActivity"/>
-
-        <activity android:name=".ui.activity.EditPlaceActivity"
-                  android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".ui.activity.EditPlaceActivity"
+            android:windowSoftInputMode="adjustPan"/>
 
         <receiver
             android:name=".receiver.GpsLocationReceiver"
@@ -74,6 +71,13 @@
         </receiver>
 
         <service android:name=".service.DeletePlacesService"/>
+
+        <activity android:name=".ui.activity.LoginActivity">
+        </activity>
+        <activity android:name=".ui.activity.RegisterActivity">
+        </activity>
+        <activity android:name=".ui.activity.SettingsActivity">
+        </activity>
     </application>
 
 </manifest>

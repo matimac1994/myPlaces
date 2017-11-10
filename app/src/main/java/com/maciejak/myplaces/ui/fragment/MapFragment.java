@@ -56,7 +56,6 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
     List<Place> mPlaceList;
     LatLngBounds mBounds;
     List<Marker> mMarkersOnMap;
-    BitmapDescriptor mMarkerIcon;
     UiSettings mUiSettings;
     PlaceRepository mPlaceRepository;
 
@@ -86,7 +85,6 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
 
         getActivity().setTitle(R.string.map);
 
-        mMarkerIcon = BitmapDescriptorFactory.fromResource(R.drawable.heart_red);
         mMarkersOnMap = new ArrayList<>();
         mPlaceRepository = new PlaceRepository();
 
@@ -182,8 +180,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
         }
 
         markerOptions.position(new LatLng(place.getLatitude(), place.getLongitude()))
-                .draggable(false)
-                .icon(mMarkerIcon);
+                .draggable(false);
         return markerOptions;
 
     }

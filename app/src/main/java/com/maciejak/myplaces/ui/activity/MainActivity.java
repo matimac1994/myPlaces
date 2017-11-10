@@ -108,8 +108,7 @@ public class MainActivity extends BaseActivity
     private void setupSettingsButton(){
         ImageButton settingsButton = (ImageButton) mNavigationView.getHeaderView(0).findViewById(R.id.settings_button);
         settingsButton.setOnClickListener(v -> {
-            //TODO change to settings activity
-            Intent intent = new Intent(getApplicationContext(), SplashScreenActivity.class);
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
             startActivity(intent);
         });
     }

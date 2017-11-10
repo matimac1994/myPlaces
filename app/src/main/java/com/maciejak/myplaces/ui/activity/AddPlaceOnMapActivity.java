@@ -18,12 +18,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.util.PermissionUtils;
 
 public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleMap.OnMarkerDragListener,
@@ -173,7 +171,6 @@ public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCal
         mPlaceLatLng = position;
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(position)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.heart_red))
                 .draggable(true));
 
         if (lastAddedMarker != null)
@@ -189,13 +186,13 @@ public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCal
                 dialog.dismiss();
             }
         });
-        builder.setTitle(R.string.favourite_place_map_info_title);
+        builder.setTitle(R.string.add_place_on_map_info_title);
         builder.setIcon(R.drawable.ic_info_outline_black_24dp);
         if (mPlaceLatLng != null){
-            builder.setMessage(R.string.favourite_place_map_info_message_location);
+            builder.setMessage(R.string.add_place_on_map_info_message_location);
         }
         else {
-            builder.setMessage(R.string.favourite_place_map_info_message_nolocation);
+            builder.setMessage(R.string.add_place_on_map_info_message_nolocation);
         }
 
         AlertDialog dialog = builder.create();

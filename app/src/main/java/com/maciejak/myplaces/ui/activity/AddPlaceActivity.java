@@ -160,8 +160,7 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
 
         if (mPlaceLatLng != null){
             mMarker = mMap.addMarker(new MarkerOptions()
-                    .position(mPlaceLatLng)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.heart_red)));
+                    .position(mPlaceLatLng));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mMarker.getPosition(), 14));
         }
     }

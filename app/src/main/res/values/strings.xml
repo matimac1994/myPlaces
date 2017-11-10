@@ -18,9 +18,9 @@
     <string name="ok">OK</string>
     <string name="map_not_ready">Mapa jeszcze nie gotowa</string>
 
-    <string name="favourite_place_map_info_title">Informacja</string>
-    <string name="favourite_place_map_info_message_location">Przenieś czerwone serce w swoje ulubione miejsce lub przytrzymaj dłużej na mapie w miejscu które chcesz zapisać</string>
-    <string name="favourite_place_map_info_message_nolocation">Przytrzymaj dłużej na mapie w miejscu które chcesz zapisać</string>
+    <string name="add_place_on_map_info_title">Informacja</string>
+    <string name="add_place_on_map_info_message_location">Przenieś znacznik w swoje ulubione miejsce lub przytrzymaj dłużej na mapie w miejscu które chcesz zapisać</string>
+    <string name="add_place_on_map_info_message_nolocation">Przytrzymaj dłużej na mapie w miejscu które chcesz zapisać</string>
 
 
     <string name="location_permission_denied">By wykorzystać wszystkie możliwości aplikacji MyPlaces włącz lokalizację</string>
