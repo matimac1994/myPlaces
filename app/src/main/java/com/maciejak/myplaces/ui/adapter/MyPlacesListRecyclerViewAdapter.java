@@ -1,6 +1,8 @@
 package com.maciejak.myplaces.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.model.Place;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -24,6 +27,7 @@ import butterknife.ButterKnife;
 public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlacesListRecyclerViewAdapter.ViewHolder> {
 
     private List<Place> mPlaces;
+    public List<Place> placesToDelete;
     private Context mContext;
     LayoutInflater mInflater;
     View.OnClickListener mOnClickListener;
@@ -33,6 +37,7 @@ public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlac
         this.mContext = context;
         this.mInflater = LayoutInflater.from(context);
         this.mOnClickListener = onClickListener;
+        placesToDelete = new ArrayList<>();
     }
 
     @Override
@@ -66,7 +71,38 @@ public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlac
 
     @Override
     public int getItemCount() {
-        return mPlaces.size();
+        return ((mPlaces!=null) ? mPlaces.size() : 0);
+    }
+
+    public void removeItem(int position) {
+        mPlaces.remove(position);
+        // notify the item removed by position
+        // to perform recycler view delete animations
+        // NOTE: don't call notifyDataSetChanged()
+        notifyItemRemoved(position);
+    }
+
+    public void restoreItem(Place item, int position) {
+        mPlaces.add(position, item);
+        // notify item added by position
+        notifyItemInserted(position);
+    }
+
+    public void onItemRemove(final RecyclerView.ViewHolder viewHolder, final RecyclerView recyclerView){
+        Place deletedPlace = mPlaces.get(viewHolder.getAdapterPosition());
+        final int position = viewHolder.getAdapterPosition();
+        Snackbar snackbar = Snackbar
+                .make(recyclerView, mContext.getString(R.string.deleted), Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo, view -> {
+                    if (position == 0 || position == getItemCount())
+                        recyclerView.scrollToPosition(position);
+                    restoreItem(deletedPlace, position);
+                    placesToDelete.remove(deletedPlace);
+                });
+        snackbar.setActionTextColor(Color.YELLOW);
+        snackbar.show();
+        removeItem(position);
+        placesToDelete.add(deletedPlace);
     }
 
     public Place getItem(int position){

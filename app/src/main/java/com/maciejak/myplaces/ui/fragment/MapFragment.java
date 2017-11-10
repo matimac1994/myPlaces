@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -51,9 +52,6 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
 
     private static final int MY_LOCATION_PERMISSION_REQUEST_CODE = 1;
     private GoogleMap mMap;
-    private GoogleApiClientHelper mGoogleApiClientHelper;
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-    private Location mLocation;
 
     List<Place> mPlaceList;
     LatLngBounds mBounds;
@@ -61,7 +59,6 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
     BitmapDescriptor mMarkerIcon;
     UiSettings mUiSettings;
     PlaceRepository mPlaceRepository;
-    SharedPreferences mSharedPreferences;
 
     public MapFragment() {
         // Required empty public constructor
@@ -88,8 +85,6 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
     private void setupControls(View view) {
 
         getActivity().setTitle(R.string.map);
-        mGoogleApiClientHelper = MyPlacesApplication.getGoogleApiClientHelper();
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
         mMarkerIcon = BitmapDescriptorFactory.fromResource(R.drawable.heart_red);
         mMarkersOnMap = new ArrayList<>();
@@ -129,7 +124,6 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
         } else {
             mMap.setMyLocationEnabled(true);
         }
-
     }
 
     @Override

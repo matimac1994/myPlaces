@@ -5,8 +5,9 @@
                                     android:layout_margin="8dp">
 
     <RelativeLayout
+        android:id="@+id/row_my_places_list_place_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="200dp">
 
         <ImageView
             android:id="@+id/row_my_places_list_image"
@@ -19,15 +20,75 @@
             android:id="@+id/row_my_places_list_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/row_my_places_list_image"
+            android:layout_alignParentBottom="true"
             android:maxLines="3"
             android:padding="8dp"
             android:text=""
             android:textColor="#222"
-            android:textStyle="bold"
-            android:textSize="18sp"
+            android:textSize="16sp"
+            android:background="@color/White"
             android:visibility="gone"
             android:gravity="center_horizontal"/>
 
     </RelativeLayout>
+
+    <!--<LinearLayout-->
+        <!--android:id="@+id/row_my_places_list_delete_place_layout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="200dp"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:visibility="gone">-->
+
+
+        <!--<LinearLayout-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="vertical"-->
+            <!--android:background="@color/Green">-->
+
+            <!--<ImageView-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:layout_width="48dp"-->
+                <!--android:layout_height="48dp"-->
+                <!--android:src="@drawable/ic_undo_white_48dp"-->
+                <!--android:layout_marginBottom="8dp"/>-->
+
+            <!--<TextView-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/undo"-->
+                <!--android:textSize="22sp"-->
+                <!--android:textColor="@color/White"/>-->
+
+        <!--</LinearLayout>-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="vertical"-->
+            <!--android:background="@color/Red">-->
+
+            <!--<ImageView-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:layout_width="48dp"-->
+                <!--android:layout_height="48dp"-->
+                <!--android:src="@drawable/ic_delete_white_48dp"-->
+                <!--android:layout_marginBottom="8dp"/>-->
+
+            <!--<TextView-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/delete"-->
+                <!--android:textSize="22sp"-->
+                <!--android:textColor="@color/White"/>-->
+
+        <!--</LinearLayout>-->
+
+    <!--</LinearLayout>-->
 </android.support.v7.widget.CardView>

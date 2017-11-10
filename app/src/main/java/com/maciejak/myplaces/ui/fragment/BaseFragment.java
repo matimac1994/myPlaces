@@ -27,6 +27,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
+import com.maciejak.myplaces.MyPlacesApplication;
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.helper.GoogleApiClientHelper;
 import com.maciejak.myplaces.ui.activity.AddPlaceActivity;
@@ -67,11 +68,11 @@ public class BaseFragment extends Fragment implements PlaceSelectionListener, Go
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mFloatingActionMenu = (FloatingActionMenu)view.findViewById(R.id.add_place_menu);
+        mFloatingActionMenu = (FloatingActionMenu) view.findViewById(R.id.add_place_menu);
         configFloatingActionMenu(getContext(), mFloatingActionMenu);
     }
 
-    protected void configFloatingActionMenu(Context context, FloatingActionMenu floatingActionMenu){
+    protected void configFloatingActionMenu(Context context, FloatingActionMenu floatingActionMenu) {
         mFloatingActionMenu = floatingActionMenu;
 
         mAddPlaceFromMyLocationActionButton = configFromMyLocationActionButton(context);
@@ -86,13 +87,14 @@ public class BaseFragment extends Fragment implements PlaceSelectionListener, Go
 
     }
 
-    protected FloatingActionButton configFromMyLocationActionButton(Context context){
+    protected FloatingActionButton configFromMyLocationActionButton(Context context) {
         FloatingActionButton fabButton = new FloatingActionButton(context);
         fabButton.setButtonSize(FloatingActionButton.SIZE_MINI);
         fabButton.setLabelText(getString(R.string.add_place_from_my_location_button_label));
         fabButton.setImageResource(R.drawable.ic_my_location_white_24dp);
         fabButton.setOnClickListener(v -> {
             Intent intent;
+            getMyLocation();
             if (mLocation != null){
                 intent = new Intent(context, AddPlaceActivity.class);
                 intent.putExtra(AddPlaceActivity.PLACE_LAT_LNG, new LatLng(mLocation.getLongitude(), mLocation.getLatitude()));
@@ -162,18 +164,7 @@ public class BaseFragment extends Fragment implements PlaceSelectionListener, Go
     @Override
     public void onConnected(Bundle bundle) {
 
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestLocationPermission(MY_LOCATION_PERMISSION_REQUEST_CODE);
-        }
-        else {
-            mFusedLocationProviderClient.getLastLocation()
-                    .addOnSuccessListener(getActivity(), location -> {
-                        if (location != null){
-                            mLocation = location;
-                        }
-                    });
-        }
+        mLocation = getMyLocation();
     }
 
 
@@ -224,4 +215,20 @@ public class BaseFragment extends Fragment implements PlaceSelectionListener, Go
         }
     }
 
+    public Location getMyLocation() {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestLocationPermission(MY_LOCATION_PERMISSION_REQUEST_CODE);
+        }
+        else {
+            mFusedLocationProviderClient.flushLocations();
+            mFusedLocationProviderClient.getLastLocation()
+                    .addOnSuccessListener(getActivity(), location -> {
+                        if (location != null) {
+                            mLocation = location;
+                        }
+                    });
+        }
+        return mLocation;
+    }
 }

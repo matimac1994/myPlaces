@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
@@ -39,8 +39,8 @@
 
     </LinearLayout>
 
-
     <com.github.clans.fab.FloatingActionMenu
+        app:layout_behavior="com.maciejak.myplaces.helper.FloatingActionMenuBehavior"
         android:id="@+id/add_place_menu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -52,4 +52,5 @@
         fab:menu_labels_ellipsize="end"
         fab:menu_labels_singleLine="true"/>
 
-</FrameLayout>
+
+</android.support.design.widget.CoordinatorLayout>

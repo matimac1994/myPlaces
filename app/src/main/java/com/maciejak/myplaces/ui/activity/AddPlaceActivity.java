@@ -71,7 +71,6 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
     AddPlacePhotosRecyclerViewAdapter mAddPlacePhotosRecyclerViewAdapter;
 
     List<Uri> mPhotos;
-    Uri mapPhoto;
 
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final int RESULT_TAKE_PHOTO= 2;
@@ -164,7 +163,6 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
                     .position(mPlaceLatLng)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.heart_red)));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mMarker.getPosition(), 14));
-            takeSnapshotOfMap();
         }
     }
 
@@ -194,7 +192,6 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
                 mPlaceLatLng,
                 placeNote.getText().toString(),
                 placeDescription.getText().toString(),
-                mapPhoto,
                 mPhotos);
 
         Toast.makeText(this, "Zapisano", Toast.LENGTH_SHORT).show();
@@ -221,33 +218,6 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
                 });
         AlertDialog dialog = builder.create();
         dialog.show();
-    }
-
-    private void takeSnapshotOfMap(){
-        final GoogleMap.SnapshotReadyCallback callback = new GoogleMap.SnapshotReadyCallback() {
-            @Override
-            public void onSnapshotReady(Bitmap bitmap) {
-                java.io.OutputStream os;
-                try {
-                    File file = createImageFile();
-                    os = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
-                    os.flush();
-                    os.close();
-                    mapPhoto = Uri.fromFile(file);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
-            @Override
-            public void onMapLoaded() {
-                mMap.snapshot(callback);
-            }
-        });
-
     }
 
     private void pickPhotoFromCamera() {
