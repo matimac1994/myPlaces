@@ -2,16 +2,16 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="com.maciejak.myplaces.ui.fragment.MyPlacesListFragment">
+             tools:context="com.maciejak.myplaces.ui.fragment.ArchiveListFragment">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/my_places_list_recycler_view"
+        android:id="@+id/archive_list_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"/>
 
     <LinearLayout
-        android:id="@+id/my_places_list_empty_view"
+        android:id="@+id/archive_list_empty_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -22,18 +22,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="@string/my_places_no_places"
+            android:text="@string/archive_no_places"
             android:textSize="22sp"
             android:paddingStart="32dp"
             android:paddingEnd="32dp"
             android:paddingBottom="16dp"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@string/my_places_list_no_places_info"
-            android:textSize="18sp"/>
 
     </LinearLayout>
 

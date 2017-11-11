@@ -6,7 +6,7 @@
         <item
             android:id="@+id/nav_list_places"
             android:icon="@drawable/ic_view_list_black_24dp"
-            android:title="@string/list_of_favourites" />
+            android:title="@string/list_of_places" />
 
         <item
             android:id="@+id/nav_map"
@@ -14,13 +14,9 @@
             android:title="@string/map" />
 
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:id="@+id/nav_archive"
+            android:icon="@drawable/ic_archive_black_24dp"
+            android:title="@string/archive_of_places" />
     </group>
 
     <item android:title="Pozostałe">

@@ -38,6 +38,7 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.helper.GoogleApiClientHelper;
+import com.maciejak.myplaces.ui.fragment.ArchiveListFragment;
 import com.maciejak.myplaces.ui.fragment.MapFragment;
 import com.maciejak.myplaces.ui.fragment.MyPlacesListFragment;
 import com.maciejak.myplaces.util.Const;
@@ -217,20 +218,6 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onBackPressed() {
-        int count = getSupportFragmentManager().getBackStackEntryCount();
-
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else if(count == 0){
-            super.onBackPressed();
-        }
-        else{
-            getSupportFragmentManager().popBackStack();
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_menu, menu);
@@ -275,10 +262,30 @@ public class MainActivity extends BaseActivity
                         .replace(R.id.contentFrameLayout, fragment)
                         .commit();
                 break;
+            case R.id.nav_archive:
+                fragment = ArchiveListFragment.newInstance();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.contentFrameLayout, fragment)
+                        .commit();
+                break;
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else if(count == 0){
+            super.onBackPressed();
+        }
+        else{
+            getSupportFragmentManager().popBackStack();
+        }
     }
 
     @Override

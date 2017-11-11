@@ -49,9 +49,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     UiSettings mUiSettings;
     PlaceRepository mPlaceRepository;
 
-    public MapFragment() {
-        // Required empty public constructor
-    }
+    public MapFragment() {}
 
     public static MapFragment newInstance() {
         return new MapFragment();

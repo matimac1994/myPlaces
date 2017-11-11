@@ -45,9 +45,7 @@ public class MyPlacesListFragment extends Fragment implements View.OnClickListen
 
     MyPlacesListRecyclerViewAdapter mMyPlacesListRecyclerViewAdapter;
 
-    public MyPlacesListFragment() {
-        // Required empty public constructor
-    }
+    public MyPlacesListFragment() {}
 
     public static MyPlacesListFragment newInstance() {
         return new MyPlacesListFragment();
@@ -68,7 +66,7 @@ public class MyPlacesListFragment extends Fragment implements View.OnClickListen
     }
 
     private void setupControls(View view) {
-        getActivity().setTitle(R.string.list_of_favourites);
+        getActivity().setTitle(R.string.list_of_places);
 
         mPlaceRepository = new PlaceRepository();
         mPlaces = new ArrayList<>();

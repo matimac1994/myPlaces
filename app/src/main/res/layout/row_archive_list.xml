@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="182dp"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/row_archive_list_title_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/Snow">
+
+            <ImageButton
+                android:id="@+id/row_archive_list_restore_button"
+                android:background="@color/Green"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="4dp"
+                android:src="@drawable/ic_undo_white_24dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                />
+
+            <TextView
+                android:id="@+id/row_archive_list_title_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:lines="1"
+                android:textColor="@color/Black"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_toEndOf="@id/row_archive_list_restore_button"
+                android:layout_toStartOf="@id/row_archive_list_delete_button"/>
+
+            <ImageButton
+                android:id="@+id/row_archive_list_delete_button"
+                android:background="@color/Red"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_close_white_24dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_below="@id/row_archive_list_title_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="2dp">
+
+            <ImageView
+                android:id="@+id/row_archive_list_image"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                />
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/row_archive_list_description_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="4dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

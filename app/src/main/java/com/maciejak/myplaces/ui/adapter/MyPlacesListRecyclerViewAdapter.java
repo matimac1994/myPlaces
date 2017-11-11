@@ -29,8 +29,8 @@ public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlac
 
     private List<Place> mPlaces;
     private Context mContext;
-    LayoutInflater mInflater;
-    View.OnClickListener mOnClickListener;
+    private LayoutInflater mInflater;
+    private View.OnClickListener mOnClickListener;
 
     public MyPlacesListRecyclerViewAdapter(Context context, List<Place> places, View.OnClickListener onClickListener) {
         this.mPlaces = places;

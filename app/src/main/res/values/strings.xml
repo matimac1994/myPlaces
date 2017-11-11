@@ -8,8 +8,9 @@
     <string name="action_info">Info</string>
     <string name="action_done">Gotowe</string>
 
-    <string name="list_of_favourites">Lista ulubionych</string>
+    <string name="list_of_places">Lista miejsc</string>
     <string name="map">Mapa</string>
+    <string name="archive_of_places">Archiwum miejsc</string>
     <string name="about">O aplikacji</string>
     <string name="logout">Wyloguj</string>
 
@@ -74,4 +75,10 @@
         <item>Wybierz zdjęcie z galerii</item>
         <item>Zrób zdjęcie</item>
     </array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="archive_no_places">Brak zarchiwizowanych miejsc</string>
+    <string name="restore">Przywróć</string>
+    <string name="no_description">Brak opisu</string>
 </resources>
