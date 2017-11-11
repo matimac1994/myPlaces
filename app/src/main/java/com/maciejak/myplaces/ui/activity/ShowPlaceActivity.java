@@ -106,7 +106,7 @@ public class ShowPlaceActivity extends BaseActivity {
 
         builder.setPositiveButton(getString(R.string.delete), (dialog, which) -> {
 
-            mPlace.delete();
+            mPlaceRepository.deletePlaceSoft(mPlace);
             Toast.makeText(getApplicationContext(), getText(R.string.deleted), Toast.LENGTH_SHORT).show();
             finish();
 
@@ -133,7 +133,8 @@ public class ShowPlaceActivity extends BaseActivity {
     @Override
     protected void onStart() {
         mPlace = mPlaceRepository.getPlaceById(placeId);
-        fillControls();
+        if (mPlace != null)
+            fillControls();
         super.onStart();
     }
 }

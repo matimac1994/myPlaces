@@ -10,6 +10,8 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.math.BigInteger;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -38,6 +40,15 @@ public class Place extends BaseModel {
 
     @Column
     String mapPhoto;
+
+    @Column
+    Long createdAt;
+
+    @Column
+    Long updatedAt;
+
+    @Column
+    Long deletedAt;
 
     List<PlacePhoto> photos;
 
@@ -112,4 +123,27 @@ public class Place extends BaseModel {
         this.mapPhoto = mapPhoto;
     }
 
+    public Long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Long updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Long getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Long deletedAt) {
+        this.deletedAt = deletedAt;
+    }
 }

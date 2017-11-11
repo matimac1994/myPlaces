@@ -70,16 +70,6 @@
                 android:orientation="horizontal"
                 android:padding="8dp">
 
-
-                <Button
-                    android:id="@+id/login_login_button"
-                    android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:theme="@style/AppTheme.ButtonLogin"
-                    android:text="@string/login"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"/>
-
                 <Button
                     android:id="@+id/login_register_button"
                     android:layout_weight="1"
@@ -87,6 +77,15 @@
                     android:theme="@style/AppTheme.ButtonRegister"
                     style="?android:borderlessButtonStyle"
                     android:text="@string/register"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+                <Button
+                    android:id="@+id/login_login_button"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:theme="@style/AppTheme.ButtonLogin"
+                    android:text="@string/login"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
 

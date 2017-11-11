@@ -190,7 +190,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onStart() {
         MyPlacesApplication.getGoogleApiClientHelper().connect();
-        mPlaceList = mPlaceRepository.getAllPlaces();
+        mPlaceList = mPlaceRepository.getAllVisiblePlaces();
         super.onStart();
     }
 
@@ -219,9 +219,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onInfoWindowClick(Marker marker) {
         marker.hideInfoWindow();
-        Intent intent = new Intent(getContext(), ShowPlaceActivity.class);
-        intent.putExtra(ShowPlaceActivity.PLACE_ID, (long) marker.getTag());
-        startActivity(intent);
+        Place place = mPlaceRepository.getPlaceById((long)marker.getTag());
+        if (place != null){
+            Intent intent = new Intent(getContext(), ShowPlaceActivity.class);
+            intent.putExtra(ShowPlaceActivity.PLACE_ID, place.getId());
+            startActivity(intent);
+        }
     }
 
 

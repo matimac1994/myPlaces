@@ -3,7 +3,9 @@ package com.maciejak.myplaces.ui.fragment;
 import android.app.IntentService;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +26,7 @@ import com.maciejak.myplaces.ui.adapter.MyPlacesListRecyclerViewAdapter;
 import com.maciejak.myplaces.model.Place;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -32,6 +35,7 @@ import butterknife.ButterKnife;
 public class MyPlacesListFragment extends Fragment implements View.OnClickListener{
 
     List<Place> mPlaces;
+    PlaceRepository mPlaceRepository;
 
     @BindView(R.id.my_places_list_recycler_view)
     RecyclerView mMyPlacesListRecyclerView;
@@ -66,6 +70,7 @@ public class MyPlacesListFragment extends Fragment implements View.OnClickListen
     private void setupControls(View view) {
         getActivity().setTitle(R.string.list_of_favourites);
 
+        mPlaceRepository = new PlaceRepository();
         mPlaces = new ArrayList<>();
         setupRecyclerView();
     }
@@ -80,8 +85,25 @@ public class MyPlacesListFragment extends Fragment implements View.OnClickListen
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-
-                mMyPlacesListRecyclerViewAdapter.onItemRemove(viewHolder, mMyPlacesListRecyclerView, getActivity().findViewById(R.id.coordinatorLayout));
+                final View layout = getActivity().findViewById(R.id.coordinatorLayout);
+                final Place deletedPlace = mPlaces.get(viewHolder.getAdapterPosition());
+                final int position = viewHolder.getAdapterPosition();
+                Snackbar snackbar = Snackbar
+                        .make(layout, getContext().getString(R.string.deleted), Snackbar.LENGTH_LONG)
+                        .setAction(R.string.undo, view -> {
+                            if (position == 0 || position == mMyPlacesListRecyclerViewAdapter.getItemCount())
+                                mMyPlacesListRecyclerView.scrollToPosition(position);
+                            mMyPlacesListRecyclerViewAdapter.restoreItem(deletedPlace, position);
+                            mPlaceRepository.restorePlace(deletedPlace);
+                            if (mPlaces.size() == 1)
+                                applyFilledView();
+                        });
+                snackbar.setActionTextColor(Color.YELLOW);
+                snackbar.show();
+                mMyPlacesListRecyclerViewAdapter.removeItem(position);
+                mPlaceRepository.deletePlaceSoft(deletedPlace);
+                if (mPlaces.size() == 0)
+                    applyEmptyView();
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
@@ -89,19 +111,34 @@ public class MyPlacesListFragment extends Fragment implements View.OnClickListen
     }
 
     private void populateRecyclerView(List<Place> places){
-        mMyPlacesListRecyclerViewAdapter = new MyPlacesListRecyclerViewAdapter(getActivity(), places, this);
-        mMyPlacesListRecyclerView.setAdapter(mMyPlacesListRecyclerViewAdapter);
-        mMyPlacesListRecyclerViewAdapter.notifyDataSetChanged();
+        if (mMyPlacesListRecyclerViewAdapter != null){
+            mMyPlacesListRecyclerViewAdapter = new MyPlacesListRecyclerViewAdapter(getActivity(), places, this);
+            mMyPlacesListRecyclerView.swapAdapter(mMyPlacesListRecyclerViewAdapter, true);
+        }
+        else {
+            mMyPlacesListRecyclerViewAdapter = new MyPlacesListRecyclerViewAdapter(getActivity(), places, this);
+            mMyPlacesListRecyclerView.setAdapter(mMyPlacesListRecyclerViewAdapter);
+            mMyPlacesListRecyclerViewAdapter.notifyDataSetChanged();
+        }
+
+    }
+
+    private void applyEmptyView(){
+        mEmptyView.setVisibility(View.VISIBLE);
+        mMyPlacesListRecyclerView.setVisibility(View.GONE);
+    }
+
+    private void applyFilledView(){
+        mEmptyView.setVisibility(View.GONE);
+        mMyPlacesListRecyclerView.setVisibility(View.VISIBLE);
     }
 
     private void manageVisibility(List<Place> places){
         if (places.isEmpty()){
-            mEmptyView.setVisibility(View.VISIBLE);
-            mMyPlacesListRecyclerView.setVisibility(View.GONE);
+            applyEmptyView();
         }
         else {
-            mEmptyView.setVisibility(View.GONE);
-            mMyPlacesListRecyclerView.setVisibility(View.VISIBLE);
+            applyFilledView();
             populateRecyclerView(places);
         }
     }
@@ -109,8 +146,7 @@ public class MyPlacesListFragment extends Fragment implements View.OnClickListen
     @Override
     public void onStart() {
         super.onStart();
-        PlaceRepository placeRepository = new PlaceRepository();
-        mPlaces = placeRepository.getAllPlaces();
+        mPlaces = mPlaceRepository.getAllVisiblePlaces();
         manageVisibility(mPlaces);
     }
 
@@ -128,23 +164,17 @@ public class MyPlacesListFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    @Override
-    public void onPause() {
-        ArrayList<String> placeIdsToDelete = new ArrayList<>();
-        if (mMyPlacesListRecyclerViewAdapter != null){
-            if (mMyPlacesListRecyclerViewAdapter.placesToDelete != null){
-                for (Place place : mMyPlacesListRecyclerViewAdapter.placesToDelete){
-                    placeIdsToDelete.add(String.valueOf(place.getId()));
-                }
-                Intent intent = new Intent(getContext(), DeletePlacesService.class);
-                intent.putStringArrayListExtra(DeletePlacesService.PLACES_TO_DELETE_IDS, placeIdsToDelete);
-                getActivity().startService(intent);
-            }
-        }
-
-        super.onPause();
-
-    }
+//    @Override
+//    public void onPause() {
+//            if (placesToDelete != null && placesToDelete.size() > 0) {
+//                for (Iterator<Place> iterator = placesToDelete.iterator(); iterator.hasNext(); ) {
+//                    Place place = iterator.next();
+//                    iterator.remove();
+//                    place.delete();
+//                }
+//            }
+//        super.onPause();
+//    }
 
 //    @Override
 //    protected void actionAfterAddPlaceDone(Intent data) {
