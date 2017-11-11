@@ -107,7 +107,7 @@ public class ShowPlaceActivity extends BaseActivity {
         builder.setPositiveButton(getString(R.string.delete), (dialog, which) -> {
 
             mPlaceRepository.deletePlaceSoft(mPlace);
-            Toast.makeText(getApplicationContext(), getText(R.string.deleted), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getText(R.string.archived), Toast.LENGTH_SHORT).show();
             finish();
 
         }).setNegativeButton(getString(R.string.back), (dialog, which) -> dialog.dismiss());

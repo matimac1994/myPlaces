@@ -2,7 +2,9 @@
                                     android:id="@+id/card_view"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_margin="8dp">
+                                    android:layout_marginTop="8dp"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_marginEnd="8dp">
 
     <RelativeLayout
         android:id="@+id/row_my_places_list_place_layout"
@@ -21,11 +23,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:maxLines="3"
+            android:maxLines="2"
             android:padding="8dp"
             android:text=""
             android:textColor="#222"
             android:textSize="16sp"
+            android:textStyle="bold"
             android:background="@color/White"
             android:visibility="gone"
             android:gravity="center_horizontal"/>

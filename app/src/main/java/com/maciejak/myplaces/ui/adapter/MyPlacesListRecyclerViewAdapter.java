@@ -1,8 +1,6 @@
 package com.maciejak.myplaces.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,11 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.maciejak.myplaces.R;
+import com.maciejak.myplaces.listener.MyPlacesListOnDataChangeListener;
 import com.maciejak.myplaces.model.Place;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,12 +26,14 @@ public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlac
 
     private List<Place> mPlaces;
     private Context mContext;
+    private MyPlacesListOnDataChangeListener mMyPlacesListOnDataChangeListener;
     private LayoutInflater mInflater;
     private View.OnClickListener mOnClickListener;
 
-    public MyPlacesListRecyclerViewAdapter(Context context, List<Place> places, View.OnClickListener onClickListener) {
+    public MyPlacesListRecyclerViewAdapter(Context context, List<Place> places, View.OnClickListener onClickListener, MyPlacesListOnDataChangeListener myPlacesListOnDataChangeListener) {
         this.mPlaces = places;
         this.mContext = context;
+        this.mMyPlacesListOnDataChangeListener = myPlacesListOnDataChangeListener;
         this.mInflater = LayoutInflater.from(context);
         this.mOnClickListener = onClickListener;
     }
@@ -76,15 +75,13 @@ public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlac
     public void removeItem(int position) {
         mPlaces.remove(position);
         notifyItemRemoved(position);
+        mMyPlacesListOnDataChangeListener.onDataChanged();
     }
 
     public void restoreItem(Place item, int position) {
         mPlaces.add(position, item);
         notifyItemInserted(position);
-    }
-
-    public void onItemRemove(final RecyclerView.ViewHolder viewHolder, final RecyclerView recyclerView, View layout){
-
+        mMyPlacesListOnDataChangeListener.onDataChanged();
     }
 
     public Place getItem(int position){

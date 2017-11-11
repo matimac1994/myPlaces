@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.maciejak.myplaces.R;
+import com.maciejak.myplaces.listener.ArchiveListOnDataChangeListener;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repository.PlaceRepository;
 import com.maciejak.myplaces.ui.adapter.ArchiveListRecyclerViewAdapter;
@@ -20,7 +21,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ArchiveListFragment extends Fragment {
+public class ArchiveListFragment extends Fragment implements ArchiveListOnDataChangeListener {
 
     @BindView(R.id.archive_list_recycler_view)
     RecyclerView mArchiveListRecyclerview;
@@ -57,7 +58,6 @@ public class ArchiveListFragment extends Fragment {
     private void manageVisibility(List<Place> places){
         if (places.size() > 0){
             applyFilledView();
-            populateRecyclerView(places);
         }
         else {
             applyEmptyView();
@@ -75,7 +75,7 @@ public class ArchiveListFragment extends Fragment {
     }
 
     private void populateRecyclerView(List<Place> places){
-        mArchiveListRecyclerViewAdapter = new ArchiveListRecyclerViewAdapter(places, getContext());
+        mArchiveListRecyclerViewAdapter = new ArchiveListRecyclerViewAdapter(places, getContext(), this);
         mArchiveListRecyclerview.setAdapter(mArchiveListRecyclerViewAdapter);
         mArchiveListRecyclerViewAdapter.notifyDataSetChanged();
     }
@@ -84,6 +84,12 @@ public class ArchiveListFragment extends Fragment {
     public void onStart() {
         mPlaces = mPlaceRepository.getAllDeletedPlaces();
         manageVisibility(mPlaces);
+        populateRecyclerView(mPlaces);
         super.onStart();
+    }
+
+    @Override
+    public void onDataChanged() {
+        manageVisibility(mPlaces);
     }
 }

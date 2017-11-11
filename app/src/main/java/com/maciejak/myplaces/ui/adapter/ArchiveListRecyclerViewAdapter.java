@@ -1,6 +1,7 @@
 package com.maciejak.myplaces.ui.adapter;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.maciejak.myplaces.R;
+import com.maciejak.myplaces.listener.ArchiveListOnDataChangeListener;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repository.PlaceRepository;
 import com.squareup.picasso.Picasso;
@@ -23,16 +25,18 @@ import butterknife.OnClick;
  * Created by Mati on 11.11.2017.
  */
 
-public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<ArchiveListRecyclerViewAdapter.ViewHolder>{
+public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<ArchiveListRecyclerViewAdapter.ViewHolder> {
 
     private List<Place> mPlaces;
     private Context mContext;
+    private ArchiveListOnDataChangeListener mArchiveListOnDataChangeListener;
     private LayoutInflater mInflater;
     private PlaceRepository mPlaceRepository;
 
-    public ArchiveListRecyclerViewAdapter(List<Place> places, Context context) {
+    public ArchiveListRecyclerViewAdapter(List<Place> places, Context context, ArchiveListOnDataChangeListener archiveListOnDataChangeListener) {
         mPlaces = places;
         mContext = context;
+        mArchiveListOnDataChangeListener = archiveListOnDataChangeListener;
         mInflater = LayoutInflater.from(context);
         mPlaceRepository = new PlaceRepository();
     }
@@ -93,6 +97,7 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
             mPlaceRepository.deletePlace(place);
             mPlaces.remove(place);
             notifyItemRemoved(position);
+            mArchiveListOnDataChangeListener.onDataChanged();
         }
 
         @OnClick(R.id.row_archive_list_restore_button)
@@ -102,6 +107,7 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
             mPlaceRepository.restorePlace(place);
             mPlaces.remove(place);
             notifyItemRemoved(position);
+            mArchiveListOnDataChangeListener.onDataChanged();
         }
     }
 }

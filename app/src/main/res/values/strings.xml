@@ -81,4 +81,5 @@
     <string name="archive_no_places">Brak zarchiwizowanych miejsc</string>
     <string name="restore">Przywróć</string>
     <string name="no_description">Brak opisu</string>
+    <string name="archived">Zarchiwizowano</string>
 </resources>
