@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.listener.MyPlacesListOnDataChangeListener;
 import com.maciejak.myplaces.model.Place;
 import com.squareup.picasso.Picasso;
 
@@ -97,5 +96,9 @@ public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlac
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public interface MyPlacesListOnDataChangeListener {
+        void onDataChanged();
     }
 }

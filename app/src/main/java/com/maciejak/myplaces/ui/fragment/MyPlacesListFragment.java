@@ -1,13 +1,10 @@
 package com.maciejak.myplaces.ui.fragment;
 
-import android.app.IntentService;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -15,25 +12,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import com.github.clans.fab.FloatingActionMenu;
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.listener.MyPlacesListOnDataChangeListener;
 import com.maciejak.myplaces.repository.PlaceRepository;
-import com.maciejak.myplaces.service.DeletePlacesService;
 import com.maciejak.myplaces.ui.activity.ShowPlaceActivity;
 import com.maciejak.myplaces.ui.adapter.MyPlacesListRecyclerViewAdapter;
 import com.maciejak.myplaces.model.Place;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MyPlacesListFragment extends Fragment implements View.OnClickListener, MyPlacesListOnDataChangeListener{
+public class MyPlacesListFragment extends Fragment implements View.OnClickListener, MyPlacesListRecyclerViewAdapter.MyPlacesListOnDataChangeListener{
 
     List<Place> mPlaces;
     PlaceRepository mPlaceRepository;

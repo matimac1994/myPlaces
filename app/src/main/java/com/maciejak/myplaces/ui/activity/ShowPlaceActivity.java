@@ -2,6 +2,7 @@ package com.maciejak.myplaces.ui.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repository.PlaceRepository;
@@ -44,6 +46,12 @@ public class ShowPlaceActivity extends BaseActivity {
     @BindView(R.id.show_place_view_pager)
     ViewPager mViewPager;
 
+    @BindView(R.id.show_place_edit_fab)
+    FloatingActionButton mEditFab;
+
+    @BindView(R.id.show_place_delete_fab)
+    FloatingActionButton mDeleteFab;
+
     ShowPlaceViewPagerAdapter mShowPlaceViewPagerAdapter;
 
     long placeId;
@@ -66,7 +74,13 @@ public class ShowPlaceActivity extends BaseActivity {
     }
 
     private void fillControls(){
-        mCollapsingToolbarLayout.setTitle(mPlace.getTitle());
+        if (mPlace.getTitle().isEmpty()){
+            mCollapsingToolbarLayout.setTitle(getString(R.string.details_of_place));
+        }
+        else {
+            mCollapsingToolbarLayout.setTitle(mPlace.getTitle());
+        }
+
         mNoteTextView.setText(mPlace.getNote());
         mDescriptionTextView.setText(mPlace.getDescription());
 
@@ -88,34 +102,52 @@ public class ShowPlaceActivity extends BaseActivity {
             mViewPager.setAdapter(mShowPlaceViewPagerAdapter);
         }
 
+        if (mPlace.getDeletedAt() != null){
+            mEditFab.setImageResource(R.drawable.ic_undo_white_24dp);
+            mDeleteFab.setImageResource(R.drawable.ic_close_white_24dp);
+        }
+
     }
 
     @OnClick(R.id.show_place_edit_fab)
     public void editOnClick(){
-        Intent intent = new Intent(this, EditPlaceActivity.class);
-        intent.putExtra(EditPlaceActivity.PLACE_ID, mPlace.getId());
-        startActivity(intent);
+        if (mPlace.getDeletedAt() != null){
+            mPlaceRepository.restorePlace(mPlace);
+            Toast.makeText(this, R.string.restored, Toast.LENGTH_SHORT).show();
+            finish();
+        }
+        else {
+            Intent intent = new Intent(this, EditPlaceActivity.class);
+            intent.putExtra(EditPlaceActivity.PLACE_ID, mPlace.getId());
+            startActivity(intent);
+        }
+
 
     }
 
     @OnClick(R.id.show_place_delete_fab)
     public void deleteOnClick(){
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.are_you_sure_to_delete));
-
-        builder.setPositiveButton(getString(R.string.delete), (dialog, which) -> {
-
-            mPlaceRepository.deletePlaceSoft(mPlace);
-            Toast.makeText(getApplicationContext(), getText(R.string.archived), Toast.LENGTH_SHORT).show();
+        if (mPlace.getDeletedAt() != null){
+            mPlaceRepository.deletePlace(mPlace);
+            Toast.makeText(this, R.string.deleted, Toast.LENGTH_SHORT).show();
             finish();
+        }
+        else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.are_you_sure_to_archive));
 
-        }).setNegativeButton(getString(R.string.back), (dialog, which) -> dialog.dismiss());
+            builder.setPositiveButton(getString(R.string.archive), (dialog, which) -> {
 
-        AlertDialog dialog = builder.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.Red));
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.Green));
+                mPlaceRepository.deletePlaceSoft(mPlace);
+                Toast.makeText(getApplicationContext(), getText(R.string.archived), Toast.LENGTH_SHORT).show();
+                finish();
 
+            }).setNegativeButton(getString(R.string.back), (dialog, which) -> dialog.dismiss());
+
+            AlertDialog dialog = builder.show();
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.Red));
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.Green));
+        }
 
     }
 

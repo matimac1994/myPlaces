@@ -1,25 +1,30 @@
 package com.maciejak.myplaces.ui.adapter;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.listener.ArchiveListOnDataChangeListener;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repository.PlaceRepository;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 
 /**
  * Created by Mati on 11.11.2017.
@@ -29,16 +34,20 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
 
     private List<Place> mPlaces;
     private Context mContext;
-    private ArchiveListOnDataChangeListener mArchiveListOnDataChangeListener;
+    private ArchiveListAdapterListener mArchiveListAdapterListener;
     private LayoutInflater mInflater;
-    private PlaceRepository mPlaceRepository;
 
-    public ArchiveListRecyclerViewAdapter(List<Place> places, Context context, ArchiveListOnDataChangeListener archiveListOnDataChangeListener) {
+    private PlaceRepository mPlaceRepository;
+    private SparseBooleanArray mSelectedPlacesPositions;
+
+    public ArchiveListRecyclerViewAdapter(List<Place> places, Context context, ArchiveListAdapterListener archiveListAdapterListener) {
         mPlaces = places;
         mContext = context;
-        mArchiveListOnDataChangeListener = archiveListOnDataChangeListener;
+        mArchiveListAdapterListener = archiveListAdapterListener;
         mInflater = LayoutInflater.from(context);
+
         mPlaceRepository = new PlaceRepository();
+        mSelectedPlacesPositions = new SparseBooleanArray();
     }
 
     @Override
@@ -60,12 +69,46 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
                 .fit()
                 .into(holder.mImageView);
 
-        holder.mTitleTextView.setText(place.getTitle());
-        if (place.getDescription().isEmpty())
-            holder.mDescriptionTextView.setText(R.string.no_description);
-        else
-            holder.mDescriptionTextView.setText(place.getDescription());
+        if (place.getTitle().equals("")){
+            holder.mDescriptionTextView.setText(mContext.getString(R.string.no_title));
+        }
+        else {
+            holder.mTitleTextView.setText(place.getTitle());
+        }
 
+        if (place.getDescription().equals("")){
+            holder.mDescriptionTextView.setText(mContext.getString(R.string.no_description));
+        }
+        else {
+            holder.mDescriptionTextView.setText(place.getDescription());
+        }
+
+        holder.itemView.setActivated(mSelectedPlacesPositions.get(position, false));
+
+        if (holder.itemView.isActivated()){
+            holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.row_activated));
+        }
+        else {
+            holder.itemView.setBackgroundColor(Color.WHITE);
+        }
+
+        applyIconAppearance(holder, position);
+
+    }
+
+    void applyIconAppearance(ViewHolder holder, int position){
+        if (mSelectedPlacesPositions.get(position, false)){
+            holder.mImageFrontLayout.setVisibility(View.GONE);
+            holder.mImageBackLayout.setVisibility(View.VISIBLE);
+        } else {
+            holder.mImageBackLayout.setVisibility(View.GONE);
+            holder.mImageFrontLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void clearSelections() {
+        mSelectedPlacesPositions.clear();
+        notifyDataSetChanged();
     }
 
     @Override
@@ -73,7 +116,47 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
         return ((mPlaces!=null) ? mPlaces.size() : 0);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public int getSelectedItemCount() {
+        return mSelectedPlacesPositions.size();
+    }
+
+    public List<Integer> getSelectedItems() {
+        List<Integer> items =
+                new ArrayList<>(mSelectedPlacesPositions.size());
+        for (int i = 0; i < mSelectedPlacesPositions.size(); i++) {
+            items.add(mSelectedPlacesPositions.keyAt(i));
+        }
+        return items;
+    }
+
+    public Place getItem(int position){
+        return mPlaces.get(position);
+    }
+
+    public void toggleSelection(int position) {
+        if (mSelectedPlacesPositions.get(position, false)) {
+            mSelectedPlacesPositions.delete(position);
+        } else {
+            mSelectedPlacesPositions.put(position, true);
+        }
+        notifyItemChanged(position, mPlaces.get(position));
+    }
+
+    public void removePlace(int position) {
+        Place place = mPlaces.get(position);
+        mPlaces.remove(position);
+        mPlaceRepository.deletePlace(place);
+        notifyItemRemoved(position);
+    }
+
+    public void restorePlace(int position) {
+        Place place = mPlaces.get(position);
+        mPlaces.remove(position);
+        mPlaceRepository.restorePlace(place);
+        notifyItemRemoved(position);
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.row_archive_list_image)
         ImageView mImageView;
@@ -84,30 +167,48 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
         @BindView(R.id.row_archive_list_description_text_view)
         TextView mDescriptionTextView;
 
+        @BindView(R.id.row_archive_list_image_front)
+        RelativeLayout mImageFrontLayout;
 
-        public ViewHolder(View itemView) {
+        @BindView(R.id.row_archive_list_image_back)
+        RelativeLayout mImageBackLayout;
+
+        ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        @OnClick(R.id.row_archive_list_delete_button)
-        public void onClickDeleteButton(){
-            final int position = getAdapterPosition();
-            Place place = mPlaces.get(position);
-            mPlaceRepository.deletePlace(place);
-            mPlaces.remove(place);
-            notifyItemRemoved(position);
-            mArchiveListOnDataChangeListener.onDataChanged();
+        @OnClick(R.id.row_archive_list_image_container)
+        void onClickImage() {
+            mArchiveListAdapterListener.onImageClicked(getAdapterPosition());
         }
 
-        @OnClick(R.id.row_archive_list_restore_button)
-        public void onClickRestoreButton(){
-            final int position = getAdapterPosition();
-            Place place = mPlaces.get(position);
-            mPlaceRepository.restorePlace(place);
-            mPlaces.remove(place);
-            notifyItemRemoved(position);
-            mArchiveListOnDataChangeListener.onDataChanged();
+        @OnClick(R.id.row_archive_list_title_description_container)
+        void onClickTitleDescription() {
+            mArchiveListAdapterListener.onTitleOrDescriptionClicked(getAdapterPosition());
         }
+
+        @OnLongClick(R.id.row_archive_list_title_description_container)
+        boolean onLongClickTitleDescription(){
+            mArchiveListAdapterListener.onRowLongClicked(getAdapterPosition());
+            itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            return true;
+        }
+
+        @OnLongClick(R.id.row_archive_list_image_container)
+        boolean onLongClickImage(){
+            mArchiveListAdapterListener.onRowLongClicked(getAdapterPosition());
+            itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            return true;
+        }
+
+    }
+
+    public interface ArchiveListAdapterListener{
+        void onImageClicked(int position);
+
+        void onTitleOrDescriptionClicked(int position);
+
+        void onRowLongClicked(int position);
     }
 }

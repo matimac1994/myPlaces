@@ -58,7 +58,6 @@ public class PlaceRepository {
         return SQLite.select()
                 .from(Place.class)
                 .where(Place_Table.id.eq(placeId))
-                .and(Place_Table.deletedAt.isNull())
                 .querySingle();
     }
 

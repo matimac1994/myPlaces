@@ -1,6 +1,7 @@
 package com.maciejak.myplaces.ui.fragment;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -37,10 +38,8 @@ import java.util.List;
 public class MapFragment extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnCameraIdleListener,
         GoogleMap.OnMarkerClickListener,
-        GoogleMap.OnInfoWindowClickListener,
-        GoogleApiClientHelper.ConnectionListener {
+        GoogleMap.OnInfoWindowClickListener {
 
-    private static final int MY_LOCATION_PERMISSION_REQUEST_CODE = 1;
     private GoogleMap mMap;
 
     List<Place> mPlaceList;
@@ -86,6 +85,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         super.onDetach();
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -94,40 +94,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         mMap.setOnCameraIdleListener(this);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
-        enableMyLocation();
 
+        //Permission is checked in BaseActivity
+        mMap.setMyLocationEnabled(true);
 
         refreshMarkersOnMap();
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mBounds, 50));
     }
 
-    private void enableMyLocation() {
-        if (!checkReady())
-            return;
-
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestLocationPermission(MY_LOCATION_PERMISSION_REQUEST_CODE);
-        } else {
-            mMap.setMyLocationEnabled(true);
-        }
-    }
-    public void requestLocationPermission(int requestCode) {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION)) {
-            // Display a dialog with rationale.
-            PermissionUtils.RationaleDialog
-                    .newInstance(requestCode, false).show(this.getFragmentManager(),"dialog");
-        } else {
-            // Location permission has not been granted yet, request it.
-            PermissionUtils.requestPermission((AppCompatActivity)getActivity(), requestCode,
-                    Manifest.permission.ACCESS_FINE_LOCATION, false);
-        }
-    }
-
     @Override
     public void onResume() {
         super.onResume();
+        removeAllMarkers();
         refreshMarkersOnMap();
+    }
+
+    private void removeAllMarkers(){
+        for (Marker marker : mMarkersOnMap){
+            marker.remove();
+        }
+        mMarkersOnMap.clear();
     }
 
     private void refreshMarkersOnMap() {
@@ -223,21 +209,5 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             intent.putExtra(ShowPlaceActivity.PLACE_ID, place.getId());
             startActivity(intent);
         }
-    }
-
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-
     }
 }

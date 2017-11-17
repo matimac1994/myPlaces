@@ -6,6 +6,8 @@
 
     <color name="logoColor">#c93636</color>
 
+    <color name="row_activated">#f0f0f0</color>
+
     <color name="White">#FFFFFF</color>
     <color name="Ivory">#FFFFF0</color>
     <color name="LightYellow">#FFFFE0</color>

@@ -3,90 +3,91 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/row_archive_list_card_view"
     android:layout_marginTop="8dp"
     android:layout_marginStart="8dp"
     android:layout_marginEnd="8dp">
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/row_archive_list_layout"
         android:layout_width="match_parent"
-        android:layout_height="182dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible">
 
-        <RelativeLayout
-            android:id="@+id/row_archive_list_title_relative_layout"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/row_archive_list_image_container"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@color/Snow">
+            android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/row_archive_list_restore_button"
-                android:background="@color/Green"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="4dp"
-                android:src="@drawable/ic_undo_white_24dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true"
-                />
+            <RelativeLayout
+                android:id="@+id/row_archive_list_image_front"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/row_archive_list_image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:scaleType="centerCrop"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/row_archive_list_image_back"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/bg_circle"
+                    android:layout_centerInParent="true"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_done_white_24dp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/row_archive_list_title_description_container"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/row_archive_list_title_text_view"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:lines="1"
-                android:textColor="@color/Black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="8dp"
+                android:textColor="#222"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:gravity="center"
-                android:layout_toEndOf="@id/row_archive_list_restore_button"
-                android:layout_toStartOf="@id/row_archive_list_delete_button"/>
+                android:gravity="start"/>
 
-            <ImageButton
-                android:id="@+id/row_archive_list_delete_button"
-                android:background="@color/Red"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="4dp"
-                android:src="@drawable/ic_close_white_24dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
+            <TextView
+                android:id="@+id/row_archive_list_description_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:maxLines="4"
+                android:gravity="start"
                 />
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_below="@id/row_archive_list_title_relative_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="2dp">
-
-            <ImageView
-                android:id="@+id/row_archive_list_image"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="150dp"
-                />
-
-            <LinearLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="150dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/row_archive_list_description_text_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:padding="4dp"/>
-
-            </LinearLayout>
 
         </LinearLayout>
-
-
-    </RelativeLayout>
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>

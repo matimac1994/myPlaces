@@ -1,6 +1,7 @@
 package com.maciejak.myplaces.ui.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,8 +35,7 @@ public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCal
 
     Marker lastAddedMarker;
 
-    private static final int MY_LOCATION_PERMISSION_REQUEST_CODE = 1;
-    public static final String SELECTED_FAVOURITE_PLACE_LATLNG = "AddPlaceOnMapActivity SELECTED_FAVOURITE_PLACE_LATLNG";
+    public static final String SELECTED_PLACE_LATLNG = "AddPlaceOnMapActivity SELECTED_PLACE_LATLNG";
     public static final Integer ADD_PLACE_DONE = 1;
     public static final String ADD_PLACE_ON_MAP_DATA = "AddPlaceOnMapActivity Data";
 
@@ -44,7 +44,7 @@ public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_place_on_map);
 
-        mPlaceLatLng = this.getIntent().getParcelableExtra(SELECTED_FAVOURITE_PLACE_LATLNG);
+        mPlaceLatLng = this.getIntent().getParcelableExtra(SELECTED_PLACE_LATLNG);
         setupControls();
     }
 
@@ -106,14 +106,7 @@ public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCal
         }
     }
 
-    private boolean checkReady() {
-        if (mMap == null) {
-            Toast.makeText(this, R.string.map_not_ready, Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
-    }
-
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -121,7 +114,7 @@ public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCal
 
         mMap.setOnMarkerDragListener(this);
         mMap.setOnMapLongClickListener(this);
-        enableMyLocation();
+        mMap.setMyLocationEnabled(true);
 
         mUiSettings.setZoomControlsEnabled(true);
         mUiSettings.setMyLocationButtonEnabled(true);
@@ -130,19 +123,6 @@ public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCal
         if (mPlaceLatLng != null){
             addMarkerToMap(mPlaceLatLng);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mPlaceLatLng, 16));
-        }
-
-    }
-
-    private void enableMyLocation(){
-        if (!checkReady())
-            return;
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestLocationPermission(MY_LOCATION_PERMISSION_REQUEST_CODE);
-        }
-        else {
-            mMap.setMyLocationEnabled(true);
         }
 
     }
