@@ -106,7 +106,6 @@ public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCal
         }
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -114,7 +113,9 @@ public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCal
 
         mMap.setOnMarkerDragListener(this);
         mMap.setOnMapLongClickListener(this);
-        mMap.setMyLocationEnabled(true);
+
+        if (checkPermissions())
+            mMap.setMyLocationEnabled(true);
 
         mUiSettings.setZoomControlsEnabled(true);
         mUiSettings.setMyLocationButtonEnabled(true);

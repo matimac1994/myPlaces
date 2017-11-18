@@ -33,7 +33,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ArchiveListFragment extends Fragment
+public class ArchiveListFragment extends BaseFragment
         implements ArchiveListRecyclerViewAdapter.ArchiveListAdapterListener,
         ActionMode.Callback{
 
@@ -161,7 +161,6 @@ public class ArchiveListFragment extends Fragment
         for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
             mArchiveListRecyclerViewAdapter.restorePlace(selectedItemPositions.get(i));
         }
-        mArchiveListRecyclerViewAdapter.notifyDataSetChanged();
         manageVisibility(mPlaces);
         Toast.makeText(mContext, R.string.restored, Toast.LENGTH_SHORT).show();
     }
@@ -172,7 +171,6 @@ public class ArchiveListFragment extends Fragment
         for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
             mArchiveListRecyclerViewAdapter.removePlace(selectedItemPositions.get(i));
         }
-        mArchiveListRecyclerViewAdapter.notifyDataSetChanged();
         manageVisibility(mPlaces);
         Toast.makeText(mContext, R.string.deleted, Toast.LENGTH_SHORT).show();
     }
@@ -218,5 +216,12 @@ public class ArchiveListFragment extends Fragment
             mActionMode.setTitle(String.valueOf(count));
             mActionMode.invalidate();
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mActionMode != null)
+            mActionMode.finish();
     }
 }

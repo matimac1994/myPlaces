@@ -40,6 +40,8 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
     private PlaceRepository mPlaceRepository;
     private SparseBooleanArray mSelectedPlacesPositions;
 
+    private int activatedColor;
+
     public ArchiveListRecyclerViewAdapter(List<Place> places, Context context, ArchiveListAdapterListener archiveListAdapterListener) {
         mPlaces = places;
         mContext = context;
@@ -48,6 +50,7 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
 
         mPlaceRepository = new PlaceRepository();
         mSelectedPlacesPositions = new SparseBooleanArray();
+        setHasStableIds(true);
     }
 
     @Override
@@ -59,8 +62,9 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
 
     @Override
     public void onBindViewHolder(ArchiveListRecyclerViewAdapter.ViewHolder holder, int position) {
-
         Place place = mPlaces.get(position);
+        boolean hasTitle = !place.getTitle().isEmpty();
+        boolean hasDescription = !place.getDescription().isEmpty();
 
         String mapPhoto = place.getMapPhoto();
         Picasso.with(mContext)
@@ -69,31 +73,19 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
                 .fit()
                 .into(holder.mImageView);
 
-        if (place.getTitle().equals("")){
-            holder.mDescriptionTextView.setText(mContext.getString(R.string.no_title));
-        }
-        else {
-            holder.mTitleTextView.setText(place.getTitle());
-        }
-
-        if (place.getDescription().equals("")){
-            holder.mDescriptionTextView.setText(mContext.getString(R.string.no_description));
-        }
-        else {
-            holder.mDescriptionTextView.setText(place.getDescription());
-        }
+        holder.mTitleTextView.setText(hasTitle ? place.getTitle() : mContext.getString(R.string.no_title));
+        holder.mDescriptionTextView.setText(hasDescription ? place.getDescription() : mContext.getString(R.string.no_description));
 
         holder.itemView.setActivated(mSelectedPlacesPositions.get(position, false));
 
         if (holder.itemView.isActivated()){
-            holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.row_activated));
+            holder.itemView.setBackgroundColor(Color.LTGRAY);
         }
         else {
             holder.itemView.setBackgroundColor(Color.WHITE);
         }
 
         applyIconAppearance(holder, position);
-
     }
 
     void applyIconAppearance(ViewHolder holder, int position){
@@ -114,6 +106,16 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
     @Override
     public int getItemCount() {
         return ((mPlaces!=null) ? mPlaces.size() : 0);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return mPlaces.get(position).getId();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return 0;
     }
 
     public int getSelectedItemCount() {

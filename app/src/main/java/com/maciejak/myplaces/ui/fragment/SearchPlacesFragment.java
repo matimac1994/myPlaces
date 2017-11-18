@@ -28,7 +28,7 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SearchPlacesFragment extends Fragment implements View.OnClickListener, OnQueryTextChangeListener{
+public class SearchPlacesFragment extends BaseFragment implements View.OnClickListener, OnQueryTextChangeListener{
 
     @BindView(R.id.search_places_recycler_view)
     RecyclerView mSearchPlacesRecyclerView;

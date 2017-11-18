@@ -2,6 +2,7 @@ package com.maciejak.myplaces.ui.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.helper.GoogleApiClientHelper;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repository.PlaceRepository;
+import com.maciejak.myplaces.ui.activity.BaseActivity;
 import com.maciejak.myplaces.ui.activity.ShowPlaceActivity;
 import com.maciejak.myplaces.util.PermissionUtils;
 
@@ -35,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback,
+public class MapFragment extends BaseFragment implements OnMapReadyCallback,
         GoogleMap.OnCameraIdleListener,
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnInfoWindowClickListener {
@@ -85,7 +87,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         super.onDetach();
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -96,7 +97,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         mMap.setOnInfoWindowClickListener(this);
 
         //Permission is checked in BaseActivity
-        mMap.setMyLocationEnabled(true);
+        if (mBaseActivity.checkPermissions()) {
+            mMap.setMyLocationEnabled(true);
+        }
 
         refreshMarkersOnMap();
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mBounds, 50));

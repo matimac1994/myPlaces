@@ -25,7 +25,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MyPlacesListFragment extends Fragment implements View.OnClickListener, MyPlacesListRecyclerViewAdapter.MyPlacesListOnDataChangeListener{
+public class MyPlacesListFragment extends BaseFragment implements View.OnClickListener, MyPlacesListRecyclerViewAdapter.MyPlacesListOnDataChangeListener{
 
     List<Place> mPlaces;
     PlaceRepository mPlaceRepository;
