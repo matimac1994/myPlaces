@@ -61,19 +61,6 @@
             android:name=".ui.activity.EditPlaceActivity"
             android:windowSoftInputMode="adjustPan"/>
 
-        <receiver
-            android:name=".receiver.GpsLocationReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.location.PROVIDERS_CHANGED"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </receiver>
-
-        <service android:name=".service.DeletePlacesService"/>
-
         <activity
             android:name=".ui.activity.LoginActivity"
             android:theme="@style/LoginTheme">

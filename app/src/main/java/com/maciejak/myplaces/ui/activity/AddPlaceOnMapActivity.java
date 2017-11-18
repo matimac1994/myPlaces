@@ -114,12 +114,13 @@ public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCal
         mMap.setOnMarkerDragListener(this);
         mMap.setOnMapLongClickListener(this);
 
-        if (checkPermissions())
-            mMap.setMyLocationEnabled(true);
 
         mUiSettings.setZoomControlsEnabled(true);
         mUiSettings.setMyLocationButtonEnabled(true);
 
+        if (checkPermissions()) {
+            mMap.setMyLocationEnabled(true);
+        }
 
         if (mPlaceLatLng != null){
             addMarkerToMap(mPlaceLatLng);

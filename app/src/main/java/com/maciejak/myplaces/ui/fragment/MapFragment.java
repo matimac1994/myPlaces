@@ -96,7 +96,6 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
         mMap.setOnMarkerClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
 
-        //Permission is checked in BaseActivity
         if (mBaseActivity.checkPermissions()) {
             mMap.setMyLocationEnabled(true);
         }

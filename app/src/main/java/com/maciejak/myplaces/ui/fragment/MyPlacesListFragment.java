@@ -107,7 +107,6 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
     private void applyFilledView(){
         mEmptyView.setVisibility(View.GONE);
         mMyPlacesListRecyclerView.setVisibility(View.VISIBLE);
-        mMyPlacesListRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     private void manageVisibility(List<Place> places){
@@ -124,6 +123,7 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
         super.onStart();
         mPlaces = mPlaceRepository.getAllVisiblePlaces();
         manageVisibility(mPlaces);
+        mMyPlacesListRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     @Override

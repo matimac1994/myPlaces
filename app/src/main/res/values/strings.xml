@@ -87,9 +87,9 @@
     <string name="archived">Zarchiwizowano</string>
     <string name="restored">Przywrócono</string>
     <string name="archive">Zarchiwizuj</string>
-    <string name="permission_denied_explanation">Zezwolenie na lokalizacje jest konieczne do prawidłowego działania aplikacji</string>
+    <string name="permission_rationale">Zezwól aplikacji na dostęp do Twojej lokalizacji</string>
+    <string name="permission_denied_explanation">Nie przyznano uprawnień do lokalizacji</string>
     <string name="settings">Ustawienia</string>
-    <string name="permission_rationale">Zezwolenie na lokalizacje jest konieczne do prawidłowego funkcjonowania aplikacji</string>
     <string name="archived_places">Zarchiwizowane miejsca</string>
     <string name="no_title">Brak tytułu</string>
 </resources>

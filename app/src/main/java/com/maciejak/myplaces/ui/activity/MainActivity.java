@@ -240,24 +240,30 @@ public class MainActivity extends BaseActivity
         fabButton.setLabelText(getString(R.string.add_place_from_my_location_button_label));
         fabButton.setImageResource(R.drawable.ic_my_location_white_24dp);
         fabButton.setOnClickListener(v -> {
-            Intent intent;
-            if (isActualLocation) {
-                intent = new Intent(context, AddPlaceActivity.class);
-                intent.putExtra(AddPlaceActivity.PLACE_LAT_LNG, new LatLng(mLocation.getLatitude(), mLocation.getLongitude()));
-            } else {
-                if (mSharedPreferences.contains(Const.LONGITUDE) && mSharedPreferences.contains(Const.LATITUDE)) {
-                    mToast = Toast.makeText(context, R.string.last_known_location, Toast.LENGTH_SHORT);
-                    intent = new Intent(context, AddPlaceOnMapActivity.class);
-                    Double latitude = Double.parseDouble(mSharedPreferences.getString(Const.LATITUDE, "0"));
-                    Double longitude = Double.parseDouble(mSharedPreferences.getString(Const.LONGITUDE, "0"));
-                    intent.putExtra(AddPlaceOnMapActivity.SELECTED_PLACE_LATLNG, new LatLng(latitude, longitude));
-                } else {
-                    mToast = Toast.makeText(context, R.string.cannot_find_location_alert, Toast.LENGTH_SHORT);
-                    intent = new Intent(context, AddPlaceOnMapActivity.class);
-                }
-                mToast.show();
+            if (!checkPermissions()){
+                requestPermissions(this);
             }
-            startActivityForResult(intent, ADD_PLACE_DONE);
+            else {
+                Intent intent;
+                if (isActualLocation) {
+                    intent = new Intent(context, AddPlaceActivity.class);
+                    intent.putExtra(AddPlaceActivity.PLACE_LAT_LNG, new LatLng(mLocation.getLatitude(), mLocation.getLongitude()));
+                } else {
+                    if (mSharedPreferences.contains(Const.LONGITUDE) && mSharedPreferences.contains(Const.LATITUDE)) {
+                        mToast = Toast.makeText(context, R.string.last_known_location, Toast.LENGTH_SHORT);
+                        intent = new Intent(context, AddPlaceOnMapActivity.class);
+                        Double latitude = Double.parseDouble(mSharedPreferences.getString(Const.LATITUDE, "0"));
+                        Double longitude = Double.parseDouble(mSharedPreferences.getString(Const.LONGITUDE, "0"));
+                        intent.putExtra(AddPlaceOnMapActivity.SELECTED_PLACE_LATLNG, new LatLng(latitude, longitude));
+                    } else {
+                        mToast = Toast.makeText(context, R.string.cannot_find_location_alert, Toast.LENGTH_SHORT);
+                        intent = new Intent(context, AddPlaceOnMapActivity.class);
+                    }
+                    mToast.show();
+                }
+                startActivityForResult(intent, ADD_PLACE_DONE);
+            }
+
         });
         return fabButton;
     }
@@ -355,8 +361,6 @@ public class MainActivity extends BaseActivity
         super.onStart();
         if (checkPermissions()) {
             startLocationUpdates(this);
-        } else {
-            requestPermissions(this);
         }
     }
 

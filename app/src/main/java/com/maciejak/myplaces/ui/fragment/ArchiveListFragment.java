@@ -99,14 +99,14 @@ public class ArchiveListFragment extends BaseFragment
     private void applyFilledView(){
         mEmptyView.setVisibility(View.GONE);
         mArchiveListRecyclerview.setVisibility(View.VISIBLE);
-        mArchiveListRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onStart() {
+        super.onStart();
         mPlaces = mPlaceRepository.getAllDeletedPlaces();
         manageVisibility(mPlaces);
-        super.onStart();
+        mArchiveListRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     @Override

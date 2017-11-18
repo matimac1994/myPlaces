@@ -178,13 +178,22 @@ public abstract class BaseActivity extends AppCompatActivity {
                 && permissionCoarseLocation == PackageManager.PERMISSION_GRANTED);
     }
 
-    private void showSnackbar(final int mainTextStringId, final int actionStringId,
+    private void showSnackbar(AppCompatActivity activity, final int mainTextStringId, final int actionStringId,
                               View.OnClickListener listener) {
-        Snackbar snackbar = Snackbar.make(
-                findViewById(android.R.id.content),
-                getString(mainTextStringId),
-                Snackbar.LENGTH_LONG)
-                .setAction(getString(actionStringId), listener);
+        Snackbar snackbar;
+        if (activity instanceof MainActivity){
+            snackbar = Snackbar.make(
+                    activity.findViewById(R.id.coordinatorLayout),
+                    getString(mainTextStringId),
+                    Snackbar.LENGTH_LONG);
+        }
+        else {
+            snackbar = Snackbar.make(
+                    findViewById(android.R.id.content),
+                    getString(mainTextStringId),
+                    Snackbar.LENGTH_LONG);
+        }
+        snackbar.setAction(getString(actionStringId), listener);
         snackbar.setActionTextColor(Color.YELLOW);
         snackbar.show();
     }
@@ -198,7 +207,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         // request previously, but didn't check the "Don't ask again" checkbox.
         if (shouldProvideRationale) {
             Log.i(TAG, "Displaying permission rationale to provide additional context.");
-            showSnackbar(R.string.permission_rationale,
+            showSnackbar(activity, R.string.permission_rationale,
                     android.R.string.ok, view -> {
                         // Request permission
                         ActivityCompat.requestPermissions(activity,
@@ -248,7 +257,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 Log.i(TAG, "Permission granted, updates requested, starting location updates");
                 startLocationUpdates(this);
             } else {
-                showSnackbar(R.string.permission_denied_explanation,
+                showSnackbar(this, R.string.permission_denied_explanation,
                         R.string.settings, view -> {
                             // Build intent that displays the App settings screen.
                             Intent intent = new Intent();
