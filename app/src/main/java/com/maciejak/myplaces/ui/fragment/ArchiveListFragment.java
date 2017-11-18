@@ -74,12 +74,12 @@ public class ArchiveListFragment extends BaseFragment
 
     private void setupControls() {
         getActivity().setTitle(R.string.archive_of_places);
+        mPlaceRepository = new PlaceRepository();
         mPlaces = mPlaceRepository.getAllDeletedPlaces();
         mArchiveListRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         mArchiveListRecyclerview.setItemAnimator(new DefaultItemAnimator());
         mArchiveListRecyclerViewAdapter = new ArchiveListRecyclerViewAdapter(mPlaces, getContext(), this);
         mArchiveListRecyclerview.setAdapter(mArchiveListRecyclerViewAdapter);
-        mPlaceRepository = new PlaceRepository();
     }
 
     private void manageVisibility(List<Place> places){

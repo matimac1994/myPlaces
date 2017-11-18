@@ -183,7 +183,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         Snackbar snackbar = Snackbar.make(
                 findViewById(android.R.id.content),
                 getString(mainTextStringId),
-                Snackbar.LENGTH_INDEFINITE)
+                Snackbar.LENGTH_LONG)
                 .setAction(getString(actionStringId), listener);
         snackbar.setActionTextColor(Color.YELLOW);
         snackbar.show();

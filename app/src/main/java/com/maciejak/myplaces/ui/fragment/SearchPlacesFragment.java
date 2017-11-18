@@ -71,7 +71,6 @@ public class SearchPlacesFragment extends BaseFragment implements View.OnClickLi
 
     public void setupControls(View view) {
         mPlaceRepository = new PlaceRepository();
-        mPlaces = new ArrayList<>();
         mPlaces = mPlaceRepository.getAllVisiblePlaces();
         setupRecyclerView();
     }
