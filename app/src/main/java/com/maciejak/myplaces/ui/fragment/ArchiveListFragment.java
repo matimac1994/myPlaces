@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.maciejak.myplaces.R;
+import com.maciejak.myplaces.listener.OnCloseFloatingActionMenu;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repository.PlaceRepository;
 import com.maciejak.myplaces.ui.activity.ShowPlaceActivity;
@@ -73,8 +74,11 @@ public class ArchiveListFragment extends BaseFragment
 
     private void setupControls() {
         getActivity().setTitle(R.string.archive_of_places);
+        mPlaces = mPlaceRepository.getAllDeletedPlaces();
         mArchiveListRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         mArchiveListRecyclerview.setItemAnimator(new DefaultItemAnimator());
+        mArchiveListRecyclerViewAdapter = new ArchiveListRecyclerViewAdapter(mPlaces, getContext(), this);
+        mArchiveListRecyclerview.setAdapter(mArchiveListRecyclerViewAdapter);
         mPlaceRepository = new PlaceRepository();
     }
 
@@ -95,11 +99,6 @@ public class ArchiveListFragment extends BaseFragment
     private void applyFilledView(){
         mEmptyView.setVisibility(View.GONE);
         mArchiveListRecyclerview.setVisibility(View.VISIBLE);
-    }
-
-    private void populateRecyclerView(List<Place> places){
-        mArchiveListRecyclerViewAdapter = new ArchiveListRecyclerViewAdapter(places, getContext(), this);
-        mArchiveListRecyclerview.setAdapter(mArchiveListRecyclerViewAdapter);
         mArchiveListRecyclerViewAdapter.notifyDataSetChanged();
     }
 
@@ -107,7 +106,6 @@ public class ArchiveListFragment extends BaseFragment
     public void onStart() {
         mPlaces = mPlaceRepository.getAllDeletedPlaces();
         manageVisibility(mPlaces);
-        populateRecyclerView(mPlaces);
         super.onStart();
     }
 

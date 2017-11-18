@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.maciejak.myplaces.listener.OnCloseFloatingActionMenu;
 import com.maciejak.myplaces.ui.activity.BaseActivity;
 
 /**
@@ -17,12 +18,20 @@ import com.maciejak.myplaces.ui.activity.BaseActivity;
 public class BaseFragment extends Fragment {
 
     protected BaseActivity mBaseActivity;
+    protected Context mContext;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
         mBaseActivity = (BaseActivity)context;
+        mContext = context;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((OnCloseFloatingActionMenu)mContext).closeFloatingActionMenu();
     }
 
     @Nullable

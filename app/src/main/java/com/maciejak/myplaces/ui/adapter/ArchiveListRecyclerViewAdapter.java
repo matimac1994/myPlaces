@@ -40,8 +40,6 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
     private PlaceRepository mPlaceRepository;
     private SparseBooleanArray mSelectedPlacesPositions;
 
-    private int activatedColor;
-
     public ArchiveListRecyclerViewAdapter(List<Place> places, Context context, ArchiveListAdapterListener archiveListAdapterListener) {
         mPlaces = places;
         mContext = context;

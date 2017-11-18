@@ -62,12 +62,14 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
         getActivity().setTitle(R.string.list_of_places);
 
         mPlaceRepository = new PlaceRepository();
-        mPlaces = new ArrayList<>();
+        mPlaces = mPlaceRepository.getAllVisiblePlaces();
         setupRecyclerView();
     }
 
     private void setupRecyclerView() {
         mMyPlacesListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mMyPlacesListRecyclerViewAdapter = new MyPlacesListRecyclerViewAdapter(getContext(), mPlaces, this, this);
+        mMyPlacesListRecyclerView.setAdapter(mMyPlacesListRecyclerViewAdapter);
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -97,12 +99,6 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
         itemTouchHelper.attachToRecyclerView(mMyPlacesListRecyclerView);
     }
 
-    private void populateRecyclerView(List<Place> places){
-        mMyPlacesListRecyclerViewAdapter = new MyPlacesListRecyclerViewAdapter(getActivity(), places, this, this);
-        mMyPlacesListRecyclerView.setAdapter(mMyPlacesListRecyclerViewAdapter);
-        mMyPlacesListRecyclerViewAdapter.notifyDataSetChanged();
-    }
-
     private void applyEmptyView(){
         mEmptyView.setVisibility(View.VISIBLE);
         mMyPlacesListRecyclerView.setVisibility(View.GONE);
@@ -111,6 +107,7 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
     private void applyFilledView(){
         mEmptyView.setVisibility(View.GONE);
         mMyPlacesListRecyclerView.setVisibility(View.VISIBLE);
+        mMyPlacesListRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     private void manageVisibility(List<Place> places){
@@ -127,7 +124,6 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
         super.onStart();
         mPlaces = mPlaceRepository.getAllVisiblePlaces();
         manageVisibility(mPlaces);
-        populateRecyclerView(mPlaces);
     }
 
     @Override

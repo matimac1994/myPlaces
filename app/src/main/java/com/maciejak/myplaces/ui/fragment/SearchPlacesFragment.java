@@ -78,11 +78,7 @@ public class SearchPlacesFragment extends BaseFragment implements View.OnClickLi
 
     private void setupRecyclerView() {
         mSearchPlacesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        populateRecyclerView(mPlaces);
-    }
-
-    private void populateRecyclerView(List<Place> places){
-        mSearchPlacesRecyclerViewAdapter = new SearchPlacesRecyclerViewAdapter(getContext(), places, this);
+        mSearchPlacesRecyclerViewAdapter = new SearchPlacesRecyclerViewAdapter(getContext(), mPlaces, this);
         mSearchPlacesRecyclerView.setAdapter(mSearchPlacesRecyclerViewAdapter);
         mSearchPlacesRecyclerViewAdapter.notifyDataSetChanged();
     }

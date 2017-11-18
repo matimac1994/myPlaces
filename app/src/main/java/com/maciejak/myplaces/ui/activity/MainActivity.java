@@ -52,6 +52,7 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
 import com.maciejak.myplaces.BuildConfig;
 import com.maciejak.myplaces.R;
+import com.maciejak.myplaces.listener.OnCloseFloatingActionMenu;
 import com.maciejak.myplaces.ui.fragment.ArchiveListFragment;
 import com.maciejak.myplaces.ui.fragment.MapFragment;
 import com.maciejak.myplaces.ui.fragment.MyPlacesListFragment;
@@ -65,7 +66,8 @@ import butterknife.ButterKnife;
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         PlaceSelectionListener,
-        SearchPlacesFragment.OnGetInstanceFragment{
+        SearchPlacesFragment.OnGetInstanceFragment,
+        OnCloseFloatingActionMenu{
 
     protected static final String TAG = MainActivity.class.getSimpleName();
 
@@ -255,7 +257,6 @@ public class MainActivity extends BaseActivity
                 }
                 mToast.show();
             }
-            mFloatingActionMenu.close(true);
             startActivityForResult(intent, ADD_PLACE_DONE);
         });
         return fabButton;
@@ -267,7 +268,6 @@ public class MainActivity extends BaseActivity
         fabButton.setLabelText(getString(R.string.add_place_from_map_button_label));
         fabButton.setImageResource(R.drawable.ic_add_location_white_24dp);
         fabButton.setOnClickListener(v -> {
-            mFloatingActionMenu.close(true);
             Intent intent = new Intent(context, AddPlaceOnMapActivity.class);
             startActivityForResult(intent, ADD_PLACE_DONE);
         });
@@ -281,7 +281,6 @@ public class MainActivity extends BaseActivity
         fabButton.setImageResource(R.drawable.ic_search_white_24dp);
         fabButton.setOnClickListener(v -> {
             try {
-                mFloatingActionMenu.close(true);
                 Intent intent = new PlaceAutocomplete.IntentBuilder
                         (PlaceAutocomplete.MODE_FULLSCREEN)
                         .build(this);
@@ -370,5 +369,12 @@ public class MainActivity extends BaseActivity
     @Override
     public void getFragmentInstance(Fragment fragment) {
         mSearchPlaceFragment = (SearchPlacesFragment) fragment;
+    }
+
+    @Override
+    public void closeFloatingActionMenu() {
+        if (mFloatingActionMenu.isOpened()){
+            mFloatingActionMenu.close(true);
+        }
     }
 }
