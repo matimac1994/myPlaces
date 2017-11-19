@@ -1,13 +1,10 @@
 package com.maciejak.myplaces.ui.activity;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.maciejak.myplaces.R;
+import com.maciejak.myplaces.util.PermissionUtils;
 
 public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleMap.OnMarkerDragListener,
@@ -118,7 +116,8 @@ public class AddPlaceOnMapActivity extends BaseActivity implements OnMapReadyCal
         mUiSettings.setZoomControlsEnabled(true);
         mUiSettings.setMyLocationButtonEnabled(true);
 
-        if (checkPermissions()) {
+        if (PermissionUtils.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                && PermissionUtils.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)){
             mMap.setMyLocationEnabled(true);
         }
 

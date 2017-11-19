@@ -47,7 +47,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected static final String TAG = BaseActivity.class.getSimpleName();
 
-    private static final int MY_LOCATION_PERMISSION_REQUEST_CODE = 11;
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
@@ -134,7 +133,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void startLocationUpdates(AppCompatActivity activity) {
         mSettingsClient.checkLocationSettings(mLocationSettingsRequest)
                 .addOnSuccessListener(this, locationSettingsResponse -> {
-                    if (checkPermissions()){
+                    if (checkLocationPermissions()){
                         mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
                     } else {
                         stopLocationUpdates();
@@ -167,110 +166,30 @@ public abstract class BaseActivity extends AppCompatActivity {
         mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
     }
 
-    //true if permissions granted, false otherwise
-    public boolean checkPermissions() {
-        int permissionFineLocation = ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
-        int permissionCoarseLocation = ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION);
-
-        return (permissionFineLocation == PackageManager.PERMISSION_GRANTED
-                && permissionCoarseLocation == PackageManager.PERMISSION_GRANTED);
+    public boolean checkCameraPermissions(){
+        int permissionCamera = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        int permissionWriteExternalStorage = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        return (permissionCamera == PackageManager.PERMISSION_GRANTED
+                && permissionWriteExternalStorage == PackageManager.PERMISSION_GRANTED);
     }
 
-    private void showSnackbar(AppCompatActivity activity, final int mainTextStringId, final int actionStringId,
-                              View.OnClickListener listener) {
-        Snackbar snackbar;
-        if (activity instanceof MainActivity){
-            snackbar = Snackbar.make(
-                    activity.findViewById(R.id.coordinatorLayout),
-                    getString(mainTextStringId),
-                    Snackbar.LENGTH_LONG);
-        }
-        else {
-            snackbar = Snackbar.make(
-                    findViewById(android.R.id.content),
-                    getString(mainTextStringId),
-                    Snackbar.LENGTH_LONG);
-        }
-        snackbar.setAction(getString(actionStringId), listener);
-        snackbar.setActionTextColor(Color.YELLOW);
-        snackbar.show();
+    protected boolean checkLocationPermissions(){
+        return (PermissionUtils.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                && PermissionUtils.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION));
     }
 
-    public void requestPermissions(AppCompatActivity activity) {
-        boolean shouldProvideRationale =
-                ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        Manifest.permission.ACCESS_FINE_LOCATION);
-
-        // Provide an additional rationale to the user. This would happen if the user denied the
-        // request previously, but didn't check the "Don't ask again" checkbox.
-        if (shouldProvideRationale) {
-            Log.i(TAG, "Displaying permission rationale to provide additional context.");
-            showSnackbar(activity, R.string.permission_rationale,
-                    android.R.string.ok, view -> {
-                        // Request permission
-                        ActivityCompat.requestPermissions(activity,
-                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                MY_LOCATION_PERMISSION_REQUEST_CODE);
-                    });
-        } else {
-            Log.i(TAG, "Requesting permission");
-            // Request permission. It's possible this can be auto answered if device policy
-            // sets the permission in a given state or the user denied the permission
-            // previously and checked "Never ask again".
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    MY_LOCATION_PERMISSION_REQUEST_CODE);
-        }
+    protected void showSnackbarForPermissionDenied(){
+        PermissionUtils.showSnackbar(this, R.string.permission_denied_explanation,
+                R.string.settings, view -> {
+                    // Build intent that displays the App settings screen.
+                    Intent intent = new Intent();
+                    intent.setAction(
+                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package",
+                            BuildConfig.APPLICATION_ID, null);
+                    intent.setData(uri);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                });
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CHECK_SETTINGS) {
-            switch (resultCode) {
-                case Activity.RESULT_OK:
-                    Log.i(TAG, "User agreed to make required location settings changed");
-                    break;
-                case RESULT_CANCELED:
-                    Log.i(TAG, "User don't agreed to make required location settings changed");
-                    break;
-            }
-        }
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        Log.i(TAG, "onRequestPermissionResult");
-        if (requestCode == MY_LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length <= 0) {
-                // If user interaction was interrupted, the permission request is cancelled and you
-                // receive empty arrays.
-                Log.i(TAG, "User interaction was cancelled.");
-            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.i(TAG, "Permission granted, updates requested, starting location updates");
-                startLocationUpdates(this);
-            } else {
-                showSnackbar(this, R.string.permission_denied_explanation,
-                        R.string.settings, view -> {
-                            // Build intent that displays the App settings screen.
-                            Intent intent = new Intent();
-                            intent.setAction(
-                                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                            Uri uri = Uri.fromParts("package",
-                                    BuildConfig.APPLICATION_ID, null);
-                            intent.setData(uri);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                        });
-            }
-        }
-    }
-
 }

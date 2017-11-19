@@ -1,12 +1,16 @@
 package com.maciejak.myplaces.ui.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -14,6 +18,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,9 +34,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.maciejak.myplaces.BuildConfig;
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.repository.PlaceRepository;
 import com.maciejak.myplaces.ui.adapter.AddPlacePhotosRecyclerViewAdapter;
+import com.maciejak.myplaces.util.PermissionUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -49,6 +56,9 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
 
     public static final String PLACE_LAT_LNG = "AddPlaceActivity LatLng";
     public static final String ADD_PLACE_ACTIVITY_DATA = "AddPlaceActivity Data";
+
+    private static final int REQUEST_CAMERA = 13;
+    private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 14;
 
     GoogleMap mMap;
     UiSettings mUiSettings;
@@ -206,9 +216,17 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
                 .setItems(R.array.pick_photos_array, (dialog, which) -> {
                     switch (which){
                         case 0:
-                            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                            intent.setType("image/*");
-                            startActivityForResult(intent, RESULT_LOAD_IMAGE);
+                            if(!PermissionUtils.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                                PermissionUtils.requestPermission(this,
+                                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                        REQUEST_WRITE_EXTERNAL_STORAGE,
+                                        R.string.write_external_storage_permission_rationale);
+
+                            } else {
+                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                                intent.setType("image/*");
+                                startActivityForResult(intent, RESULT_LOAD_IMAGE);
+                            }
                             break;
                         case 1:
                             pickPhotoFromCamera();
@@ -220,21 +238,34 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
     }
 
     private void pickPhotoFromCamera() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE_SECURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            java.io.File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                photoURI = FileProvider.getUriForFile(this,
-                        "com.maciejak.myplaces.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, RESULT_TAKE_PHOTO);
+        if (!PermissionUtils.checkPermission(this, Manifest.permission.CAMERA)){
+            PermissionUtils.requestPermission(this,
+                    Manifest.permission.CAMERA,
+                    REQUEST_CAMERA,
+                    R.string.camera_permission_rationale);
+        } else if(!PermissionUtils.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            PermissionUtils.requestPermission(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    REQUEST_WRITE_EXTERNAL_STORAGE,
+                    R.string.write_external_storage_permission_rationale);
+
+        } else {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE_SECURE);
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                java.io.File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    photoURI = FileProvider.getUriForFile(this,
+                            "com.maciejak.myplaces.fileprovider",
+                            photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, RESULT_TAKE_PHOTO);
+                }
             }
         }
     }
@@ -266,6 +297,35 @@ public class AddPlaceActivity extends BaseActivity implements OnMapReadyCallback
         for(int i=0; i<mPhotos.size(); i++){
             File file = new File(photoPaths.get(i));
             file.delete();
+        }
+    }
+
+    /**
+     * Callback received when a permissions request has been completed.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        Log.i(TAG, "onRequestPermissionResult");
+        if (requestCode == REQUEST_CAMERA) {
+            if (grantResults.length <= 0) {
+                Log.i(TAG, "User interaction was cancelled.");
+            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                pickPhotoFromCamera();
+            } else {
+                showSnackbarForPermissionDenied();
+            }
+        } else if (requestCode == REQUEST_WRITE_EXTERNAL_STORAGE){
+            if (grantResults.length <= 0) {
+                // If user interaction was interrupted, the permission request is cancelled and you
+                // receive empty arrays.
+                Log.i(TAG, "User interaction was cancelled.");
+            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.i(TAG, "Permission granted, updates requested, starting location updates");
+                pickPhotoFromCamera();
+            } else {
+                showSnackbarForPermissionDenied();
+            }
         }
     }
 }

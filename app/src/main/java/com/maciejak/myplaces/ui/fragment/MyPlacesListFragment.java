@@ -124,13 +124,7 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
         super.onStart();
         mPlaces = mPlaceRepository.getAllVisiblePlaces();
         manageVisibility(mPlaces);
-        mMyPlacesListRecyclerViewAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG, "onPause: " + mPlaces.size());
+        mMyPlacesListRecyclerViewAdapter.updateList(mPlaces);
     }
 
     @Override

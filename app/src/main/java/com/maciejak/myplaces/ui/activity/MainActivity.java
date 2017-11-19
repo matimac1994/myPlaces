@@ -1,9 +1,14 @@
 package com.maciejak.myplaces.ui.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,6 +17,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,6 +35,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
+import com.maciejak.myplaces.BuildConfig;
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.listener.OnCloseFloatingActionMenu;
 import com.maciejak.myplaces.ui.fragment.ArchiveListFragment;
@@ -36,6 +43,7 @@ import com.maciejak.myplaces.ui.fragment.MapFragment;
 import com.maciejak.myplaces.ui.fragment.MyPlacesListFragment;
 import com.maciejak.myplaces.ui.fragment.SearchPlacesFragment;
 import com.maciejak.myplaces.util.Const;
+import com.maciejak.myplaces.util.PermissionUtils;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import butterknife.BindView;
@@ -49,6 +57,7 @@ public class MainActivity extends BaseActivity
 
     protected static final String TAG = MainActivity.class.getSimpleName();
 
+    private static final int MY_LOCATION_PERMISSION_REQUEST_CODE = 11;
     private static final int REQUEST_SELECT_PLACE = 1000;
     private static final int ADD_PLACE_DONE = 2;
 
@@ -234,10 +243,7 @@ public class MainActivity extends BaseActivity
         fabButton.setLabelText(getString(R.string.add_place_from_my_location_button_label));
         fabButton.setImageResource(R.drawable.ic_my_location_white_24dp);
         fabButton.setOnClickListener(v -> {
-            if (!checkPermissions()){
-                requestPermissions(this);
-            }
-            else {
+            if (checkLocationPermissions()){
                 Intent intent;
                 if (isActualLocation) {
                     intent = new Intent(context, AddPlaceActivity.class);
@@ -256,6 +262,12 @@ public class MainActivity extends BaseActivity
                     mToast.show();
                 }
                 startActivityForResult(intent, ADD_PLACE_DONE);
+            }
+            else {
+                PermissionUtils.requestPermission(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        MY_LOCATION_PERMISSION_REQUEST_CODE,
+                        R.string.location_permission_rationale);
             }
 
         });
@@ -365,7 +377,7 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onStart() {
         super.onStart();
-        if (checkPermissions()) {
+        if (checkLocationPermissions()) {
             startLocationUpdates(this);
         }
     }
@@ -374,6 +386,38 @@ public class MainActivity extends BaseActivity
     protected void onStop() {
         super.onStop();
         stopLocationUpdates();
+    }
+
+    /**
+     * Callback received when a permissions request has been completed.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        Log.i(TAG, "onRequestPermissionResult");
+        if (requestCode == MY_LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length <= 0) {
+                // If user interaction was interrupted, the permission request is cancelled and you
+                // receive empty arrays.
+                Log.i(TAG, "User interaction was cancelled.");
+            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.i(TAG, "Permission granted, updates requested, starting location updates");
+                startLocationUpdates(this);
+            } else {
+                PermissionUtils.showSnackbar(this, R.string.permission_denied_explanation,
+                        R.string.settings, view -> {
+                            // Build intent that displays the App settings screen.
+                            Intent intent = new Intent();
+                            intent.setAction(
+                                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            Uri uri = Uri.fromParts("package",
+                                    BuildConfig.APPLICATION_ID, null);
+                            intent.setData(uri);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        });
+            }
+        }
     }
 
     @Override

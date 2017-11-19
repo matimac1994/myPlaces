@@ -62,13 +62,17 @@ public class PlaceRepository {
     }
 
     public List<Place> getAllPlaces(){
-        return SQLite.select().from(Place.class).queryList();
+        return SQLite.select()
+                .from(Place.class)
+                .orderBy(Place_Table.createdAt.getNameAlias(), false)
+                .queryList();
     }
 
     public List<Place> getAllVisiblePlaces(){
         return SQLite.select()
                 .from(Place.class)
                 .where(Place_Table.deletedAt.isNull())
+                .orderBy(Place_Table.createdAt.getNameAlias(), false)
                 .queryList();
     }
 
@@ -76,6 +80,7 @@ public class PlaceRepository {
         return SQLite.select()
                 .from(Place.class)
                 .where(Place_Table.deletedAt.isNotNull())
+                .orderBy(Place_Table.deletedAt.getNameAlias(), false)
                 .queryList();
     }
 

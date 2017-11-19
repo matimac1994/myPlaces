@@ -93,6 +93,14 @@ public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlac
         return mPlaces.get(position);
     }
 
+    public void updateList(List<Place> places){
+        if (places != null && places.size() > 0){
+            mPlaces.clear();
+            mPlaces.addAll(places);
+            notifyDataSetChanged();
+        }
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder{
 
         @BindView(R.id.row_my_places_list_image) ImageView mImageView;

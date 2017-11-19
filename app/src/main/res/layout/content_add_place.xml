@@ -19,36 +19,42 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:theme="@style/TextInputLayout">
             <EditText android:id="@+id/add_place_title"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:inputType="text"
-                      android:hint="@string/add_place_form_title" />
+                      android:hint="@string/add_place_form_title"
+                      app:backgroundTint="@color/logoColor"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/add_place_note"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:inputType="text"
-                      android:hint="@string/add_place_form_note" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:theme="@style/TextInputLayout">
             <EditText android:id="@+id/add_place_describe"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:inputType="text"
-                      android:hint="@string/add_place_form_describe" />
+                      android:hint="@string/add_place_form_describe"
+                      app:backgroundTint="@color/logoColor"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:theme="@style/TextInputLayout">
+            <EditText android:id="@+id/add_place_note"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:inputType="text"
+                      android:hint="@string/add_place_form_note"
+                      app:backgroundTint="@color/logoColor"/>
         </android.support.design.widget.TextInputLayout>
 
         <TextView

@@ -87,9 +87,11 @@
     <string name="archived">Zarchiwizowano</string>
     <string name="restored">Przywrócono</string>
     <string name="archive">Zarchiwizuj</string>
-    <string name="permission_rationale">Zezwól aplikacji na dostęp do Twojej lokalizacji</string>
-    <string name="permission_denied_explanation">Nie przyznano uprawnień do lokalizacji</string>
     <string name="settings">Ustawienia</string>
     <string name="archived_places">Zarchiwizowane miejsca</string>
     <string name="no_title">Brak tytułu</string>
+    <string name="location_permission_rationale">Zezwól aplikacji na dostęp do Twojej lokalizacji</string>
+    <string name="write_external_storage_permission_rationale">Zezwól aplikacji na zapisywanie zdjęć</string>
+    <string name="camera_permission_rationale">Zezwól aplikacji na robienie zdjęć</string>
+    <string name="permission_denied_explanation">Nie przyznano uprawnień aplikacji</string>
 </resources>
