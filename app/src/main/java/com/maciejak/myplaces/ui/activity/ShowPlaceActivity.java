@@ -104,7 +104,7 @@ public class ShowPlaceActivity extends BaseActivity {
 
         if (mPlace.getDeletedAt() != null){
             mEditFab.setImageResource(R.drawable.ic_undo_white_24dp);
-            mDeleteFab.setImageResource(R.drawable.ic_close_white_24dp);
+            mDeleteFab.setImageResource(R.drawable.ic_delete_white_24dp);
         }
 
     }
