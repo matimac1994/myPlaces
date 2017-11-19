@@ -1,28 +1,17 @@
 package com.maciejak.myplaces.ui.activity;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Looper;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,22 +24,11 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
-import com.maciejak.myplaces.BuildConfig;
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.listener.OnCloseFloatingActionMenu;
 import com.maciejak.myplaces.ui.fragment.ArchiveListFragment;
@@ -74,6 +52,8 @@ public class MainActivity extends BaseActivity
     private static final int REQUEST_SELECT_PLACE = 1000;
     private static final int ADD_PLACE_DONE = 2;
 
+    private final String VISIBLE_FRAGMENT = "MainActivity Visible Fragment";
+
     private Toast mToast;
 
     FloatingActionButton mAddPlaceFromMyLocationActionButton;
@@ -93,6 +73,11 @@ public class MainActivity extends BaseActivity
 
     SearchPlacesFragment mSearchPlaceFragment;
 
+    Fragment mFragment;
+    FragmentManager mFragmentManager;
+    FragmentTransaction mFragmentTransaction;
+    int mCurrentPosition;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,32 +93,18 @@ public class MainActivity extends BaseActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        Fragment fragment;
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        mDrawerLayout.closeDrawer(GravityCompat.START);
         switch (id) {
             case R.id.nav_list_places:
-                fragment = MyPlacesListFragment.newInstance();
-                fragmentManager.popBackStack();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.contentFrameLayout, fragment)
-                        .commit();
+                mFragment = MyPlacesListFragment.newInstance();
+                mCurrentPosition = R.id.nav_list_places;
                 break;
             case R.id.nav_map:
-                fragment = MapFragment.newInstance();
-                fragmentManager.popBackStack();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.contentFrameLayout, fragment)
-                        .addToBackStack("MapFragment")
-                        .commit();
+                mFragment = MapFragment.newInstance();
+                mCurrentPosition = R.id.nav_map;
                 break;
             case R.id.nav_archive:
-                fragment = ArchiveListFragment.newInstance();
-                fragmentManager.popBackStack();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.contentFrameLayout, fragment)
-                        .addToBackStack("ArchiveListFragment")
-                        .commit();
+                mFragment = ArchiveListFragment.newInstance();
+                mCurrentPosition = R.id.nav_archive;
                 break;
             case R.id.nav_about:
                 Toast.makeText(this, "O aplikacji", Toast.LENGTH_SHORT).show();
@@ -143,6 +114,8 @@ public class MainActivity extends BaseActivity
                 this.finish();
                 break;
         }
+        mNavigationView.setCheckedItem(mCurrentPosition);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -155,11 +128,41 @@ public class MainActivity extends BaseActivity
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
+        mFragmentManager = getSupportFragmentManager();
+        mFragmentManager.addOnBackStackChangedListener(() -> {
+            Fragment fragment = mFragmentManager.findFragmentByTag(VISIBLE_FRAGMENT);
+            if (fragment instanceof MyPlacesListFragment)
+                mCurrentPosition = R.id.nav_list_places;
+            if (fragment instanceof MapFragment)
+                mCurrentPosition = R.id.nav_map;
+            if (fragment instanceof ArchiveListFragment)
+                mCurrentPosition = R.id.nav_archive;
+
+            mNavigationView.setCheckedItem(mCurrentPosition);
+        });
+
         showDefaultFragment();
         setupSettingsButton();
         setupFloatingActionMenu();
         setupLocation();
         setupSearchView();
+    }
+
+    private void replaceCurrentFragment(Fragment fragment){
+        mFragmentManager.popBackStack();
+        mFragmentTransaction = mFragmentManager.beginTransaction();
+        mFragmentTransaction.replace(R.id.contentFrameLayout, fragment, VISIBLE_FRAGMENT);
+        mFragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        if (!(fragment instanceof MyPlacesListFragment))
+            mFragmentTransaction.addToBackStack(null);
+        mFragmentTransaction.commit();
+    }
+
+    private void showDefaultFragment() {
+        mCurrentPosition = R.id.nav_list_places;
+        mNavigationView.setCheckedItem(mCurrentPosition);
+        mFragment = MyPlacesListFragment.newInstance();
+        replaceCurrentFragment(mFragment);
     }
 
     private void setupSearchView() {
@@ -202,15 +205,6 @@ public class MainActivity extends BaseActivity
                 return true;
             }
         });
-    }
-
-    private void showDefaultFragment() {
-        mNavigationView.setCheckedItem(R.id.nav_list_places);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = MyPlacesListFragment.newInstance();
-        fragmentManager.beginTransaction()
-                .replace(R.id.contentFrameLayout, fragment)
-                .commit();
     }
 
     private void setupSettingsButton() {
@@ -300,7 +294,19 @@ public class MainActivity extends BaseActivity
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
-        return new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        return new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                replaceCurrentFragment(mFragment);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                closeFloatingActionMenu();
+            }
+        };
     }
 
     @Override
@@ -314,7 +320,7 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        int count = getSupportFragmentManager().getBackStackEntryCount();
+        int count = mFragmentManager.getBackStackEntryCount();
 
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -325,7 +331,7 @@ public class MainActivity extends BaseActivity
         } else if (count == 0) {
             super.onBackPressed();
         } else {
-            getSupportFragmentManager().popBackStack();
+            mFragmentManager.popBackStack();
         }
     }
 

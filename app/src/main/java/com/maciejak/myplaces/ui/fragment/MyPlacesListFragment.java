@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.content.ContentValues.TAG;
 
 public class MyPlacesListFragment extends BaseFragment implements View.OnClickListener, MyPlacesListRecyclerViewAdapter.MyPlacesListOnDataChangeListener{
 
@@ -87,12 +90,10 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
                             if (position == 0 || position == mMyPlacesListRecyclerViewAdapter.getItemCount())
                                 mMyPlacesListRecyclerView.scrollToPosition(position);
                             mMyPlacesListRecyclerViewAdapter.restoreItem(deletedPlace, position);
-                            mPlaceRepository.restorePlace(deletedPlace);
                         });
                 snackbar.setActionTextColor(Color.YELLOW);
                 snackbar.show();
                 mMyPlacesListRecyclerViewAdapter.removeItem(position);
-                mPlaceRepository.deletePlaceSoft(deletedPlace);
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
@@ -127,6 +128,12 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: " + mPlaces.size());
+    }
+
+    @Override
     public void onClick(View v) {
         int itemPosition = mMyPlacesListRecyclerView.getChildAdapterPosition(v);
         Place place = mMyPlacesListRecyclerViewAdapter.getItem(itemPosition);
@@ -141,7 +148,7 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
     }
 
     @Override
-    public void onDataChanged() {
-        manageVisibility(mPlaces);
+    public void onDataChanged(List<Place> places) {
+        manageVisibility(places);
     }
 }

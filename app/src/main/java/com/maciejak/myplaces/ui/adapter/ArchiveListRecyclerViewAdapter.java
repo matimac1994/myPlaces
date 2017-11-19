@@ -147,6 +147,7 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
         mPlaces.remove(position);
         mPlaceRepository.deletePlace(place);
         notifyItemRemoved(position);
+        mArchiveListAdapterListener.onDataChanged(mPlaces);
     }
 
     public void restorePlace(int position) {
@@ -154,6 +155,7 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
         mPlaces.remove(position);
         mPlaceRepository.restorePlace(place);
         notifyItemRemoved(position);
+        mArchiveListAdapterListener.onDataChanged(mPlaces);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -205,6 +207,8 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
     }
 
     public interface ArchiveListAdapterListener{
+        void onDataChanged(List<Place> places);
+
         void onImageClicked(int position);
 
         void onTitleOrDescriptionClicked(int position);

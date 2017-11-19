@@ -102,6 +102,11 @@ public class ArchiveListFragment extends BaseFragment
     }
 
     @Override
+    public void onDataChanged(List<Place> places) {
+        manageVisibility(places);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         mPlaces = mPlaceRepository.getAllDeletedPlaces();
@@ -159,7 +164,6 @@ public class ArchiveListFragment extends BaseFragment
         for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
             mArchiveListRecyclerViewAdapter.restorePlace(selectedItemPositions.get(i));
         }
-        manageVisibility(mPlaces);
         Toast.makeText(mContext, R.string.restored, Toast.LENGTH_SHORT).show();
     }
 
@@ -169,7 +173,6 @@ public class ArchiveListFragment extends BaseFragment
         for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
             mArchiveListRecyclerViewAdapter.removePlace(selectedItemPositions.get(i));
         }
-        manageVisibility(mPlaces);
         Toast.makeText(mContext, R.string.deleted, Toast.LENGTH_SHORT).show();
     }
 
