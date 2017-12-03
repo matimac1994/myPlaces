@@ -100,4 +100,23 @@ public class PlaceRepository {
     public void deletePlace(Place place){
         place.delete();
     }
+
+    public void restorePlaceById(Long id) throws Exception {
+        Place place = getPlaceById(id);
+        if (place != null){
+            place.setDeletedAt(null);
+            place.save();
+        } else {
+            throw new Exception();
+        }
+    }
+
+    public void deletePlaceById(Long id) throws Exception {
+        Place place = getPlaceById(id);
+        if (place != null){
+            place.delete();
+        } else {
+            throw new Exception();
+        }
+    }
 }

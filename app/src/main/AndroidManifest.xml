@@ -66,7 +66,7 @@
             android:theme="@style/LoginTheme">
         </activity>
         <activity
-            android:name=".ui.activities.RegisterActivity"
+            android:name=".ui.activities.RegistrationActivity"
             android:theme="@style/LoginTheme">
         </activity>
         <activity android:name=".ui.activities.SettingsActivity">

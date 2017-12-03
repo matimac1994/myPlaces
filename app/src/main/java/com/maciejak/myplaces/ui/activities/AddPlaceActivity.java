@@ -32,11 +32,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.api.dto.response.BaseResponse;
+import com.maciejak.myplaces.api.dto.response.AddPlaceResponse;
 import com.maciejak.myplaces.api.dto.response.error.ErrorResponse;
-import com.maciejak.myplaces.listeners.ServerResponseListener;
+import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
 import com.maciejak.myplaces.managers.AddPlaceManager;
-import com.maciejak.myplaces.repositories.PlaceRepository;
 import com.maciejak.myplaces.ui.adapters.AddPlacePhotosRecyclerViewAdapter;
 import com.maciejak.myplaces.utils.PermissionUtils;
 
@@ -52,7 +51,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AddPlaceActivity extends BaseActivity implements ServerResponseListener, OnMapReadyCallback{
+public class AddPlaceActivity extends BaseActivity implements
+        AddPlaceManager.AddPlaceResponseListener,
+        ServerErrorResponseListener,
+        OnMapReadyCallback{
 
     public static final String PLACE_LAT_LNG = "AddPlaceActivity LatLng";
     public static final String ADD_PLACE_ACTIVITY_DATA = "AddPlaceActivity Data";
@@ -196,19 +198,12 @@ public class AddPlaceActivity extends BaseActivity implements ServerResponseList
     }
 
     private void addPlaceDone() {
-//        PlaceRepository placeRepository = new PlaceRepository();
-//        placeRepository.savePlace(placeTitle.getText().toString(),
-//                mPlaceLatLng,
-//                placeNote.getText().toString(),
-//                placeDescription.getText().toString(),
-//                mPhotos);
-
-        savePlaceOnServer();
-
-//        Toast.makeText(this, "Zapisano", Toast.LENGTH_SHORT).show();
-//        Intent intent = new Intent(ADD_PLACE_ACTIVITY_DATA);
-//        setResult(Activity.RESULT_OK ,intent);
-//        this.finish();
+        AddPlaceManager addPlaceManager = new AddPlaceManager(this, this);
+        addPlaceManager.addPlace(mPlaceLatLng,
+                placeTitle.getText().toString(),
+                placeNote.getText().toString(),
+                placeDescription.getText().toString(),
+                mPhotos);
     }
 
     @OnClick(R.id.add_place_add_photo_fab)
@@ -331,20 +326,6 @@ public class AddPlaceActivity extends BaseActivity implements ServerResponseList
         }
     }
 
-    private void savePlaceOnServer() {
-        AddPlaceManager addPlaceManager = new AddPlaceManager(this);
-        addPlaceManager.addPlace(mPlaceLatLng,
-                placeTitle.getText().toString(),
-                placeNote.getText().toString(),
-                placeDescription.getText().toString(),
-                mPhotos);
-    }
-
-    @Override
-    public void onSuccessResponse(BaseResponse response) {
-
-    }
-
     @Override
     public void onErrorResponse(ErrorResponse response) {
 
@@ -353,5 +334,13 @@ public class AddPlaceActivity extends BaseActivity implements ServerResponseList
     @Override
     public void onFailure(String message) {
 
+    }
+
+    @Override
+    public void onSuccessResponse(AddPlaceResponse addPlaceResponse) {
+        Toast.makeText(this, this.getString(R.string.saved), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(ADD_PLACE_ACTIVITY_DATA);
+        setResult(Activity.RESULT_OK ,intent);
+        this.finish();
     }
 }

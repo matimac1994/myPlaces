@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.maciejak.myplaces.R;
+import com.maciejak.myplaces.api.dto.response.PlaceListResponse;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repositories.PlaceRepository;
 import com.squareup.picasso.Picasso;
@@ -31,7 +32,8 @@ import butterknife.OnLongClick;
 
 public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<ArchiveListRecyclerViewAdapter.ViewHolder> {
 
-    private List<Place> mPlaces;
+    private List<PlaceListResponse> mPlaces;
+    private List<Long> placeIds = new ArrayList<>();
     private Context mContext;
     private ArchiveListAdapterListener mArchiveListAdapterListener;
     private LayoutInflater mInflater;
@@ -39,7 +41,7 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
     private PlaceRepository mPlaceRepository;
     private SparseBooleanArray mSelectedPlacesPositions;
 
-    public ArchiveListRecyclerViewAdapter(List<Place> places, Context context, ArchiveListAdapterListener archiveListAdapterListener) {
+    public ArchiveListRecyclerViewAdapter(List<PlaceListResponse> places, Context context, ArchiveListAdapterListener archiveListAdapterListener) {
         mPlaces = places;
         mContext = context;
         mArchiveListAdapterListener = archiveListAdapterListener;
@@ -59,7 +61,7 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
 
     @Override
     public void onBindViewHolder(ArchiveListRecyclerViewAdapter.ViewHolder holder, int position) {
-        Place place = mPlaces.get(position);
+        PlaceListResponse place = mPlaces.get(position);
         boolean hasTitle = !place.getTitle().isEmpty();
         boolean hasDescription = !place.getDescription().isEmpty();
 
@@ -85,7 +87,15 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
         applyIconAppearance(holder, position);
     }
 
-    void applyIconAppearance(ViewHolder holder, int position){
+    public void updateList(List<PlaceListResponse> places){
+        if (places != null && places.size() > 0){
+            mPlaces.clear();
+            mPlaces.addAll(places);
+            notifyDataSetChanged();
+        }
+    }
+
+    private void applyIconAppearance(ViewHolder holder, int position){
         if (mSelectedPlacesPositions.get(position, false)){
             holder.mImageFrontLayout.setVisibility(View.GONE);
             holder.mImageBackLayout.setVisibility(View.VISIBLE);
@@ -98,6 +108,10 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
     public void clearSelections() {
         mSelectedPlacesPositions.clear();
         notifyDataSetChanged();
+    }
+
+    public void clearIds(){
+        this.placeIds.clear();
     }
 
     @Override
@@ -128,31 +142,28 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
         return items;
     }
 
-    public Place getItem(int position){
+    public List<Long> getPlaceIds() {
+        return placeIds;
+    }
+
+    public PlaceListResponse getItem(int position){
         return mPlaces.get(position);
     }
 
     public void toggleSelection(int position) {
+        PlaceListResponse place = mPlaces.get(position);
         if (mSelectedPlacesPositions.get(position, false)) {
             mSelectedPlacesPositions.delete(position);
+            placeIds.remove(place.getId());
         } else {
             mSelectedPlacesPositions.put(position, true);
+            placeIds.add(place.getId());
         }
         notifyItemChanged(position, mPlaces.get(position));
     }
 
-    public void removePlace(int position) {
-        Place place = mPlaces.get(position);
+    public void removePlaceFromList(int position) {
         mPlaces.remove(position);
-        mPlaceRepository.deletePlace(place);
-        notifyItemRemoved(position);
-        mArchiveListAdapterListener.onDataChanged(mPlaces);
-    }
-
-    public void restorePlace(int position) {
-        Place place = mPlaces.get(position);
-        mPlaces.remove(position);
-        mPlaceRepository.restorePlace(place);
         notifyItemRemoved(position);
         mArchiveListAdapterListener.onDataChanged(mPlaces);
     }
@@ -206,7 +217,7 @@ public class ArchiveListRecyclerViewAdapter extends RecyclerView.Adapter<Archive
     }
 
     public interface ArchiveListAdapterListener{
-        void onDataChanged(List<Place> places);
+        void onDataChanged(List<PlaceListResponse> places);
 
         void onImageClicked(int position);
 

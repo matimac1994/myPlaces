@@ -16,4 +16,5 @@ public interface PlacesService {
 
     @GET(ServerConfig.GET_ACTIVE_PLACES)
     Call<List<PlaceListResponse>> getAllActivePlaces();
+
 }

@@ -79,8 +79,6 @@
         <item>Zrób zdjęcie</item>
     </array>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="archive_no_places">Brak zarchiwizowanych miejsc</string>
     <string name="restore">Przywróć</string>
     <string name="no_description">Brak opisu</string>
@@ -98,4 +96,7 @@
     <string name="registered">Zarejestrowano</string>
     <string name="error">Error</string>
     <string name="server_error">Problem z połączeniem</string>
+    <string name="problem_with_show_place">Problem z wyświetleniem miejsca</string>
+    <string name="problem_with_delete_places">Problem z usunięciem miejsc</string>
+    <string name="problem_with_restore_places">Problem z przywróceniem miejsc</string>
 </resources>

@@ -8,19 +8,21 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.api.dto.response.BaseResponse;
+import com.maciejak.myplaces.api.dto.response.RegistrationResponse;
 import com.maciejak.myplaces.api.dto.response.error.ErrorResponse;
-import com.maciejak.myplaces.listeners.ServerResponseListener;
-import com.maciejak.myplaces.managers.RegisterManager;
+import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
+import com.maciejak.myplaces.managers.RegistrationManager;
 import com.maciejak.myplaces.ui.dialogs.ErrorDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class RegisterActivity extends AppCompatActivity implements ServerResponseListener {
+public class RegistrationActivity extends AppCompatActivity implements
+        RegistrationManager.RegistrationResponseListener,
+        ServerErrorResponseListener {
 
-    public static final String REGISTER_USERNAME = "RegisterActivity USERNAME";
+    public static final String REGISTER_USERNAME = "RegistrationActivity USERNAME";
 
     @BindView(R.id.register_username)
     EditText mUserNameEditText;
@@ -46,15 +48,15 @@ public class RegisterActivity extends AppCompatActivity implements ServerRespons
     @OnClick(R.id.register_register_button)
     public void onClickRegisterButton(){
         username = mUserNameEditText.getText().toString();
-        RegisterManager registerManager = new RegisterManager(this);
-        registerManager.register(mUserNameEditText.getText().toString(),
+        RegistrationManager registrationManager = new RegistrationManager(this, this);
+        registrationManager.register(mUserNameEditText.getText().toString(),
                 mEmailEditText.getText().toString(),
                 mPasswordEditText.getText().toString(),
                 mConfirmPasswordEditText.getText().toString());
     }
 
     @Override
-    public void onSuccessResponse(BaseResponse response) {
+    public void onSuccessResponse(RegistrationResponse registrationResponse) {
         Toast.makeText(this, getString(R.string.registered), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent();
         intent.putExtra(REGISTER_USERNAME, username);

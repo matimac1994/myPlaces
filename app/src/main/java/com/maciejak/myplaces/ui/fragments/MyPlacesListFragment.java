@@ -13,16 +13,13 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.api.dto.response.BaseResponse;
 import com.maciejak.myplaces.api.dto.response.PlaceListResponse;
 import com.maciejak.myplaces.api.dto.response.error.ErrorResponse;
-import com.maciejak.myplaces.listeners.GetAllActivePlacesListener;
-import com.maciejak.myplaces.listeners.ServerResponseListener;
+import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
 import com.maciejak.myplaces.managers.PlaceListManager;
 import com.maciejak.myplaces.repositories.PlaceRepository;
 import com.maciejak.myplaces.ui.activities.ShowPlaceActivity;
 import com.maciejak.myplaces.ui.adapters.MyPlacesListRecyclerViewAdapter;
-import com.maciejak.myplaces.model.Place;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +29,8 @@ import butterknife.ButterKnife;
 
 public class MyPlacesListFragment extends BaseFragment implements View.OnClickListener,
         MyPlacesListRecyclerViewAdapter.MyPlacesListOnDataChangeListener,
-        GetAllActivePlacesListener,
-        ServerResponseListener{
+        PlaceListManager.GetAllActivePlacesListener,
+        ServerErrorResponseListener {
 
     List<PlaceListResponse> mPlaces = new ArrayList<>();
     PlaceRepository mPlaceRepository;
@@ -154,11 +151,6 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
         mPlaces = places;
         manageVisibility(mPlaces);
         mMyPlacesListRecyclerViewAdapter.updateList(mPlaces);
-    }
-
-    @Override
-    public void onSuccessResponse(BaseResponse response) {
-
     }
 
     @Override

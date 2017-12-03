@@ -20,4 +20,16 @@ public class ServerConfig {
 
     public static final String GET_ACTIVE_PLACES = BASE_URL + "/active";
 
+    public static final String GET_MAP_PLACES = BASE_URL + "/map";
+
+    public static final String SHOW_PLACE_GET_PLACE_BY_ID = BASE_URL + "/showplace/{placeId}";
+
+    public static final String DELETE_PLACE_BY_ID = BASE_URL + "/delete/{placeId}";
+
+    public static final String RESTORE_PLACE_BY_ID = BASE_URL + "/restore/{placeId}";
+
+    public static final String ARCHIVE_PLACE_BY_ID = BASE_URL + "/archive/{placeId}";
+
+    public static final String ARCHIVE_PLACES_SPACE = BASE_URL + "/archived";
+
 }

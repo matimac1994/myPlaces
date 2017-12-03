@@ -6,10 +6,10 @@ import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.api.api_services.PlacesService;
 import com.maciejak.myplaces.api.dto.response.PlaceListResponse;
 import com.maciejak.myplaces.api.mappers.PlaceMapper;
-import com.maciejak.myplaces.listeners.GetAllActivePlacesListener;
-import com.maciejak.myplaces.listeners.ServerResponseListener;
+import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repositories.PlaceRepository;
+import com.maciejak.myplaces.utils.UserPreferencesUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,21 +22,30 @@ import retrofit2.Response;
  * Created by Mati on 01.12.2017.
  */
 
-public class PlaceListManager extends BaseManager{
+public class PlaceListManager extends BaseRemoteManager {
 
     private GetAllActivePlacesListener getPlacesListener;
-    private ServerResponseListener mServerResponseListener;
+    private ServerErrorResponseListener mServerErrorResponseListener;
     private PlaceRepository mPlaceRepository = new PlaceRepository();
     private PlaceMapper mPlaceMapper = PlaceMapper.INSTANCE;
 
-    public PlaceListManager(Context context, ServerResponseListener serverResponseListener, GetAllActivePlacesListener getPlacesListener) {
+    public PlaceListManager(Context context, ServerErrorResponseListener serverErrorResponseListener, GetAllActivePlacesListener getPlacesListener) {
         super(context);
         this.getPlacesListener = getPlacesListener;
-        this.mServerResponseListener = serverResponseListener;
+        this.mServerErrorResponseListener = serverErrorResponseListener;
     }
 
     public void getPlaces(){
-        getPlacesFromServer();
+        switch (UserPreferencesUtil.checkUsageType()){
+            case LOCAL:
+                getPlacesLocally();
+                break;
+            case REMOTE:
+                getPlacesFromServer();
+                break;
+            default:
+                break;
+        }
     }
 
     private void getPlacesLocally(){
@@ -58,13 +67,13 @@ public class PlaceListManager extends BaseManager{
                 if (response.isSuccessful() && response.code() == 200){
                     getPlacesListener.onGetAllActivePlaces(response.body());
                 } else {
-                    mServerResponseListener.onErrorResponse(parseErrorResponseToObject(response));
+                    mServerErrorResponseListener.onErrorResponse(parseErrorResponseToObject(response));
                 }
             }
 
             @Override
             public void onFailure(Call<List<PlaceListResponse>> call, Throwable t) {
-                mServerResponseListener.onFailure(mContext.getString(R.string.server_error));
+                mServerErrorResponseListener.onFailure(mContext.getString(R.string.server_error));
             }
         });
     }
@@ -73,12 +82,8 @@ public class PlaceListManager extends BaseManager{
         return mPlaceMapper.placeToPlaceListResponse(place);
     }
 
-    public void setGetPlacesListener(GetAllActivePlacesListener getPlacesListener){
-        this.getPlacesListener = getPlacesListener;
-    }
-
-    public void setServerResponseListener(ServerResponseListener serverResponseListener){
-        this.mServerResponseListener = serverResponseListener;
+    public interface GetAllActivePlacesListener {
+        void onGetAllActivePlaces(List<PlaceListResponse> places);
     }
 
 }

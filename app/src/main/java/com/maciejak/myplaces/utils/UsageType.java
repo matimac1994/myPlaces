@@ -5,5 +5,5 @@ package com.maciejak.myplaces.utils;
  */
 
 public enum UsageType {
-    LOCAL, REMOTE, LOCAL_REMOTE
+    LOCAL, REMOTE, NONE
 }

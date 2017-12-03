@@ -21,18 +21,27 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.maciejak.myplaces.R;
+import com.maciejak.myplaces.api.dto.response.PlaceListResponse;
+import com.maciejak.myplaces.api.dto.response.error.Error;
+import com.maciejak.myplaces.api.dto.response.error.ErrorResponse;
+import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
+import com.maciejak.myplaces.managers.ArchiveManager;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repositories.PlaceRepository;
 import com.maciejak.myplaces.ui.activities.ShowPlaceActivity;
 import com.maciejak.myplaces.ui.adapters.ArchiveListRecyclerViewAdapter;
+import com.maciejak.myplaces.ui.dialogs.ErrorDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ArchiveListFragment extends BaseFragment
-        implements ArchiveListRecyclerViewAdapter.ArchiveListAdapterListener,
+public class ArchiveListFragment extends BaseFragment implements
+        ServerErrorResponseListener,
+        ArchiveManager.ArchiveManagerListener,
+        ArchiveListRecyclerViewAdapter.ArchiveListAdapterListener,
         ActionMode.Callback{
 
     @BindView(R.id.archive_list_recycler_view)
@@ -41,9 +50,9 @@ public class ArchiveListFragment extends BaseFragment
     @BindView(R.id.archive_list_empty_view)
     LinearLayout mEmptyView;
 
+    ArchiveManager mArchiveManager;
     ArchiveListRecyclerViewAdapter mArchiveListRecyclerViewAdapter;
-    PlaceRepository mPlaceRepository;
-    List<Place> mPlaces;
+    List<PlaceListResponse> mPlaces = new ArrayList<>();
 
     ActionMode mActionMode;
     Context mContext;
@@ -71,15 +80,14 @@ public class ArchiveListFragment extends BaseFragment
 
     private void setupControls() {
         getActivity().setTitle(R.string.archive_of_places);
-        mPlaceRepository = new PlaceRepository();
-        mPlaces = mPlaceRepository.getAllDeletedPlaces();
+        mArchiveManager = new ArchiveManager(mContext, this, this);
         mArchiveListRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         mArchiveListRecyclerview.setItemAnimator(new DefaultItemAnimator());
         mArchiveListRecyclerViewAdapter = new ArchiveListRecyclerViewAdapter(mPlaces, getContext(), this);
         mArchiveListRecyclerview.setAdapter(mArchiveListRecyclerViewAdapter);
     }
 
-    private void manageVisibility(List<Place> places){
+    private void manageVisibility(List<PlaceListResponse> places){
         if (places.size() > 0){
             applyFilledView();
         }
@@ -99,16 +107,14 @@ public class ArchiveListFragment extends BaseFragment
     }
 
     @Override
-    public void onDataChanged(List<Place> places) {
+    public void onDataChanged(List<PlaceListResponse> places) {
         manageVisibility(places);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        mPlaces = mPlaceRepository.getAllDeletedPlaces();
-        manageVisibility(mPlaces);
-        mArchiveListRecyclerViewAdapter.notifyDataSetChanged();
+        mArchiveManager.getPlaces();
     }
 
     @Override
@@ -133,11 +139,9 @@ public class ArchiveListFragment extends BaseFragment
         switch (item.getItemId()) {
             case R.id.action_delete:
                 deletePlaces();
-                mode.finish();
                 return true;
             case R.id.action_restore:
                 restorePlaces();
-                mode.finish();
                 return true;
             default:
                 return false;
@@ -152,25 +156,16 @@ public class ArchiveListFragment extends BaseFragment
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
         }
         mArchiveListRecyclerViewAdapter.clearSelections();
+        mArchiveListRecyclerViewAdapter.clearIds();
         mActionMode = null;
     }
 
     private void restorePlaces(){
-        List<Integer> selectedItemPositions =
-                mArchiveListRecyclerViewAdapter.getSelectedItems();
-        for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
-            mArchiveListRecyclerViewAdapter.restorePlace(selectedItemPositions.get(i));
-        }
-        Toast.makeText(mContext, R.string.restored, Toast.LENGTH_SHORT).show();
+        mArchiveManager.restorePlaces(mArchiveListRecyclerViewAdapter.getPlaceIds());
     }
 
     private void deletePlaces(){
-        List<Integer> selectedItemPositions =
-                mArchiveListRecyclerViewAdapter.getSelectedItems();
-        for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
-            mArchiveListRecyclerViewAdapter.removePlace(selectedItemPositions.get(i));
-        }
-        Toast.makeText(mContext, R.string.deleted, Toast.LENGTH_SHORT).show();
+        mArchiveManager.deletePlaces(mArchiveListRecyclerViewAdapter.getPlaceIds());
     }
 
 
@@ -185,7 +180,7 @@ public class ArchiveListFragment extends BaseFragment
             startActionMode(position);
         }
         else {
-            Place place = mArchiveListRecyclerViewAdapter.getItem(position);
+            PlaceListResponse place = mArchiveListRecyclerViewAdapter.getItem(position);
             Intent intent = new Intent(getContext(), ShowPlaceActivity.class);
             intent.putExtra(ShowPlaceActivity.PLACE_ID, place.getId());
             startActivity(intent);
@@ -221,5 +216,60 @@ public class ArchiveListFragment extends BaseFragment
         super.onPause();
         if (mActionMode != null)
             mActionMode.finish();
+    }
+
+    @Override
+    public void onErrorResponse(ErrorResponse response) {
+        if (response.getErrors() != null) {
+            Toast.makeText(mContext, response.getErrors().get(0).getDefaultMessage(), Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(mContext, response.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onFailure(String message) {
+        ErrorDialog errorDialog = new ErrorDialog(mContext, message);
+        errorDialog.show();
+    }
+
+    @Override
+    public void onGetPlaces(List<PlaceListResponse> places) {
+        mPlaces = places;
+        manageVisibility(mPlaces);
+        mArchiveListRecyclerViewAdapter.updateList(mPlaces);
+    }
+
+    @Override
+    public void onDeletePlaces(Boolean isDeleted) {
+        if (isDeleted){
+            removePlacesFromAdapter();
+            mArchiveListRecyclerViewAdapter.clearIds();
+            mActionMode.finish();
+            Toast.makeText(mContext, R.string.deleted, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRestorePlaces(Boolean isRestored) {
+        if (isRestored){
+            removePlacesFromAdapter();
+            mArchiveListRecyclerViewAdapter.clearIds();
+            mActionMode.finish();
+            Toast.makeText(mContext, R.string.restored, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onError(String message) {
+        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void removePlacesFromAdapter(){
+        List<Integer> selectedItemPositions =
+                mArchiveListRecyclerViewAdapter.getSelectedItems();
+        for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
+            mArchiveListRecyclerViewAdapter.removePlaceFromList(selectedItemPositions.get(i));
+        }
     }
 }

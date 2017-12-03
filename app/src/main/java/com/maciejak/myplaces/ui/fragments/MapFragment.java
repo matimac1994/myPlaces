@@ -18,7 +18,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.maciejak.myplaces.MyPlacesApplication;
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.model.Place;
+import com.maciejak.myplaces.api.dto.response.PlaceMapResponse;
+import com.maciejak.myplaces.api.dto.response.error.ErrorResponse;
+import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
+import com.maciejak.myplaces.managers.MapFragmentManager;
 import com.maciejak.myplaces.repositories.PlaceRepository;
 import com.maciejak.myplaces.ui.activities.ShowPlaceActivity;
 import com.maciejak.myplaces.utils.PermissionUtils;
@@ -27,18 +30,22 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MapFragment extends BaseFragment implements OnMapReadyCallback,
+public class MapFragment extends BaseFragment implements
+        ServerErrorResponseListener,
+        MapFragmentManager.GetListPlaceMapResponseListener,
+        OnMapReadyCallback,
         GoogleMap.OnCameraIdleListener,
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap;
 
-    List<Place> mPlaceList;
+    List<PlaceMapResponse> mPlaceList = new ArrayList<>();
     LatLngBounds mBounds;
     List<Marker> mMarkersOnMap;
     UiSettings mUiSettings;
     PlaceRepository mPlaceRepository;
+    MapFragmentManager mMapFragmentManager;
 
     public MapFragment() {}
 
@@ -65,7 +72,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
         getActivity().setTitle(R.string.map);
 
         mMarkersOnMap = new ArrayList<>();
-        mPlaceRepository = new PlaceRepository();
+        mMapFragmentManager = new MapFragmentManager(mContext, this, this);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.my_places_map_fragment);
@@ -118,7 +125,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
         if (checkReady()) {
             if (mPlaceList.size() > 0) {
                 LatLng latLng;
-                for (Place place : mPlaceList) {
+                for (PlaceMapResponse place : mPlaceList) {
                     latLng = new LatLng(place.getLatitude(), place.getLongitude());
                     if (mBounds.contains(latLng)) {
                         addMarkerToMap(place);
@@ -138,7 +145,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
         }
     }
 
-    private void addMarkerToMap(Place place) {
+    private void addMarkerToMap(PlaceMapResponse place) {
         for (Marker marker : mMarkersOnMap) {
             if (marker.getTag().equals(place.getId())) {
                 return;
@@ -150,7 +157,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
         mMarkersOnMap.add(marker);
     }
 
-    private MarkerOptions addOptionsToMarker(Place place) {
+    private MarkerOptions addOptionsToMarker(PlaceMapResponse place) {
         MarkerOptions markerOptions = new MarkerOptions();
         if (!place.getTitle().equals("")) {
             markerOptions.title(place.getTitle());
@@ -167,7 +174,8 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
     @Override
     public void onStart() {
         MyPlacesApplication.getGoogleApiClientHelper().connect();
-        mPlaceList = mPlaceRepository.getAllVisiblePlaces();
+        mMapFragmentManager.getPlaces();
+//        mPlaceList = mPlaceRepository.getAllVisiblePlaces();
         super.onStart();
     }
 
@@ -196,11 +204,24 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
     @Override
     public void onInfoWindowClick(Marker marker) {
         marker.hideInfoWindow();
-        Place place = mPlaceRepository.getPlaceById((long)marker.getTag());
-        if (place != null){
-            Intent intent = new Intent(getContext(), ShowPlaceActivity.class);
-            intent.putExtra(ShowPlaceActivity.PLACE_ID, place.getId());
-            startActivity(intent);
-        }
+        Intent intent = new Intent(getContext(), ShowPlaceActivity.class);
+        intent.putExtra(ShowPlaceActivity.PLACE_ID, (long)marker.getTag());
+        startActivity(intent);
+    }
+
+    @Override
+    public void onGetListOfPlaceMapResponse(List<PlaceMapResponse> places) {
+        mPlaceList = places;
+        refreshMarkersOnMap();
+    }
+
+    @Override
+    public void onErrorResponse(ErrorResponse response) {
+
+    }
+
+    @Override
+    public void onFailure(String message) {
+
     }
 }
