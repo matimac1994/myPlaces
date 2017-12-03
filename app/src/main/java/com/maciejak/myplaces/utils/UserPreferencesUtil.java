@@ -8,5 +8,6 @@ public class UserPreferencesUtil {
 
     public static UsageType checkUsageType(){
         return UsageType.LOCAL;
+
     }
 }
