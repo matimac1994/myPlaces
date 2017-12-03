@@ -5,4 +5,8 @@ package com.maciejak.myplaces.utils;
  */
 
 public class UserPreferencesUtil {
+
+    public static UsageType checkUsageType(){
+        return UsageType.LOCAL;
+    }
 }
