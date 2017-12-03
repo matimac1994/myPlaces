@@ -53,10 +53,6 @@ public class Place extends BaseModel {
 
     List<PlacePhoto> photos;
 
-    @Column
-    @ForeignKey(stubbedRelationship = true)
-    User user;
-
     @OneToMany(methods = {OneToMany.Method.ALL}, variableName = "photos")
     public List<PlacePhoto> getPhotos() {
         if (photos == null || photos.isEmpty()) {
@@ -150,13 +146,5 @@ public class Place extends BaseModel {
 
     public void setDeletedAt(Long deletedAt) {
         this.deletedAt = deletedAt;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }

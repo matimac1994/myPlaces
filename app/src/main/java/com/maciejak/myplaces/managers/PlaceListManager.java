@@ -25,12 +25,14 @@ import retrofit2.Response;
 public class PlaceListManager extends BaseManager{
 
     private GetAllActivePlacesListener getPlacesListener;
+    private ServerResponseListener mServerResponseListener;
     private PlaceRepository mPlaceRepository = new PlaceRepository();
     private PlaceMapper mPlaceMapper = PlaceMapper.INSTANCE;
 
-    public PlaceListManager(Context context) {
+    public PlaceListManager(Context context, ServerResponseListener serverResponseListener, GetAllActivePlacesListener getPlacesListener) {
         super(context);
-        this.getPlacesListener = ((GetAllActivePlacesListener)mContext);
+        this.getPlacesListener = getPlacesListener;
+        this.mServerResponseListener = serverResponseListener;
     }
 
     public void getPlaces(){
@@ -49,8 +51,6 @@ public class PlaceListManager extends BaseManager{
     private void getPlacesFromServer(){
         PlacesService placesService = mRetrofit.create(PlacesService.class);
 
-        ServerResponseListener serverListener = ((ServerResponseListener)mContext);
-
         Call<List<PlaceListResponse>> call = placesService.getAllActivePlaces();
         call.enqueue(new Callback<List<PlaceListResponse>>() {
             @Override
@@ -58,19 +58,27 @@ public class PlaceListManager extends BaseManager{
                 if (response.isSuccessful() && response.code() == 200){
                     getPlacesListener.onGetAllActivePlaces(response.body());
                 } else {
-                    serverListener.onErrorResponse(parseErrorResponseToObject(response));
+                    mServerResponseListener.onErrorResponse(parseErrorResponseToObject(response));
                 }
             }
 
             @Override
             public void onFailure(Call<List<PlaceListResponse>> call, Throwable t) {
-                serverListener.onFailure(mContext.getString(R.string.server_error));
+                mServerResponseListener.onFailure(mContext.getString(R.string.server_error));
             }
         });
     }
 
     private PlaceListResponse convertToListPlaceListResponse(Place place){
         return mPlaceMapper.placeToPlaceListResponse(place);
+    }
+
+    public void setGetPlacesListener(GetAllActivePlacesListener getPlacesListener){
+        this.getPlacesListener = getPlacesListener;
+    }
+
+    public void setServerResponseListener(ServerResponseListener serverResponseListener){
+        this.mServerResponseListener = serverResponseListener;
     }
 
 }

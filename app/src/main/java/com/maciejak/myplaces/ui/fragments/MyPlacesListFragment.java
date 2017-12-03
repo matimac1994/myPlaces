@@ -24,6 +24,7 @@ import com.maciejak.myplaces.ui.activities.ShowPlaceActivity;
 import com.maciejak.myplaces.ui.adapters.MyPlacesListRecyclerViewAdapter;
 import com.maciejak.myplaces.model.Place;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,9 +35,9 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
         GetAllActivePlacesListener,
         ServerResponseListener{
 
-    List<PlaceListResponse> mPlaces;
+    List<PlaceListResponse> mPlaces = new ArrayList<>();
     PlaceRepository mPlaceRepository;
-    PlaceListManager mPlaceListManager = new PlaceListManager(getContext());
+    PlaceListManager mPlaceListManager;
 
     @BindView(R.id.my_places_list_recycler_view)
     RecyclerView mMyPlacesListRecyclerView;
@@ -68,9 +69,8 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
 
     private void setupControls(View view) {
         getActivity().setTitle(R.string.list_of_places);
-
+        mPlaceListManager = new PlaceListManager(mContext, this, this);
         mPlaceRepository = new PlaceRepository();
-        mPlaceListManager.getPlaces();
         setupRecyclerView();
     }
 
