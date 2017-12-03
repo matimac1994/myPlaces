@@ -4,7 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:gravity="center"
-              tools:context="com.maciejak.myplaces.ui.activity.SplashScreenActivity"
+              tools:context="com.maciejak.myplaces.ui.activities.SplashScreenActivity"
               android:background="@color/White">
 
     <ImageView

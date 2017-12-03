@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.maciejak.myplaces.ui.activity.EditPlaceActivity"
+    tools:context="com.maciejak.myplaces.ui.activities.EditPlaceActivity"
     tools:showIn="@layout/activity_edit_place">
 
     <LinearLayout

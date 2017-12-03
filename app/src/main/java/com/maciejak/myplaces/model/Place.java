@@ -2,6 +2,7 @@ package com.maciejak.myplaces.model;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.OneToMany;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -51,6 +52,10 @@ public class Place extends BaseModel {
     Long deletedAt;
 
     List<PlacePhoto> photos;
+
+    @Column
+    @ForeignKey(stubbedRelationship = true)
+    User user;
 
     @OneToMany(methods = {OneToMany.Method.ALL}, variableName = "photos")
     public List<PlacePhoto> getPhotos() {
@@ -145,5 +150,13 @@ public class Place extends BaseModel {
 
     public void setDeletedAt(Long deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

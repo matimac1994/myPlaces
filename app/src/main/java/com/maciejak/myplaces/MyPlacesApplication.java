@@ -3,7 +3,7 @@ package com.maciejak.myplaces;
 import android.app.Application;
 import android.content.SharedPreferences;
 
-import com.maciejak.myplaces.helper.GoogleApiClientHelper;
+import com.maciejak.myplaces.helpers.GoogleApiClientHelper;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
 /**

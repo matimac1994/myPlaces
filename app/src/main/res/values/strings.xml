@@ -94,4 +94,8 @@
     <string name="write_external_storage_permission_rationale">Zezwól aplikacji na zapisywanie zdjęć</string>
     <string name="camera_permission_rationale">Zezwól aplikacji na robienie zdjęć</string>
     <string name="permission_denied_explanation">Nie przyznano uprawnień aplikacji</string>
+    <string name="register_username">Login</string>
+    <string name="registered">Zarejestrowano</string>
+    <string name="error">Error</string>
+    <string name="server_error">Problem z połączeniem</string>
 </resources>

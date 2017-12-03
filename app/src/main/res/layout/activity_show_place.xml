@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.maciejak.myplaces.ui.activity.ShowPlaceActivity">
+    tools:context="com.maciejak.myplaces.ui.activities.ShowPlaceActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/add_place_app_bar"

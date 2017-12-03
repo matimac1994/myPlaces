@@ -6,7 +6,7 @@
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.maciejak.myplaces.ui.activity.MainActivity"
+    tools:context="com.maciejak.myplaces.ui.activities.MainActivity"
     android:id="@+id/coordinatorLayout">
 
     <android.support.design.widget.AppBarLayout
@@ -42,7 +42,7 @@
     <include layout="@layout/content_main"/>
 
     <com.github.clans.fab.FloatingActionMenu
-        app:layout_behavior="com.maciejak.myplaces.helper.FloatingActionMenuBehavior"
+        app:layout_behavior="com.maciejak.myplaces.helpers.FloatingActionMenuBehavior"
         android:id="@+id/add_place_menu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

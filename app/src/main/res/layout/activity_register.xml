@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:theme="@style/AppTheme.NoActionBar"
-    tools:context="com.maciejak.myplaces.ui.activity.RegisterActivity">
+    tools:context="com.maciejak.myplaces.ui.activities.RegisterActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,6 +28,23 @@
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
             android:padding="16dp">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                android:theme="@style/TextInputLayout">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/register_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/register_username"
+                    android:inputType="textAutoComplete"
+                    app:backgroundTint="@color/logoColor"/>
+            </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"

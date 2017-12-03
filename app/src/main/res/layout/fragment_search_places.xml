@@ -3,7 +3,7 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:id="@+id/fragment_search_places"
-             tools:context="com.maciejak.myplaces.ui.fragment.SearchPlacesFragment">
+             tools:context="com.maciejak.myplaces.ui.fragments.SearchPlacesFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/search_places_recycler_view"
