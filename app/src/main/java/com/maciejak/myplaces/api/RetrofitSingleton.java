@@ -14,7 +14,11 @@ public class RetrofitSingleton {
 
     public static Retrofit getInstance(){
         if (instance == null){
-            instance = new Retrofit.Builder().baseUrl(ServerConfig.SERVER_URL).addConverterFactory(JacksonConverterFactory.create()).build();
+            instance = new Retrofit.Builder()
+                    .baseUrl(ServerConfig.SERVER_URL)
+                    .addConverterFactory(JacksonConverterFactory
+                            .create())
+                    .build();
         }
         return instance;
     }
