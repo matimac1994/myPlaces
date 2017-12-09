@@ -1,6 +1,7 @@
 package com.maciejak.myplaces.api.mappers;
 
 import com.maciejak.myplaces.api.dto.request.AddPlaceRequest;
+import com.maciejak.myplaces.api.dto.request.EditPlaceRequest;
 import com.maciejak.myplaces.api.dto.response.PlaceListResponse;
 import com.maciejak.myplaces.api.dto.response.PlaceMapResponse;
 import com.maciejak.myplaces.api.dto.response.PlaceResponse;
@@ -30,4 +31,5 @@ public interface PlaceMapper {
 
     AddPlaceRequest placeToAddPlaceRequest(Place place);
 
+    EditPlaceRequest placeToEditPlaceRequest(Place place);
 }

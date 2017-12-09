@@ -5,7 +5,7 @@ import android.net.Uri;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.api.api_services.AddPlaceService;
+import com.maciejak.myplaces.api.api_services.PlacesService;
 import com.maciejak.myplaces.api.dto.request.AddPlaceRequest;
 import com.maciejak.myplaces.api.dto.response.AddPlaceResponse;
 import com.maciejak.myplaces.api.mappers.PlaceMapper;
@@ -30,10 +30,12 @@ public class AddPlaceManager extends BaseRemoteManager {
     private PlaceMapper mPlaceMapper = PlaceMapper.INSTANCE;
     private PlaceRepository mPlaceRepository = new PlaceRepository();
     private AddPlaceResponseListener mAddPlaceResponseListener;
+    private PlacesService mPlacesService;
 
     public AddPlaceManager(Context context, AddPlaceResponseListener addPlaceResponseListener) {
         super(context);
         this.mAddPlaceResponseListener = addPlaceResponseListener;
+        mPlacesService = mRetrofit.create(PlacesService.class);
     }
 
     public void addPlace(LatLng latLng, String title, String description, String note, List<Uri> placePhotos){
@@ -52,6 +54,7 @@ public class AddPlaceManager extends BaseRemoteManager {
     private void addPlaceLocally(LatLng latLng, String title, String description, String note, List<Uri> placePhotos){
         String mapPhoto = new MapPhotoUtil(latLng.latitude, latLng.longitude).createUrlForMapImage();
         Place place = mPlaceRepository.savePlace(title, latLng, description, note, mapPhoto, placePhotos);
+        mAddPlaceResponseListener.onSuccessResponse();
     }
 
     private void addPlaceOnServer(LatLng latLng, String title, String description, String note, List<Uri> placePhotos){
@@ -65,16 +68,14 @@ public class AddPlaceManager extends BaseRemoteManager {
     }
 
     private void sendRequest(AddPlaceRequest addPlaceRequest){
-        AddPlaceService addPlaceService = mRetrofit.create(AddPlaceService.class);
-
         ServerErrorResponseListener listener = ((ServerErrorResponseListener)mContext);
 
-        Call<AddPlaceResponse> call = addPlaceService.addPlace(addPlaceRequest);
+        Call<AddPlaceResponse> call = mPlacesService.addPlace(addPlaceRequest);
         call.enqueue(new Callback<AddPlaceResponse>() {
             @Override
             public void onResponse(Call<AddPlaceResponse> call, Response<AddPlaceResponse> response) {
                 if (response.isSuccessful() && response.code() == 200){
-                    mAddPlaceResponseListener.onSuccessResponse(response.body());
+                    mAddPlaceResponseListener.onSuccessResponse();
                 } else{
                     listener.onErrorResponse(parseErrorResponseToObject(response));
                 }
@@ -98,6 +99,6 @@ public class AddPlaceManager extends BaseRemoteManager {
     }
 
     public interface AddPlaceResponseListener{
-        void onSuccessResponse(AddPlaceResponse addPlaceResponse);
+        void onSuccessResponse();
     }
 }

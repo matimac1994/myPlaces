@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,6 +25,7 @@ import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
 import com.maciejak.myplaces.managers.MapFragmentManager;
 import com.maciejak.myplaces.repositories.PlaceRepository;
 import com.maciejak.myplaces.ui.activities.ShowPlaceActivity;
+import com.maciejak.myplaces.ui.dialogs.ErrorDialog;
 import com.maciejak.myplaces.utils.PermissionUtils;
 
 import java.util.ArrayList;
@@ -217,11 +219,18 @@ public class MapFragment extends BaseFragment implements
 
     @Override
     public void onErrorResponse(ErrorResponse response) {
-
+        String message;
+        if (response.getErrors() != null) {
+            message = response.getErrors().get(0).getDefaultMessage();
+        }else {
+            message = response.getMessage();
+        }
+        ErrorDialog errorDialog = new ErrorDialog(mContext, message);
+        errorDialog.show();
     }
 
     @Override
     public void onFailure(String message) {
-
+        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
     }
 }

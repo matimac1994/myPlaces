@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.api.dto.response.PlaceListResponse;
+import com.maciejak.myplaces.managers.PlaceListManager;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repositories.PlaceRepository;
 import com.squareup.picasso.Picasso;
@@ -30,7 +31,6 @@ public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlac
     private MyPlacesListOnDataChangeListener mMyPlacesListOnDataChangeListener;
     private LayoutInflater mInflater;
     private View.OnClickListener mOnClickListener;
-    private PlaceRepository mPlaceRepository;
 
     public MyPlacesListRecyclerViewAdapter(Context context, List<PlaceListResponse> places, View.OnClickListener onClickListener, MyPlacesListOnDataChangeListener myPlacesListOnDataChangeListener) {
         this.mPlaces = places;
@@ -38,8 +38,6 @@ public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlac
         this.mMyPlacesListOnDataChangeListener = myPlacesListOnDataChangeListener;
         this.mInflater = LayoutInflater.from(context);
         this.mOnClickListener = onClickListener;
-
-        mPlaceRepository = new PlaceRepository();
     }
 
     @Override
@@ -77,14 +75,12 @@ public class MyPlacesListRecyclerViewAdapter extends RecyclerView.Adapter<MyPlac
     }
 
     public void removeItem(int position) {
-//        mPlaceRepository.deletePlaceSoft(mPlaces.get(position));
         mPlaces.remove(position);
         notifyItemRemoved(position);
         mMyPlacesListOnDataChangeListener.onDataChanged(mPlaces);
     }
 
     public void restoreItem(PlaceListResponse item, int position) {
-//        mPlaceRepository.restorePlace(item);
         mPlaces.add(position, item);
         notifyItemInserted(position);
         mMyPlacesListOnDataChangeListener.onDataChanged(mPlaces);

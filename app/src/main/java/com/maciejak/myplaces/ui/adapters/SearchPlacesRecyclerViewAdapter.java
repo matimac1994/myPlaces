@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.maciejak.myplaces.R;
+import com.maciejak.myplaces.api.dto.response.PlaceListResponse;
 import com.maciejak.myplaces.model.Place;
 import com.squareup.picasso.Picasso;
 
@@ -27,12 +28,12 @@ import butterknife.ButterKnife;
 public class SearchPlacesRecyclerViewAdapter extends RecyclerView.Adapter<SearchPlacesRecyclerViewAdapter.ViewHolder> implements Filterable{
 
     private Context mContext;
-    private List<Place> mPlaces;
-    private List<Place> mFilteredList;
+    private List<PlaceListResponse> mPlaces;
+    private List<PlaceListResponse> mFilteredList;
     private LayoutInflater mInflater;
     private View.OnClickListener mOnClickListener;
 
-    public SearchPlacesRecyclerViewAdapter(Context context, List<Place> places, View.OnClickListener onClickListener) {
+    public SearchPlacesRecyclerViewAdapter(Context context, List<PlaceListResponse> places, View.OnClickListener onClickListener) {
         mContext = context;
         mPlaces = places;
         mInflater = LayoutInflater.from(mContext);
@@ -51,21 +52,19 @@ public class SearchPlacesRecyclerViewAdapter extends RecyclerView.Adapter<Search
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Place place = mFilteredList.get(position);
+        PlaceListResponse place = mFilteredList.get(position);
         String mapPhoto = place.getMapPhoto();
+        boolean hasTitle = !place.getTitle().isEmpty();
+        boolean hasDescription = !place.getDescription().isEmpty();
 
         Picasso.with(mContext)
                 .load(mapPhoto)
                 .centerCrop()
                 .fit()
                 .into(holder.mImageView);
-        if (!(place.getTitle() == null || place.getTitle().equals(""))){
-            holder.mTitle.setText(place.getTitle());
-        }
 
-        if (!(place.getDescription() == null || place.getDescription().equals(""))){
-            holder.mDescription.setText(place.getDescription());
-        }
+        holder.mTitle.setText(hasTitle ? place.getTitle() : mContext.getString(R.string.no_title));
+        holder.mDescription.setText(hasDescription ? place.getDescription() : mContext.getString(R.string.no_description));
     }
 
     @Override
@@ -73,7 +72,7 @@ public class SearchPlacesRecyclerViewAdapter extends RecyclerView.Adapter<Search
         return ((mFilteredList !=null) ? mFilteredList.size() : 0);
     }
 
-    public Place getItem(int position){
+    public PlaceListResponse getItem(int position){
         return mFilteredList.get(position);
     }
 
@@ -88,9 +87,9 @@ public class SearchPlacesRecyclerViewAdapter extends RecyclerView.Adapter<Search
                 if (charString.isEmpty()){
                     mFilteredList = mPlaces;
                 } else {
-                    ArrayList<Place> filteredList = new ArrayList<>();
+                    ArrayList<PlaceListResponse> filteredList = new ArrayList<>();
 
-                    for (Place place : mPlaces){
+                    for (PlaceListResponse place : mPlaces){
                         if (place.getTitle().toLowerCase().contains(charString)
                                 || place.getDescription().toLowerCase().contains(charString)){
 
@@ -108,10 +107,18 @@ public class SearchPlacesRecyclerViewAdapter extends RecyclerView.Adapter<Search
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                mFilteredList = (ArrayList<Place>)results.values;
+                mFilteredList = (ArrayList<PlaceListResponse>)results.values;
                 notifyDataSetChanged();
             }
         };
+    }
+
+    public void updateList(List<PlaceListResponse> places) {
+        if (places != null && places.size() > 0){
+            mPlaces.clear();
+            mPlaces.addAll(places);
+            notifyDataSetChanged();
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

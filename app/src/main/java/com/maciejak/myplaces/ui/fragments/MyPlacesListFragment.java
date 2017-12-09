@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.api.dto.response.PlaceListResponse;
@@ -20,6 +21,7 @@ import com.maciejak.myplaces.managers.PlaceListManager;
 import com.maciejak.myplaces.repositories.PlaceRepository;
 import com.maciejak.myplaces.ui.activities.ShowPlaceActivity;
 import com.maciejak.myplaces.ui.adapters.MyPlacesListRecyclerViewAdapter;
+import com.maciejak.myplaces.ui.dialogs.ErrorDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,17 +86,19 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 final View layout = getActivity().findViewById(R.id.coordinatorLayout);
-                final PlaceListResponse deletedPlace = mPlaces.get(viewHolder.getAdapterPosition());
-                final int position = viewHolder.getAdapterPosition();
+                int position = viewHolder.getAdapterPosition();
+                PlaceListResponse deletedPlace = mMyPlacesListRecyclerViewAdapter.getItem(position);
                 Snackbar snackbar = Snackbar
                         .make(layout, getContext().getString(R.string.archived), Snackbar.LENGTH_LONG)
                         .setAction(R.string.undo, view -> {
                             if (position == 0 || position == mMyPlacesListRecyclerViewAdapter.getItemCount())
                                 mMyPlacesListRecyclerView.scrollToPosition(position);
+                            mPlaceListManager.restorePlaceById(deletedPlace.getId(), position);
                             mMyPlacesListRecyclerViewAdapter.restoreItem(deletedPlace, position);
                         });
                 snackbar.setActionTextColor(Color.YELLOW);
                 snackbar.show();
+                mPlaceListManager.archivePlace(deletedPlace, position);
                 mMyPlacesListRecyclerViewAdapter.removeItem(position);
             }
         };
@@ -154,12 +158,41 @@ public class MyPlacesListFragment extends BaseFragment implements View.OnClickLi
     }
 
     @Override
-    public void onErrorResponse(ErrorResponse response) {
+    public void onRestorePlace() {
 
     }
 
     @Override
-    public void onFailure(String message) {
+    public void onArchivePlace(int position) {
 
+    }
+
+    @Override
+    public void onArchivePlaceError(PlaceListResponse placeListResponse, int position) {
+        Toast.makeText(mContext, R.string.archive_place_error, Toast.LENGTH_SHORT).show();
+        mMyPlacesListRecyclerViewAdapter.restoreItem(placeListResponse, position);
+    }
+
+    @Override
+    public void onRestorePlaceError(int position) {
+        Toast.makeText(mContext, R.string.restore_place_error, Toast.LENGTH_SHORT).show();
+        mMyPlacesListRecyclerViewAdapter.removeItem(position);
+    }
+
+    @Override
+    public void onErrorResponse(ErrorResponse response) {
+        String message;
+        if (response.getErrors() != null) {
+            message = response.getErrors().get(0).getDefaultMessage();
+        }else {
+            message = response.getMessage();
+        }
+        ErrorDialog errorDialog = new ErrorDialog(mContext, message);
+        errorDialog.show();
+    }
+
+    @Override
+    public void onFailure(String message) {
+        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
     }
 }

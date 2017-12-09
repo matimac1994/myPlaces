@@ -75,16 +75,19 @@ public class PlaceRepository {
                 .queryList();
     }
 
-    public void editPlace(Place place, String title, String note, String description, List<PlacePhoto> photos, List<PlacePhoto> photosToDelete) {
-        for (PlacePhoto placePhoto : photosToDelete){
-            placePhoto.delete();
+    public void editPlace(Long placeId, String title, String note, String description, List<PlacePhoto> photos, List<PlacePhoto> photosToDelete) {
+        Place place = getPlaceById(placeId);
+        if (place != null){
+            for (PlacePhoto placePhoto : photosToDelete){
+                placePhoto.delete();
+            }
+            place.setTitle(title);
+            place.setNote(note);
+            place.setDescription(description);
+            place.setPhotos(photos);
+            place.setUpdatedAt(System.currentTimeMillis());
+            place.save();
         }
-        place.setTitle(title);
-        place.setNote(note);
-        place.setDescription(description);
-        place.setPhotos(photos);
-        place.setUpdatedAt(System.currentTimeMillis());
-        place.save();
     }
 
     public void deletePlaceSoft(Place place){

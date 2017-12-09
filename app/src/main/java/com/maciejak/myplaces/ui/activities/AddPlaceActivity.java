@@ -337,7 +337,7 @@ public class AddPlaceActivity extends BaseActivity implements
     }
 
     @Override
-    public void onSuccessResponse(AddPlaceResponse addPlaceResponse) {
+    public void onSuccessResponse() {
         Toast.makeText(this, this.getString(R.string.saved), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(ADD_PLACE_ACTIVITY_DATA);
         setResult(Activity.RESULT_OK ,intent);

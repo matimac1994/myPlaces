@@ -1,7 +1,7 @@
 package com.maciejak.myplaces.api.api_services;
 
 import com.maciejak.myplaces.api.ServerConfig;
-import com.maciejak.myplaces.api.dto.request.PlaceIdsRequest;
+import com.maciejak.myplaces.api.dto.request.IdsRequest;
 import com.maciejak.myplaces.api.dto.response.PlaceListResponse;
 
 import java.util.List;
@@ -22,8 +22,8 @@ public interface ArchivePlacesService {
     Call<List<PlaceListResponse>> getArchivePlaces();
 
     @POST(ServerConfig.ARCHIVE_PLACES_SPACE + "/delete")
-    Call<Void> deletePlaces(@Body PlaceIdsRequest placeIdsRequest);
+    Call<Void> deletePlaces(@Body IdsRequest idsRequest);
 
     @PATCH(ServerConfig.ARCHIVE_PLACES_SPACE + "/restore")
-    Call<Void> restorePlaces(@Body PlaceIdsRequest placeIdsRequest);
+    Call<Void> restorePlaces(@Body IdsRequest idsRequest);
 }

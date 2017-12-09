@@ -10,14 +10,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.maciejak.myplaces.R;
+import com.maciejak.myplaces.api.dto.response.PlaceListResponse;
+import com.maciejak.myplaces.api.dto.response.error.ErrorResponse;
 import com.maciejak.myplaces.listeners.OnQueryTextChangeListener;
-import com.maciejak.myplaces.model.Place;
-import com.maciejak.myplaces.repositories.PlaceRepository;
+import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
+import com.maciejak.myplaces.managers.SearchPlacesManager;
 import com.maciejak.myplaces.ui.activities.ShowPlaceActivity;
 import com.maciejak.myplaces.ui.adapters.SearchPlacesRecyclerViewAdapter;
+import com.maciejak.myplaces.ui.dialogs.ErrorDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -26,15 +31,18 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SearchPlacesFragment extends BaseFragment implements View.OnClickListener, OnQueryTextChangeListener{
+public class SearchPlacesFragment extends BaseFragment implements View.OnClickListener,
+        ServerErrorResponseListener,
+        SearchPlacesManager.SearchPlacesManagerListener,
+        OnQueryTextChangeListener{
 
     @BindView(R.id.search_places_recycler_view)
     RecyclerView mSearchPlacesRecyclerView;
 
     SearchPlacesRecyclerViewAdapter mSearchPlacesRecyclerViewAdapter;
 
-    List<Place> mPlaces;
-    PlaceRepository mPlaceRepository;
+    List<PlaceListResponse> mPlaces = new ArrayList<>();
+    SearchPlacesManager mSearchPlacesManager;
     OnGetInstanceFragment mOnGetInstanceFragment;
 
     public SearchPlacesFragment() {}
@@ -68,8 +76,7 @@ public class SearchPlacesFragment extends BaseFragment implements View.OnClickLi
     }
 
     public void setupControls(View view) {
-        mPlaceRepository = new PlaceRepository();
-        mPlaces = mPlaceRepository.getAllPlaces();
+        mSearchPlacesManager = new SearchPlacesManager(mContext, this, this);
         setupRecyclerView();
     }
 
@@ -83,7 +90,7 @@ public class SearchPlacesFragment extends BaseFragment implements View.OnClickLi
     @Override
     public void onClick(View v) {
         int itemPosition = mSearchPlacesRecyclerView.getChildAdapterPosition(v);
-        Place place = mSearchPlacesRecyclerViewAdapter.getItem(itemPosition);
+        PlaceListResponse place = mSearchPlacesRecyclerViewAdapter.getItem(itemPosition);
         int viewId = v.getId();
         switch (viewId){
             case R.id.row_search_places_card_view:
@@ -95,7 +102,36 @@ public class SearchPlacesFragment extends BaseFragment implements View.OnClickLi
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        mSearchPlacesManager.getPlaces();
+    }
+
+    @Override
     public void onQueryTextChange(String newText) {
         mSearchPlacesRecyclerViewAdapter.getFilter().filter(newText);
+    }
+
+    @Override
+    public void onGetPlaces(List<PlaceListResponse> places) {
+        mPlaces = places;
+        mSearchPlacesRecyclerViewAdapter.updateList(mPlaces);
+    }
+
+    @Override
+    public void onErrorResponse(ErrorResponse response) {
+        String message;
+        if (response.getErrors() != null) {
+            message = response.getErrors().get(0).getDefaultMessage();
+        }else {
+            message = response.getMessage();
+        }
+        ErrorDialog errorDialog = new ErrorDialog(mContext, message);
+        errorDialog.show();
+    }
+
+    @Override
+    public void onFailure(String message) {
+        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
     }
 }

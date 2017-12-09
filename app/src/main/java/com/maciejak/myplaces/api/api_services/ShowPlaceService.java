@@ -15,7 +15,7 @@ import retrofit2.http.Path;
 
 public interface ShowPlaceService {
 
-    @GET(ServerConfig.SHOW_PLACE_GET_PLACE_BY_ID)
+    @GET(ServerConfig.GET_PLACE_BY_ID)
     Call<PlaceResponse> getPlaceById(@Path("placeId") Long placeId);
 
     @DELETE(ServerConfig.DELETE_PLACE_BY_ID)

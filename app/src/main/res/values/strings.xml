@@ -99,4 +99,6 @@
     <string name="problem_with_show_place">Problem z wyświetleniem miejsca</string>
     <string name="problem_with_delete_places">Problem z usunięciem miejsc</string>
     <string name="problem_with_restore_places">Problem z przywróceniem miejsc</string>
+    <string name="archive_place_error">Problem z zarchiwizowaniem miejsca</string>
+    <string name="restore_place_error">Problem z przywróceniem miejsca</string>
 </resources>

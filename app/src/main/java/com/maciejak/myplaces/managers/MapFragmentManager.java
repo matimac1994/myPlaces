@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.api.api_services.PlaceMapService;
+import com.maciejak.myplaces.api.api_services.PlacesService;
 import com.maciejak.myplaces.api.dto.response.PlaceMapResponse;
 import com.maciejak.myplaces.api.mappers.PlaceMapper;
 import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
@@ -28,12 +29,14 @@ public class MapFragmentManager extends BaseRemoteManager {
     private ServerErrorResponseListener mServerErrorResponseListener;
     private PlaceRepository mPlaceRepository;
     private PlaceMapper mPlaceMapper = PlaceMapper.INSTANCE;
+    private PlacesService mPlacesService;
 
     public MapFragmentManager(Context context, ServerErrorResponseListener serverErrorResponseListener, GetListPlaceMapResponseListener getListPlaceMapResponseListener) {
         super(context);
         this.mGetListPlaceMapResponseListener = getListPlaceMapResponseListener;
         this.mServerErrorResponseListener = serverErrorResponseListener;
         mPlaceRepository = new PlaceRepository();
+        mPlacesService = mRetrofit.create(PlacesService.class);
     }
 
     public void getPlaces() {
@@ -59,9 +62,7 @@ public class MapFragmentManager extends BaseRemoteManager {
     }
 
     private void getPlacesFromServer(){
-        PlaceMapService placesService = mRetrofit.create(PlaceMapService.class);
-
-        Call<List<PlaceMapResponse>> call = placesService.getPlaces();
+        Call<List<PlaceMapResponse>> call = mPlacesService.getActivePlacesOnMap();
         call.enqueue(new Callback<List<PlaceMapResponse>>() {
             @Override
             public void onResponse(Call<List<PlaceMapResponse>> call, Response<List<PlaceMapResponse>> response) {

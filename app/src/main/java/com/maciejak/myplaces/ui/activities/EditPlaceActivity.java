@@ -194,16 +194,16 @@ public class EditPlaceActivity extends BaseActivity {
     }
 
     private void editPlaceDone() {
-        mPlaceRepository.editPlace(mPlace,
-                placeTitle.getText().toString(),
-                placeNote.getText().toString(),
-                placeDescription.getText().toString(),
-                mPhotos,
-                photosToDelete);
-
-        Toast.makeText(this, getText(R.string.saved), Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent("AddPlaceOnMapActivity.ADD_PLACE_DONE");
-        setResult(Activity.RESULT_OK ,intent);
+//        mPlaceRepository.editPlace(mPlace.getId(),
+//                placeTitle.getText().toString(),
+//                placeNote.getText().toString(),
+//                placeDescription.getText().toString(),
+//                mPhotos,
+//                photosToDelete);
+//
+//        Toast.makeText(this, getText(R.string.saved), Toast.LENGTH_SHORT).show();
+//        Intent intent = new Intent("AddPlaceOnMapActivity.ADD_PLACE_DONE");
+//        setResult(Activity.RESULT_OK ,intent);
         this.finish();
     }
 

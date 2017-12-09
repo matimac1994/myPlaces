@@ -22,12 +22,9 @@ import android.widget.Toast;
 
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.api.dto.response.PlaceListResponse;
-import com.maciejak.myplaces.api.dto.response.error.Error;
 import com.maciejak.myplaces.api.dto.response.error.ErrorResponse;
 import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
 import com.maciejak.myplaces.managers.ArchiveManager;
-import com.maciejak.myplaces.model.Place;
-import com.maciejak.myplaces.repositories.PlaceRepository;
 import com.maciejak.myplaces.ui.activities.ShowPlaceActivity;
 import com.maciejak.myplaces.ui.adapters.ArchiveListRecyclerViewAdapter;
 import com.maciejak.myplaces.ui.dialogs.ErrorDialog;
@@ -45,7 +42,7 @@ public class ArchiveListFragment extends BaseFragment implements
         ActionMode.Callback{
 
     @BindView(R.id.archive_list_recycler_view)
-    RecyclerView mArchiveListRecyclerview;
+    RecyclerView mArchiveListRecyclerView;
 
     @BindView(R.id.archive_list_empty_view)
     LinearLayout mEmptyView;
@@ -81,10 +78,10 @@ public class ArchiveListFragment extends BaseFragment implements
     private void setupControls() {
         getActivity().setTitle(R.string.archive_of_places);
         mArchiveManager = new ArchiveManager(mContext, this, this);
-        mArchiveListRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        mArchiveListRecyclerview.setItemAnimator(new DefaultItemAnimator());
+        mArchiveListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mArchiveListRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mArchiveListRecyclerViewAdapter = new ArchiveListRecyclerViewAdapter(mPlaces, getContext(), this);
-        mArchiveListRecyclerview.setAdapter(mArchiveListRecyclerViewAdapter);
+        mArchiveListRecyclerView.setAdapter(mArchiveListRecyclerViewAdapter);
     }
 
     private void manageVisibility(List<PlaceListResponse> places){
@@ -98,12 +95,12 @@ public class ArchiveListFragment extends BaseFragment implements
 
     private void applyEmptyView(){
         mEmptyView.setVisibility(View.VISIBLE);
-        mArchiveListRecyclerview.setVisibility(View.GONE);
+        mArchiveListRecyclerView.setVisibility(View.GONE);
     }
 
     private void applyFilledView(){
         mEmptyView.setVisibility(View.GONE);
-        mArchiveListRecyclerview.setVisibility(View.VISIBLE);
+        mArchiveListRecyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -220,17 +217,19 @@ public class ArchiveListFragment extends BaseFragment implements
 
     @Override
     public void onErrorResponse(ErrorResponse response) {
+        String message;
         if (response.getErrors() != null) {
-            Toast.makeText(mContext, response.getErrors().get(0).getDefaultMessage(), Toast.LENGTH_SHORT).show();
+            message = response.getErrors().get(0).getDefaultMessage();
         }else {
-            Toast.makeText(mContext, response.getMessage(), Toast.LENGTH_SHORT).show();
+            message = response.getMessage();
         }
+        ErrorDialog errorDialog = new ErrorDialog(mContext, message);
+        errorDialog.show();
     }
 
     @Override
     public void onFailure(String message) {
-        ErrorDialog errorDialog = new ErrorDialog(mContext, message);
-        errorDialog.show();
+        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -262,7 +261,8 @@ public class ArchiveListFragment extends BaseFragment implements
 
     @Override
     public void onError(String message) {
-        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+        ErrorDialog errorDialog = new ErrorDialog(mContext, message);
+        errorDialog.show();
     }
 
     private void removePlacesFromAdapter(){

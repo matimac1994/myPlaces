@@ -3,7 +3,7 @@ package com.maciejak.myplaces.managers;
 import android.content.Context;
 
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.api.api_services.ShowPlaceService;
+import com.maciejak.myplaces.api.api_services.PlacesService;
 import com.maciejak.myplaces.api.dto.response.PlaceResponse;
 import com.maciejak.myplaces.api.mappers.PlaceMapper;
 import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
@@ -23,7 +23,7 @@ public class ShowPlaceManager extends BaseRemoteManager {
 
     private ServerErrorResponseListener mServerErrorResponseListener;
     private ShowPlaceManagerListener mShowPlaceManagerListener;
-    private ShowPlaceService mShowPlaceService;
+    private PlacesService mPlacesService;
     private PlaceRepository mPlaceRepository;
     private PlaceMapper mPlaceMapper = PlaceMapper.INSTANCE;
 
@@ -31,7 +31,7 @@ public class ShowPlaceManager extends BaseRemoteManager {
         super(context);
         this.mServerErrorResponseListener = serverErrorResponseListener;
         this.mShowPlaceManagerListener = showPlaceManagerListener;
-        this.mShowPlaceService = mRetrofit.create(ShowPlaceService.class);
+        this.mPlacesService = mRetrofit.create(PlacesService.class);
         this.mPlaceRepository = new PlaceRepository();
     }
 
@@ -99,7 +99,7 @@ public class ShowPlaceManager extends BaseRemoteManager {
     }
 
     private void getPlaceByIdFromServer(Long id){
-        Call<PlaceResponse> call = mShowPlaceService.getPlaceById(id);
+        Call<PlaceResponse> call = mPlacesService.getPlaceById(id);
         call.enqueue(new Callback<PlaceResponse>() {
             @Override
             public void onResponse(Call<PlaceResponse> call, Response<PlaceResponse> response) {
@@ -130,7 +130,7 @@ public class ShowPlaceManager extends BaseRemoteManager {
     }
 
     private void deletePlaceByIdOnServer(Long id){
-        Call<Void> call = mShowPlaceService.deletePlaceById(id);
+        Call<Void> call = mPlacesService.deletePlaceById(id);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -161,7 +161,7 @@ public class ShowPlaceManager extends BaseRemoteManager {
     }
 
     private void restorePlaceByIdOnServer(Long id){
-        Call<Void> call = mShowPlaceService.restorePlaceById(id);
+        Call<Void> call = mPlacesService.restorePlaceById(id);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -192,7 +192,7 @@ public class ShowPlaceManager extends BaseRemoteManager {
     }
 
     private void archivePlaceByIdOnServer(Long id){
-        Call<Void> call = mShowPlaceService.archivePlaceById(id);
+        Call<Void> call = mPlacesService.archivePlaceById(id);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
