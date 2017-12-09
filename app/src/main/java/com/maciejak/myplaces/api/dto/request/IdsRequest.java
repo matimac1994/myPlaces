@@ -7,7 +7,7 @@ import java.util.List;
 
 public class IdsRequest {
 
-    List<Long> ids;
+    private List<Long> ids;
 
     public IdsRequest() {
     }
