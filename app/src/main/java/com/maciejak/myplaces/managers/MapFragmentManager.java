@@ -3,7 +3,6 @@ package com.maciejak.myplaces.managers;
 import android.content.Context;
 
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.api.api_services.PlaceMapService;
 import com.maciejak.myplaces.api.api_services.PlacesService;
 import com.maciejak.myplaces.api.dto.response.PlaceMapResponse;
 import com.maciejak.myplaces.api.mappers.PlaceMapper;

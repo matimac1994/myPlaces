@@ -16,24 +16,6 @@ public class ServerConfig {
 
     public static final String LOGOUT = BASE_URL + "/logout";
 
-    public static final String ADD_PLACE = BASE_URL + "/add";
-
-    public static final String GET_ACTIVE_PLACES = BASE_URL + "/active";
-
-    public static final String GET_MAP_PLACES = BASE_URL + "/map";
-
-    public static final String GET_PLACE_BY_ID = BASE_URL + "/{placeId}";
-
-    public static final String DELETE_PLACE_BY_ID = BASE_URL + "/delete/{placeId}";
-
-    public static final String RESTORE_PLACE_BY_ID = BASE_URL + "/restore/{placeId}";
-
-    public static final String ARCHIVE_PLACE_BY_ID = BASE_URL + "/archive/{placeId}";
-
-    public static final String ARCHIVE_PLACES_SPACE = BASE_URL + "/archived";
-
-    public static final String EDIT_PLACE = BASE_URL + "/edit";
-
     public static final String PLACE_PHOTOS = BASE_URL + "/photos";
 
 }

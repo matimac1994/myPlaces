@@ -3,8 +3,8 @@ package com.maciejak.myplaces.managers;
 import android.content.Context;
 
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.api.api_services.EditPlaceService;
 import com.maciejak.myplaces.api.api_services.PlacePhotoService;
+import com.maciejak.myplaces.api.api_services.PlacesService;
 import com.maciejak.myplaces.api.dto.request.EditPlaceRequest;
 import com.maciejak.myplaces.api.dto.request.IdsRequest;
 import com.maciejak.myplaces.api.dto.response.PlacePhotoResponse;
@@ -33,14 +33,13 @@ public class EditPlaceManager extends BaseRemoteManager {
     private PlacePhotoMapper mPlacePhotoMapper = PlacePhotoMapper.INSTANCE;
     private PlaceRepository mPlaceRepository = new PlaceRepository();
     private EditPlaceResponseListener mEditPlaceResponseListener;
-
-    private EditPlaceService mEditPlaceService;
+    private PlacesService mPlacesService;
     private PlacePhotoService mPlacePhotoService;
 
     public EditPlaceManager(Context context, EditPlaceResponseListener editPlaceResponseListener) {
         super(context);
         this.mEditPlaceResponseListener = editPlaceResponseListener;
-        this.mEditPlaceService = mRetrofit.create(EditPlaceService.class);
+        mPlacesService = mRetrofit.create(PlacesService.class);
         this.mPlacePhotoService = mRetrofit.create(PlacePhotoService.class);
     }
 
@@ -104,7 +103,7 @@ public class EditPlaceManager extends BaseRemoteManager {
     private void sendEditPlaceRequest(EditPlaceRequest editPlaceRequest){
         ServerErrorResponseListener listener = ((ServerErrorResponseListener)mContext);
 
-        Call<Void> call = mEditPlaceService.editPlace(editPlaceRequest);
+        Call<Void> call = mPlacesService.editPlace(editPlaceRequest);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

@@ -3,7 +3,6 @@ package com.maciejak.myplaces.managers;
 import android.content.Context;
 
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.api.api_services.ArchivePlacesService;
 import com.maciejak.myplaces.api.api_services.PlacesService;
 import com.maciejak.myplaces.api.dto.request.IdsRequest;
 import com.maciejak.myplaces.api.dto.response.PlaceListResponse;
@@ -30,14 +29,14 @@ public class ArchiveManager extends BaseRemoteManager {
     private ArchiveManagerListener mArchiveManagerListener;
     private PlaceRepository mPlaceRepository = new PlaceRepository();
     private PlaceMapper mPlaceMapper = PlaceMapper.INSTANCE;
-    private PlacesService mArchivePlacesService;
+    private PlacesService mPlacesService;
 
     public ArchiveManager(Context context, ServerErrorResponseListener serverErrorResponseListener, ArchiveManagerListener archiveManagerListener) {
         super(context);
         mServerErrorResponseListener = serverErrorResponseListener;
         mArchiveManagerListener = archiveManagerListener;
         this.mPlaceRepository = new PlaceRepository();
-        mArchivePlacesService = mRetrofit.create(PlacesService.class);
+        mPlacesService = mRetrofit.create(PlacesService.class);
     }
 
     public void getPlaces(){
@@ -89,7 +88,7 @@ public class ArchiveManager extends BaseRemoteManager {
     }
 
     private void getPlacesFromServer(){
-        Call<List<PlaceListResponse>> call = mArchivePlacesService.getAllArchivePlaces();
+        Call<List<PlaceListResponse>> call = mPlacesService.getAllArchivePlaces();
         call.enqueue(new Callback<List<PlaceListResponse>>() {
             @Override
             public void onResponse(Call<List<PlaceListResponse>> call, Response<List<PlaceListResponse>> response) {
@@ -124,7 +123,7 @@ public class ArchiveManager extends BaseRemoteManager {
     private void restorePlacesByFromServer(List<Long> placeIds){
         IdsRequest idsRequest = new IdsRequest(placeIds);
 
-        Call<Void> call = mArchivePlacesService.restorePlaces(idsRequest);
+        Call<Void> call = mPlacesService.restorePlaces(idsRequest);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -160,7 +159,7 @@ public class ArchiveManager extends BaseRemoteManager {
     private void deletePlacesByFromServer(List<Long> placeIds){
         IdsRequest idsRequest = new IdsRequest(placeIds);
 
-        Call<Void> call = mArchivePlacesService.deletePlaces(idsRequest);
+        Call<Void> call = mPlacesService.deletePlaces(idsRequest);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
