@@ -51,13 +51,9 @@ public class LoginActivity extends AppCompatActivity implements
 
     @OnClick(R.id.login_login_button)
     public void onClickLoginButton() {
-//        mUsername = mUserNameEditText.getText().toString();
-//        mPassword = mPasswordEditText.getText().toString();
-//        mLoginManager.login(mUsername, mPassword);
-        UserPreferencesUtil.setRemoteUsage("acsa");
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
+        mUsername = mUserNameEditText.getText().toString();
+        mPassword = mPasswordEditText.getText().toString();
+        mLoginManager.login(mUsername, mPassword);
     }
 
     @OnClick(R.id.login_register_button)
@@ -103,10 +99,10 @@ public class LoginActivity extends AppCompatActivity implements
 
     @Override
     public void onSuccessResponse(LoginResponse loginResponse) {
-//        UserPreferencesUtil.setRemoteUsage(loginResponse.getToken());
-//        Intent intent = new Intent(this, MainActivity.class);
-//        startActivity(intent);
-//        finish();
+        UserPreferencesUtil.setRemoteUsage(loginResponse.getToken());
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override

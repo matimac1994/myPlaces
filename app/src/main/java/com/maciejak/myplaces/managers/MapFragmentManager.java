@@ -9,6 +9,7 @@ import com.maciejak.myplaces.api.mappers.PlaceMapper;
 import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repositories.PlaceRepository;
+import com.maciejak.myplaces.utils.TokenUtil;
 import com.maciejak.myplaces.utils.UserPreferencesUtil;
 
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ public class MapFragmentManager extends BaseRemoteManager {
     }
 
     private void getPlacesFromServer(){
-        Call<List<PlaceMapResponse>> call = mPlacesService.getActivePlacesOnMap();
+        Call<List<PlaceMapResponse>> call = mPlacesService.getActivePlacesOnMap(TokenUtil.getToken());
         call.enqueue(new Callback<List<PlaceMapResponse>>() {
             @Override
             public void onResponse(Call<List<PlaceMapResponse>> call, Response<List<PlaceMapResponse>> response) {

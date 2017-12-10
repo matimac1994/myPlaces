@@ -9,6 +9,7 @@ import com.maciejak.myplaces.api.mappers.PlaceMapper;
 import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repositories.PlaceRepository;
+import com.maciejak.myplaces.utils.TokenUtil;
 import com.maciejak.myplaces.utils.UserPreferencesUtil;
 
 import retrofit2.Call;
@@ -99,7 +100,7 @@ public class ShowPlaceManager extends BaseRemoteManager {
     }
 
     private void getPlaceByIdFromServer(Long id){
-        Call<PlaceResponse> call = mPlacesService.getPlaceById(id);
+        Call<PlaceResponse> call = mPlacesService.getPlaceById(TokenUtil.getToken(), id);
         call.enqueue(new Callback<PlaceResponse>() {
             @Override
             public void onResponse(Call<PlaceResponse> call, Response<PlaceResponse> response) {
@@ -130,7 +131,7 @@ public class ShowPlaceManager extends BaseRemoteManager {
     }
 
     private void deletePlaceByIdOnServer(Long id){
-        Call<Void> call = mPlacesService.deletePlaceById(id);
+        Call<Void> call = mPlacesService.deletePlaceById(TokenUtil.getToken(), id);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -161,7 +162,7 @@ public class ShowPlaceManager extends BaseRemoteManager {
     }
 
     private void restorePlaceByIdOnServer(Long id){
-        Call<Void> call = mPlacesService.restorePlaceById(id);
+        Call<Void> call = mPlacesService.restorePlaceById(TokenUtil.getToken(), id);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -192,7 +193,7 @@ public class ShowPlaceManager extends BaseRemoteManager {
     }
 
     private void archivePlaceByIdOnServer(Long id){
-        Call<Void> call = mPlacesService.archivePlaceById(id);
+        Call<Void> call = mPlacesService.archivePlaceById(TokenUtil.getToken(), id);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

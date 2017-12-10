@@ -10,6 +10,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -20,18 +21,18 @@ import retrofit2.http.Path;
 public interface PlacePhotoService {
 
     @GET(ServerConfig.PLACE_PHOTOS)
-    Call<List<PlacePhotoResponse>> getPlacePhotos();
+    Call<List<PlacePhotoResponse>> getPlacePhotos(@Header(ServerConfig.TOKEN_NAME) String token);
 
     @GET(ServerConfig.PLACE_PHOTOS + "/byids")
-    Call<List<PlacePhotoResponse>> getPlacePhotosByIds(@Body IdsRequest idsRequest);
+    Call<List<PlacePhotoResponse>> getPlacePhotosByIds(@Header(ServerConfig.TOKEN_NAME) String token, @Body IdsRequest idsRequest);
 
     @GET(ServerConfig.PLACE_PHOTOS + "/{photoId}")
-    Call<PlacePhotoResponse> getPlacePhotoById(@Path("photoId") Long photoId);
+    Call<PlacePhotoResponse> getPlacePhotoById(@Header(ServerConfig.TOKEN_NAME) String token, @Path("photoId") Long photoId);
 
     @POST(ServerConfig.PLACE_PHOTOS + "/delete")
-    Call<Void> deletePlacePhotosByIds(@Body IdsRequest idsRequest);
+    Call<Void> deletePlacePhotosByIds(@Header(ServerConfig.TOKEN_NAME) String token, @Body IdsRequest idsRequest);
 
     @DELETE(ServerConfig.PLACE_PHOTOS + "/delete/{photoId}")
-    Call<Void> deletePlacePhotoById(@Path("photoId") Long photoId);
+    Call<Void> deletePlacePhotoById(@Header(ServerConfig.TOKEN_NAME) String token, @Path("photoId") Long photoId);
 
 }

@@ -9,6 +9,7 @@ import com.maciejak.myplaces.api.mappers.PlaceMapper;
 import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repositories.PlaceRepository;
+import com.maciejak.myplaces.utils.TokenUtil;
 import com.maciejak.myplaces.utils.UserPreferencesUtil;
 
 import java.util.ArrayList;
@@ -86,7 +87,7 @@ public class PlaceListManager extends BaseRemoteManager {
     }
 
     private void getPlacesFromServer(){
-        Call<List<PlaceListResponse>> call = mPlacesService.getAllActivePlaces();
+        Call<List<PlaceListResponse>> call = mPlacesService.getAllActivePlaces(TokenUtil.getToken());
         call.enqueue(new Callback<List<PlaceListResponse>>() {
             @Override
             public void onResponse(Call<List<PlaceListResponse>> call, Response<List<PlaceListResponse>> response) {
@@ -115,7 +116,7 @@ public class PlaceListManager extends BaseRemoteManager {
     }
 
     private void restorePlaceByIdOnServer(Long id, int position){
-        Call<Void> call = mPlacesService.restorePlaceById(id);
+        Call<Void> call = mPlacesService.restorePlaceById(TokenUtil.getToken(), id);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -147,7 +148,7 @@ public class PlaceListManager extends BaseRemoteManager {
     }
 
     private void archivePlaceOnServer(PlaceListResponse placeResponse, int position){
-        Call<Void> call = mPlacesService.archivePlaceById(placeResponse.getId());
+        Call<Void> call = mPlacesService.archivePlaceById(TokenUtil.getToken(), placeResponse.getId());
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

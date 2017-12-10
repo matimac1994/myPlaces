@@ -7,6 +7,7 @@ import com.maciejak.myplaces.api.dto.response.LoginResponse;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 
 /**
@@ -19,5 +20,5 @@ public interface SessionService {
     Call<LoginResponse> login(@Body LoginRequest loginRequest);
 
     @POST(ServerConfig.LOGOUT)
-    Call<Void> logout();
+    Call<Void> logout(@Header(ServerConfig.TOKEN_NAME) String token);
 }

@@ -13,6 +13,7 @@ import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repositories.PlaceRepository;
 import com.maciejak.myplaces.utils.MapPhotoUtil;
+import com.maciejak.myplaces.utils.TokenUtil;
 import com.maciejak.myplaces.utils.UserPreferencesUtil;
 
 import java.util.List;
@@ -70,7 +71,7 @@ public class AddPlaceManager extends BaseRemoteManager {
     private void sendRequest(AddPlaceRequest addPlaceRequest){
         ServerErrorResponseListener listener = ((ServerErrorResponseListener)mContext);
 
-        Call<AddPlaceResponse> call = mPlacesService.addPlace(addPlaceRequest);
+        Call<AddPlaceResponse> call = mPlacesService.addPlace(TokenUtil.getToken() ,addPlaceRequest);
         call.enqueue(new Callback<AddPlaceResponse>() {
             @Override
             public void onResponse(Call<AddPlaceResponse> call, Response<AddPlaceResponse> response) {

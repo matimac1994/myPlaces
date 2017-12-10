@@ -10,6 +10,7 @@ import com.maciejak.myplaces.api.mappers.PlaceMapper;
 import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repositories.PlaceRepository;
+import com.maciejak.myplaces.utils.TokenUtil;
 import com.maciejak.myplaces.utils.UserPreferencesUtil;
 
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public class ArchiveManager extends BaseRemoteManager {
     }
 
     private void getPlacesFromServer(){
-        Call<List<PlaceListResponse>> call = mPlacesService.getAllArchivePlaces();
+        Call<List<PlaceListResponse>> call = mPlacesService.getAllArchivePlaces(TokenUtil.getToken());
         call.enqueue(new Callback<List<PlaceListResponse>>() {
             @Override
             public void onResponse(Call<List<PlaceListResponse>> call, Response<List<PlaceListResponse>> response) {
@@ -123,7 +124,7 @@ public class ArchiveManager extends BaseRemoteManager {
     private void restorePlacesByFromServer(List<Long> placeIds){
         IdsRequest idsRequest = new IdsRequest(placeIds);
 
-        Call<Void> call = mPlacesService.restorePlaces(idsRequest);
+        Call<Void> call = mPlacesService.restorePlaces(TokenUtil.getToken(), idsRequest);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -159,7 +160,7 @@ public class ArchiveManager extends BaseRemoteManager {
     private void deletePlacesByFromServer(List<Long> placeIds){
         IdsRequest idsRequest = new IdsRequest(placeIds);
 
-        Call<Void> call = mPlacesService.deletePlaces(idsRequest);
+        Call<Void> call = mPlacesService.deletePlaces(TokenUtil.getToken(), idsRequest);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

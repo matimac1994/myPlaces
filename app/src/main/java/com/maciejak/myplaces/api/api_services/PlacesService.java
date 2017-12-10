@@ -15,6 +15,8 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -29,35 +31,35 @@ public interface PlacesService {
     Call<List<PlaceResponse>> getAllPlaces();
 
     @GET(ServerConfig.BASE_URL + "/active")
-    Call<List<PlaceListResponse>> getAllActivePlaces();
+    Call<List<PlaceListResponse>> getAllActivePlaces(@Header(ServerConfig.TOKEN_NAME) String token);
 
     @GET(ServerConfig.BASE_URL + "/archived")
-    Call<List<PlaceListResponse>> getAllArchivePlaces();
+    Call<List<PlaceListResponse>> getAllArchivePlaces(@Header(ServerConfig.TOKEN_NAME) String token);
 
     @GET(ServerConfig.BASE_URL + "/map")
-    Call<List<PlaceMapResponse>> getActivePlacesOnMap();
+    Call<List<PlaceMapResponse>> getActivePlacesOnMap(@Header(ServerConfig.TOKEN_NAME) String token);
 
     @PATCH(ServerConfig.BASE_URL + "/restore")
-    Call<Void> restorePlaces(@Body IdsRequest idsRequest);
+    Call<Void> restorePlaces(@Header(ServerConfig.TOKEN_NAME) String token, @Body IdsRequest idsRequest);
 
     @POST(ServerConfig.BASE_URL + "/delete")
-    Call<Void> deletePlaces(@Body IdsRequest idsRequest);
+    Call<Void> deletePlaces(@Header(ServerConfig.TOKEN_NAME) String token, @Body IdsRequest idsRequest);
 
     @POST(ServerConfig.BASE_URL + "/add")
-    Call<AddPlaceResponse> addPlace(@Body AddPlaceRequest addPlaceRequest);
+    Call<AddPlaceResponse> addPlace(@Header(ServerConfig.TOKEN_NAME) String token, @Body AddPlaceRequest addPlaceRequest);
 
     @POST(ServerConfig.BASE_URL + "/edit")
-    Call<Void> editPlace(@Body EditPlaceRequest editPlaceRequest);
+    Call<Void> editPlace(@Header(ServerConfig.TOKEN_NAME) String token, @Body EditPlaceRequest editPlaceRequest);
 
     @GET(ServerConfig.BASE_URL + "/{placeId}")
-    Call<PlaceResponse> getPlaceById(@Path("placeId") Long placeId);
+    Call<PlaceResponse> getPlaceById(@Header(ServerConfig.TOKEN_NAME) String token, @Path("placeId") Long placeId);
 
     @DELETE(ServerConfig.BASE_URL + "/delete/{placeId}")
-    Call<Void> deletePlaceById(@Path("placeId") Long placeId);
+    Call<Void> deletePlaceById(@Header(ServerConfig.TOKEN_NAME) String token, @Path("placeId") Long placeId);
 
     @PATCH(ServerConfig.BASE_URL + "/restore/{placeId}")
-    Call<Void> restorePlaceById(@Path("placeId") Long placeId);
+    Call<Void> restorePlaceById(@Header(ServerConfig.TOKEN_NAME) String token, @Path("placeId") Long placeId);
 
     @PATCH(ServerConfig.BASE_URL + "/archive/{placeId}")
-    Call<Void> archivePlaceById(@Path("placeId") Long placeId);
+    Call<Void> archivePlaceById(@Header(ServerConfig.TOKEN_NAME) String token, @Path("placeId") Long placeId);
 }

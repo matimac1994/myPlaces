@@ -14,6 +14,7 @@ import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.model.PlacePhoto;
 import com.maciejak.myplaces.repositories.PlaceRepository;
+import com.maciejak.myplaces.utils.TokenUtil;
 import com.maciejak.myplaces.utils.UserPreferencesUtil;
 
 import java.util.ArrayList;
@@ -103,7 +104,7 @@ public class EditPlaceManager extends BaseRemoteManager {
     private void sendEditPlaceRequest(EditPlaceRequest editPlaceRequest){
         ServerErrorResponseListener listener = ((ServerErrorResponseListener)mContext);
 
-        Call<Void> call = mPlacesService.editPlace(editPlaceRequest);
+        Call<Void> call = mPlacesService.editPlace(TokenUtil.getToken(), editPlaceRequest);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -123,7 +124,7 @@ public class EditPlaceManager extends BaseRemoteManager {
     }
 
     private void sendDeletePlacePhotosRequest(IdsRequest placePhotosIdsToDelete) {
-        Call<Void> call = mPlacePhotoService.deletePlacePhotosByIds(placePhotosIdsToDelete);
+        Call<Void> call = mPlacePhotoService.deletePlacePhotosByIds(TokenUtil.getToken(), placePhotosIdsToDelete);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

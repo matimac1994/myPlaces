@@ -9,6 +9,7 @@ import com.maciejak.myplaces.api.mappers.PlaceMapper;
 import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.repositories.PlaceRepository;
+import com.maciejak.myplaces.utils.TokenUtil;
 import com.maciejak.myplaces.utils.UserPreferencesUtil;
 
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class SearchPlacesManager extends BaseRemoteManager {
     }
 
     private void getPlacesFromServer(){
-        Call<List<PlaceListResponse>> call = mPlacesService.getAllActivePlaces();
+        Call<List<PlaceListResponse>> call = mPlacesService.getAllActivePlaces(TokenUtil.getToken());
         call.enqueue(new Callback<List<PlaceListResponse>>() {
             @Override
             public void onResponse(Call<List<PlaceListResponse>> call, Response<List<PlaceListResponse>> response) {
