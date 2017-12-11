@@ -22,7 +22,7 @@ public class BaseRemoteManager extends BaseManager {
 
     public BaseRemoteManager(Context context) {
         super(context);
-        this.mRetrofit = RetrofitSingleton.getInstance();
+        this.mRetrofit = RetrofitSingleton.getInstance(mContext);
         this.mapper = new ObjectMapper();
     }
 

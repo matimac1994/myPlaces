@@ -20,7 +20,6 @@ public class MyPlacesApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
         myPlacesApplication = this;
         mGoogleApiClientHelper = new GoogleApiClientHelper(this);
         FlowManager.init(this);

@@ -101,4 +101,5 @@
     <string name="problem_with_restore_places">Problem z przywróceniem miejsc</string>
     <string name="archive_place_error">Problem z zarchiwizowaniem miejsca</string>
     <string name="restore_place_error">Problem z przywróceniem miejsca</string>
+    <string name="session_expired">Sesja wygasła</string>
 </resources>

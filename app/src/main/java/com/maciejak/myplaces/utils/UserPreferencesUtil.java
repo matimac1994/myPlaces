@@ -26,7 +26,7 @@ public class UserPreferencesUtil {
     public static void setLocallyUsage(){
         userSharedPreferences.edit().putBoolean(Const.LOCALLY_USE, true).apply();
         userSharedPreferences.edit().putBoolean(Const.REMOTE_USE, false).apply();
-        userSharedPreferences.edit().putString(Const.USER_TOKEN, null).apply();
+        userSharedPreferences.edit().remove(Const.USER_TOKEN).apply();
 
     }
 
@@ -34,5 +34,11 @@ public class UserPreferencesUtil {
         userSharedPreferences.edit().putBoolean(Const.LOCALLY_USE, false).apply();
         userSharedPreferences.edit().putBoolean(Const.REMOTE_USE, true).apply();
         userSharedPreferences.edit().putString(Const.USER_TOKEN, token).apply();
+    }
+
+    public static void clearUsage(){
+        userSharedPreferences.edit().putBoolean(Const.LOCALLY_USE, false).apply();
+        userSharedPreferences.edit().putBoolean(Const.REMOTE_USE, false).apply();
+        userSharedPreferences.edit().remove(Const.USER_TOKEN).apply();
     }
 }
