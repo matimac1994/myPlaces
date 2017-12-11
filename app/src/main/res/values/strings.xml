@@ -102,4 +102,6 @@
     <string name="archive_place_error">Problem z zarchiwizowaniem miejsca</string>
     <string name="restore_place_error">Problem z przywróceniem miejsca</string>
     <string name="session_expired">Sesja wygasła</string>
+    <string name="logout_complete">Wylogowano</string>
+    <string name="login_or_register">Zaloguj się lub zarejestruj</string>
 </resources>

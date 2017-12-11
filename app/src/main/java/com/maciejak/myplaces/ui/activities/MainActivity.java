@@ -43,7 +43,9 @@ import com.maciejak.myplaces.ui.fragments.MapFragment;
 import com.maciejak.myplaces.ui.fragments.MyPlacesListFragment;
 import com.maciejak.myplaces.ui.fragments.SearchPlacesFragment;
 import com.maciejak.myplaces.utils.Const;
+import com.maciejak.myplaces.utils.LogoutHandler;
 import com.maciejak.myplaces.utils.PermissionUtils;
+import com.maciejak.myplaces.utils.UserPreferencesUtil;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import butterknife.BindView;
@@ -116,12 +118,11 @@ public class MainActivity extends BaseActivity
                 mFragment = ArchiveListFragment.newInstance();
                 mCurrentPosition = R.id.nav_archive;
                 break;
-            case R.id.nav_about:
-                Toast.makeText(this, "O aplikacji", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.nav_logout:
-                Toast.makeText(this, "Wylogowano", Toast.LENGTH_SHORT).show();
-                this.finish();
+                LogoutHandler.logout(this, getString(R.string.logout_complete));
+                break;
+            case R.id.nav_login:
+                LogoutHandler.logout(this, getString(R.string.login_or_register));
                 break;
         }
         mNavigationView.setCheckedItem(mCurrentPosition);
@@ -150,6 +151,17 @@ public class MainActivity extends BaseActivity
 
             mNavigationView.setCheckedItem(mCurrentPosition);
         });
+
+        switch (UserPreferencesUtil.checkUsageType()){
+            case REMOTE:
+                mNavigationView.getMenu().clear();
+                mNavigationView.inflateMenu(R.menu.activity_main_drawer_remote);
+                break;
+            case LOCAL:
+                mNavigationView.getMenu().clear();
+                mNavigationView.inflateMenu(R.menu.activity_main_drawer_local);
+                break;
+        }
 
         showDefaultFragment();
         setupSettingsButton();
