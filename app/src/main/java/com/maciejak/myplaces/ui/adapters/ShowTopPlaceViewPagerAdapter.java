@@ -9,23 +9,23 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.maciejak.myplaces.R;
-import com.maciejak.myplaces.model.PlacePhoto;
+import com.maciejak.myplaces.api.dto.response.TopPlacePhotoResponse;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 /**
- * Created by Mati on 02.11.2017.
+ * Created by Mati on 14.12.2017.
  */
 
-public class ShowPlaceViewPagerAdapter extends PagerAdapter {
+public class ShowTopPlaceViewPagerAdapter extends PagerAdapter {
 
     private Context mContext;
     private LayoutInflater mInflater;
-    private List<PlacePhoto> mPhotos;
+    private List<TopPlacePhotoResponse> mPhotos;
     private ImageView mImage;
 
-    public ShowPlaceViewPagerAdapter(Context context, List<PlacePhoto> photos) {
+    public ShowTopPlaceViewPagerAdapter(Context context, List<TopPlacePhotoResponse> photos) {
         mContext = context;
         mPhotos = photos;
     }
@@ -44,11 +44,9 @@ public class ShowPlaceViewPagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
 
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = mInflater.inflate(R.layout.row_show_place_view_pager, null);
-        mImage = (ImageView) view.findViewById(R.id.row_show_place_view_pager_image_view);
-        String image = mPhotos.get(position).getImage();
-
-//        mImage.setImageResource(R.drawable.myplaces_logo_sample);
+        View view = mInflater.inflate(R.layout.row_show_top_place_view_pager, null);
+        mImage = (ImageView) view.findViewById(R.id.row_show_top_place_view_pager_image_view);
+        String image = mPhotos.get(position).getPhoto();
 
         Picasso.with(mContext)
                 .load(image)

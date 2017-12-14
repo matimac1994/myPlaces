@@ -9,7 +9,7 @@
     tools:context="com.maciejak.myplaces.ui.activities.AddPlaceActivity">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/add_place_app_bar"
+        android:id="@+id/show_place_app_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_bar_height"
         android:fitsSystemWindows="true"
@@ -55,7 +55,7 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_add_a_photo_white_24dp"
         app:backgroundTint="@color/logoColor"
-        app:layout_anchor="@id/add_place_app_bar"
+        app:layout_anchor="@id/show_place_app_bar"
         app:layout_anchorGravity="bottom|end"/>
 
 </android.support.design.widget.CoordinatorLayout>

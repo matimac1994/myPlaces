@@ -42,6 +42,7 @@ import com.maciejak.myplaces.ui.fragments.ArchiveListFragment;
 import com.maciejak.myplaces.ui.fragments.MapFragment;
 import com.maciejak.myplaces.ui.fragments.MyPlacesListFragment;
 import com.maciejak.myplaces.ui.fragments.SearchPlacesFragment;
+import com.maciejak.myplaces.ui.fragments.TopPlacesFragment;
 import com.maciejak.myplaces.utils.Const;
 import com.maciejak.myplaces.utils.LogoutHandler;
 import com.maciejak.myplaces.utils.PermissionUtils;
@@ -118,6 +119,10 @@ public class MainActivity extends BaseActivity
                 mFragment = ArchiveListFragment.newInstance();
                 mCurrentPosition = R.id.nav_archive;
                 break;
+            case R.id.nav_top_places:
+                mFragment = TopPlacesFragment.newInstance();
+                mCurrentPosition = R.id.nav_top_places;
+                break;
             case R.id.nav_logout:
                 LogoutHandler.logout(this, getString(R.string.logout_complete));
                 break;
@@ -148,6 +153,8 @@ public class MainActivity extends BaseActivity
                 mCurrentPosition = R.id.nav_map;
             if (fragment instanceof ArchiveListFragment)
                 mCurrentPosition = R.id.nav_archive;
+            if (fragment instanceof TopPlacesFragment)
+                mCurrentPosition = R.id.nav_top_places;
 
             mNavigationView.setCheckedItem(mCurrentPosition);
         });

@@ -17,6 +17,11 @@
             android:id="@+id/nav_archive"
             android:icon="@drawable/ic_archive_black_24dp"
             android:title="@string/archive_of_places" />
+
+        <item
+            android:id="@+id/nav_top_places"
+            android:icon="@drawable/ic_star"
+            android:title="@string/top_places" />
     </group>
 
     <item android:title="Pozostałe">

@@ -6,17 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.maciejak.myplaces.ui.activities.ShowPlaceActivity">
+    tools:context="com.maciejak.myplaces.ui.activities.ShowTopPlaceActivity">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/show_place_app_bar"
+        android:id="@+id/show_top_place_app_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_bar_height"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         android:fitsSystemWindows="true">
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/show_place_collapsing_toolbar"
+            android:id="@+id/show_top_place_collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
@@ -25,7 +25,7 @@
             app:expandedTitleTextAppearance="@style/ExpandedAppBar">
 
             <android.support.v4.view.ViewPager
-                android:id="@+id/show_place_view_pager"
+                android:id="@+id/show_top_place_view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone"
@@ -34,7 +34,7 @@
                 />
 
             <ImageView
-                android:id="@+id/show_place_image_view"
+                android:id="@+id/show_top_place_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
@@ -52,30 +52,5 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_show_place"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/show_place_edit_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_edit_white_24dp"
-        app:backgroundTint="@color/Green"
-        app:fabSize="mini"
-        app:layout_anchor="@+id/show_place_app_bar"
-        app:layout_anchorGravity="left|bottom"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/show_place_delete_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_archive_white_24dp"
-        app:backgroundTint="@color/logoColor"
-        app:layout_anchor="@id/show_place_app_bar"
-        app:layout_anchorGravity="bottom|end"
-        app:fabSize="mini"/>
-
-
-
+    <include layout="@layout/content_show_top_place"/>
 </android.support.design.widget.CoordinatorLayout>
