@@ -33,10 +33,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.maciejak.myplaces.R;
 import com.maciejak.myplaces.api.dto.response.AddPlaceResponse;
+import com.maciejak.myplaces.api.dto.response.PlacePhotoResponse;
 import com.maciejak.myplaces.api.dto.response.error.ErrorResponse;
 import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
 import com.maciejak.myplaces.managers.AddPlaceManager;
 import com.maciejak.myplaces.ui.adapters.AddPlacePhotosRecyclerViewAdapter;
+import com.maciejak.myplaces.utils.FileUtils;
 import com.maciejak.myplaces.utils.PermissionUtils;
 
 import java.io.File;
@@ -58,36 +60,29 @@ public class AddPlaceActivity extends BaseActivity implements
 
     public static final String PLACE_LAT_LNG = "AddPlaceActivity LatLng";
     public static final String ADD_PLACE_ACTIVITY_DATA = "AddPlaceActivity Data";
-
+    private static final int RESULT_LOAD_IMAGE = 1;
+    private static final int RESULT_TAKE_PHOTO= 2;
     private static final int REQUEST_CAMERA = 13;
     private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 14;
 
     GoogleMap mMap;
     UiSettings mUiSettings;
-
     LatLng mPlaceLatLng;
-
     Marker mMarker;
 
-    @BindView(R.id.add_place_title)
-    EditText placeTitle;
+    @BindView(R.id.add_place_title) EditText placeTitle;
 
-    @BindView(R.id.add_place_note)
-    EditText placeNote;
+    @BindView(R.id.add_place_note) EditText placeNote;
 
-    @BindView(R.id.add_place_describe)
-    EditText placeDescription;
+    @BindView(R.id.add_place_describe) EditText placeDescription;
 
-    @BindView(R.id.add_place_photos_recycler_view)
-    RecyclerView addPlacePhotosRecyclerView;
+    @BindView(R.id.add_place_photos_recycler_view) RecyclerView addPlacePhotosRecyclerView;
+
     AddPlacePhotosRecyclerViewAdapter mAddPlacePhotosRecyclerViewAdapter;
 
-    List<Uri> mPhotos;
-
-    private static final int RESULT_LOAD_IMAGE = 1;
-    private static final int RESULT_TAKE_PHOTO= 2;
-    private List<String> photoPaths;
-    private Uri photoURI;
+    private List<Uri> mPhotos;
+    private AddPlaceManager mAddPlaceManager;
+    private Uri photoUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,10 +103,9 @@ public class AddPlaceActivity extends BaseActivity implements
                 (CollapsingToolbarLayout) findViewById(R.id.add_place_collapsing_toolbar);
         collapsingToolbar.setTitle(getString(R.string.add_place));
 
-        //config RecyclerView
+        mAddPlaceManager = new AddPlaceManager(this, this, this);
 
         mPhotos = new ArrayList<>();
-        photoPaths = new ArrayList<>();
         setUpRecyclerView(mPhotos);
 
         SupportMapFragment mapFragment = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.add_place_map);
@@ -133,29 +127,18 @@ public class AddPlaceActivity extends BaseActivity implements
             case RESULT_LOAD_IMAGE:
                 if(resultCode==RESULT_OK)
                 {
-                    java.io.OutputStream os;
-                    try {
-                        Uri selectedImg = data.getData();
-                        File file = createImageFile();
-                        Bitmap bitmapPhoto = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImg);
-                        os = new FileOutputStream(file);
-                        bitmapPhoto.compress(Bitmap.CompressFormat.JPEG, 75, os);
-                        os.flush();
-                        os.close();
-                        mPhotos.add(Uri.fromFile(file));
-                        mAddPlacePhotosRecyclerViewAdapter.notifyDataSetChanged();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
+                    File file = FileUtils.savePhotoToFile(data.getData(), this);
+                    mAddPlaceManager.addPhoto(Uri.fromFile(file));
+                    mPhotos.add(Uri.fromFile(file));
+                    mAddPlacePhotosRecyclerViewAdapter.notifyDataSetChanged();
                 }
                 break;
             case RESULT_TAKE_PHOTO:
                 if(resultCode==RESULT_OK)
                 {
-                    mPhotos.add(photoURI);
+                    mAddPlaceManager.addPhoto(photoUri);
+                    mPhotos.add(photoUri);
                     mAddPlacePhotosRecyclerViewAdapter.notifyDataSetChanged();
-
                 }
                 break;
         }
@@ -198,8 +181,7 @@ public class AddPlaceActivity extends BaseActivity implements
     }
 
     private void addPlaceDone() {
-        AddPlaceManager addPlaceManager = new AddPlaceManager(this, this);
-        addPlaceManager.addPlace(mPlaceLatLng,
+        mAddPlaceManager.addPlace(mPlaceLatLng,
                 placeTitle.getText().toString(),
                 placeNote.getText().toString(),
                 placeDescription.getText().toString(),
@@ -249,57 +231,19 @@ public class AddPlaceActivity extends BaseActivity implements
         } else {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE_SECURE);
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                java.io.File photoFile = null;
-                try {
-                    photoFile = createImageFile();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                // Continue only if the File was successfully created
-                if (photoFile != null) {
-                    photoURI = FileProvider.getUriForFile(this,
-                            "com.maciejak.myplaces.fileprovider",
-                            photoFile);
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                photoUri = FileUtils.createUriForTakePhoto(this);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                     startActivityForResult(takePictureIntent, RESULT_TAKE_PHOTO);
-                }
             }
         }
     }
 
-    private java.io.File createImageFile() throws IOException {
-
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        java.io.File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        java.io.File image = java.io.File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        String currentPhotoPath = image.getAbsolutePath();
-        photoPaths.add(currentPhotoPath);
-        return image;
-    }
-
     @Override
     public void onBackPressed() {
-        trimCache();
+        mAddPlaceManager.trimCache(mPhotos);
         super.onBackPressed();
     }
 
-    private void trimCache() {
-        for(int i=0; i<mPhotos.size(); i++){
-            File file = new File(photoPaths.get(i));
-            file.delete();
-        }
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -342,5 +286,10 @@ public class AddPlaceActivity extends BaseActivity implements
         Intent intent = new Intent(ADD_PLACE_ACTIVITY_DATA);
         setResult(Activity.RESULT_OK ,intent);
         this.finish();
+    }
+
+    @Override
+    public void onUploadPhoto(PlacePhotoResponse placePhotoResponse) {
+
     }
 }

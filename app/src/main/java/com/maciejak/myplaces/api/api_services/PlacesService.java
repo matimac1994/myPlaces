@@ -11,14 +11,18 @@ import com.maciejak.myplaces.api.dto.response.PlaceResponse;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 /**
@@ -45,8 +49,12 @@ public interface PlacesService {
     @POST(ServerConfig.BASE_URL + "/delete")
     Call<Void> deletePlaces(@Header(ServerConfig.TOKEN_NAME) String token, @Body IdsRequest idsRequest);
 
+//    @Multipart
     @POST(ServerConfig.BASE_URL + "/add")
-    Call<AddPlaceResponse> addPlace(@Header(ServerConfig.TOKEN_NAME) String token, @Body AddPlaceRequest addPlaceRequest);
+    Call<AddPlaceResponse> addPlace(@Header(ServerConfig.TOKEN_NAME) String token,
+                                    @Body AddPlaceRequest addPlaceRequest);
+//                                    @Part("addPlaceRequest") RequestBody body,
+//                                    @Part List<MultipartBody.Part> photos);
 
     @POST(ServerConfig.BASE_URL + "/edit")
     Call<Void> editPlace(@Header(ServerConfig.TOKEN_NAME) String token, @Body EditPlaceRequest editPlaceRequest);

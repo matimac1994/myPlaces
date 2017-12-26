@@ -17,6 +17,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
@@ -31,6 +32,9 @@ public class RetrofitSingleton {
 
     public static Retrofit getInstance(final Context context){
         if (instance == null){
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+            interceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+
             OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
             clientBuilder.
                     addInterceptor(chain -> {
@@ -42,7 +46,8 @@ public class RetrofitSingleton {
                             }
                         }
                         return response;
-                    });
+                    })
+            .addInterceptor(interceptor);
             instance = new Retrofit.Builder()
                     .baseUrl(ServerConfig.SERVER_URL)
                     .addConverterFactory(JacksonConverterFactory
