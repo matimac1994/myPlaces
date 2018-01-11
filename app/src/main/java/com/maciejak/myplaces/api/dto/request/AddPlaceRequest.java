@@ -1,5 +1,7 @@
 package com.maciejak.myplaces.api.dto.request;
 
+import java.util.List;
+
 public class AddPlaceRequest {
 
     private Double latitude;
@@ -7,16 +9,18 @@ public class AddPlaceRequest {
     private String title;
     private String description;
     private String note;
+    private List<Long> placePhotosIds;
 
     public AddPlaceRequest() {
     }
 
-    public AddPlaceRequest(Double latitude, Double longitude, String title, String description, String note) {
+    public AddPlaceRequest(Double latitude, Double longitude, String title, String description, String note, List<Long> placePhotosIds) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.title = title;
         this.description = description;
         this.note = note;
+        this.placePhotosIds = placePhotosIds;
     }
 
     public Double getLatitude() {
@@ -59,4 +63,11 @@ public class AddPlaceRequest {
         this.note = note;
     }
 
+    public List<Long> getPlacePhotosIds() {
+        return placePhotosIds;
+    }
+
+    public void setPlacePhotosIds(List<Long> placePhotosIds) {
+        this.placePhotosIds = placePhotosIds;
+    }
 }

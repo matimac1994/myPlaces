@@ -55,6 +55,7 @@ import butterknife.OnClick;
 
 public class AddPlaceActivity extends BaseActivity implements
         AddPlaceManager.AddPlaceResponseListener,
+        AddPlacePhotosRecyclerViewAdapter.AddPlacePhotosListener,
         ServerErrorResponseListener,
         OnMapReadyCallback{
 
@@ -69,6 +70,7 @@ public class AddPlaceActivity extends BaseActivity implements
     UiSettings mUiSettings;
     LatLng mPlaceLatLng;
     Marker mMarker;
+    private boolean isPlaceSaved = false;
 
     @BindView(R.id.add_place_title) EditText placeTitle;
 
@@ -80,7 +82,7 @@ public class AddPlaceActivity extends BaseActivity implements
 
     AddPlacePhotosRecyclerViewAdapter mAddPlacePhotosRecyclerViewAdapter;
 
-    private List<Uri> mPhotos;
+    private List<PlacePhotoResponse> addedPhotos;
     private AddPlaceManager mAddPlaceManager;
     private Uri photoUri;
 
@@ -105,18 +107,19 @@ public class AddPlaceActivity extends BaseActivity implements
 
         mAddPlaceManager = new AddPlaceManager(this, this, this);
 
-        mPhotos = new ArrayList<>();
-        setUpRecyclerView(mPhotos);
+        addedPhotos = new ArrayList<>();
+        setUpRecyclerView(addedPhotos);
 
         SupportMapFragment mapFragment = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.add_place_map);
-        mapFragment.getView().setClickable(false);
+        if (mapFragment.getView() != null)
+            mapFragment.getView().setClickable(false);
         mapFragment.getMapAsync(this);
     }
 
-    private void setUpRecyclerView(List<Uri> photos){
+    private void setUpRecyclerView(List<PlacePhotoResponse> photos){
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, OrientationHelper.HORIZONTAL, false);
         addPlacePhotosRecyclerView.setLayoutManager(layoutManager);
-        mAddPlacePhotosRecyclerViewAdapter = new AddPlacePhotosRecyclerViewAdapter(this, photos);
+        mAddPlacePhotosRecyclerViewAdapter = new AddPlacePhotosRecyclerViewAdapter(this, photos, this);
         addPlacePhotosRecyclerView.setAdapter(mAddPlacePhotosRecyclerViewAdapter);
     }
 
@@ -129,16 +132,12 @@ public class AddPlaceActivity extends BaseActivity implements
                 {
                     File file = FileUtils.savePhotoToFile(data.getData(), this);
                     mAddPlaceManager.addPhoto(Uri.fromFile(file));
-                    mPhotos.add(Uri.fromFile(file));
-                    mAddPlacePhotosRecyclerViewAdapter.notifyDataSetChanged();
                 }
                 break;
             case RESULT_TAKE_PHOTO:
                 if(resultCode==RESULT_OK)
                 {
                     mAddPlaceManager.addPhoto(photoUri);
-                    mPhotos.add(photoUri);
-                    mAddPlacePhotosRecyclerViewAdapter.notifyDataSetChanged();
                 }
                 break;
         }
@@ -185,7 +184,7 @@ public class AddPlaceActivity extends BaseActivity implements
                 placeTitle.getText().toString(),
                 placeNote.getText().toString(),
                 placeDescription.getText().toString(),
-                mPhotos);
+                addedPhotos);
     }
 
     @OnClick(R.id.add_place_add_photo_fab)
@@ -240,7 +239,7 @@ public class AddPlaceActivity extends BaseActivity implements
 
     @Override
     public void onBackPressed() {
-        mAddPlaceManager.trimCache(mPhotos);
+        mAddPlaceManager.deleteAddedPhotos(addedPhotos);
         super.onBackPressed();
     }
 
@@ -281,7 +280,8 @@ public class AddPlaceActivity extends BaseActivity implements
     }
 
     @Override
-    public void onSuccessResponse() {
+    public void onSuccessAddPlaceResponse() {
+        isPlaceSaved = true;
         Toast.makeText(this, this.getString(R.string.saved), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(ADD_PLACE_ACTIVITY_DATA);
         setResult(Activity.RESULT_OK ,intent);
@@ -290,6 +290,25 @@ public class AddPlaceActivity extends BaseActivity implements
 
     @Override
     public void onUploadPhoto(PlacePhotoResponse placePhotoResponse) {
+        addedPhotos.add(placePhotoResponse);
+        mAddPlacePhotosRecyclerViewAdapter.notifyItemInserted(mAddPlacePhotosRecyclerViewAdapter.getItemCount());
+    }
 
+    @Override
+    public void onDeletePhoto(int position) {
+        addedPhotos.remove(position);
+        mAddPlacePhotosRecyclerViewAdapter.notifyItemRemoved(position);
+    }
+
+    @Override
+    public void onClickDeletePhotoButton(PlacePhotoResponse placePhotoResponse, int position) {
+        mAddPlaceManager.deleteAddedPhoto(placePhotoResponse, position);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (!isPlaceSaved)
+            mAddPlaceManager.deleteAddedPhotos(addedPhotos);
     }
 }

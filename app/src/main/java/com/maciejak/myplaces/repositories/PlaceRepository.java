@@ -33,7 +33,8 @@ public class PlaceRepository {
         List<PlacePhoto> photos = new ArrayList<>();
         for (Uri photoUri : photosUri){
             PlacePhoto placePhoto = new PlacePhoto();
-            placePhoto.setImage(photoUri.toString());
+            placePhoto.setPlacePhotoPath(photoUri.toString());
+            placePhoto.setPlacePhotoUrl(photoUri.toString());
             placePhoto.setPlace(place);
             placePhoto.save();
             photos.add(placePhoto);
@@ -75,12 +76,9 @@ public class PlaceRepository {
                 .queryList();
     }
 
-    public void editPlace(Long placeId, String title, String note, String description, List<PlacePhoto> photos, List<PlacePhoto> photosToDelete) {
+    public void editPlace(Long placeId, String title, String description, String note, List<PlacePhoto> photos) {
         Place place = getPlaceById(placeId);
         if (place != null){
-            for (PlacePhoto placePhoto : photosToDelete){
-                placePhoto.delete();
-            }
             place.setTitle(title);
             place.setNote(note);
             place.setDescription(description);

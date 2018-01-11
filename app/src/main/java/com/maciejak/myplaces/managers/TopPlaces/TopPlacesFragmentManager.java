@@ -7,6 +7,7 @@ import com.maciejak.myplaces.api.api_services.TopPlacesService;
 import com.maciejak.myplaces.api.dto.response.TopPlaceResponseList;
 import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
 import com.maciejak.myplaces.managers.BaseRemoteManager;
+import com.maciejak.myplaces.utils.TokenUtil;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class TopPlacesFragmentManager extends BaseRemoteManager {
     }
 
     public void getTopPlaces(){
-        Call<List<TopPlaceResponseList>> call = mTopPlacesService.getTopPlaces();
+        Call<List<TopPlaceResponseList>> call = mTopPlacesService.getTopPlaces(TokenUtil.getToken());
         call.enqueue(new Callback<List<TopPlaceResponseList>>() {
             @Override
             public void onResponse(Call<List<TopPlaceResponseList>> call, Response<List<TopPlaceResponseList>> response) {

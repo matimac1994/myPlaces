@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.maciejak.myplaces.R;
+import com.maciejak.myplaces.api.dto.response.PlacePhotoResponse;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -20,12 +21,14 @@ import java.util.List;
 
 public class AddPlacePhotosRecyclerViewAdapter extends RecyclerView.Adapter<AddPlacePhotosRecyclerViewAdapter.ViewHolder> {
 
-    List<Uri> mPhotos;
+    private List<PlacePhotoResponse> addedPhotos;
     private Context mContext;
+    private AddPlacePhotosListener listener;
 
-    public AddPlacePhotosRecyclerViewAdapter(Context context,  List<Uri> photos){
-        this.mPhotos = photos;
+    public AddPlacePhotosRecyclerViewAdapter(Context context, List<PlacePhotoResponse> addedPhotos, AddPlacePhotosListener listener){
         this.mContext = context;
+        this.addedPhotos = addedPhotos;
+        this.listener = listener;
     }
 
     @Override
@@ -39,9 +42,9 @@ public class AddPlacePhotosRecyclerViewAdapter extends RecyclerView.Adapter<AddP
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
+        PlacePhotoResponse placePhotoResponse = addedPhotos.get(position);
         Picasso.with(mContext)
-                .load(mPhotos.get(position))
+                .load(placePhotoResponse.getPlacePhotoUrl())
                 .noPlaceholder()
                 .fit()
                 .centerCrop()
@@ -51,7 +54,7 @@ public class AddPlacePhotosRecyclerViewAdapter extends RecyclerView.Adapter<AddP
 
     @Override
     public int getItemCount() {
-        return mPhotos.size();
+        return addedPhotos.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -72,8 +75,11 @@ public class AddPlacePhotosRecyclerViewAdapter extends RecyclerView.Adapter<AddP
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            mPhotos.remove(position);
-            notifyItemRemoved(position);
+            listener.onClickDeletePhotoButton(addedPhotos.get(position), position);
         }
+    }
+
+    public interface AddPlacePhotosListener{
+        void onClickDeletePhotoButton(PlacePhotoResponse placePhotoResponse, int position);
     }
 }

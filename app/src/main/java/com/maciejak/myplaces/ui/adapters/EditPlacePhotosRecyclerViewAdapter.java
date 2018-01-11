@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.maciejak.myplaces.R;
+import com.maciejak.myplaces.api.dto.response.PlacePhotoResponse;
 import com.maciejak.myplaces.model.PlacePhoto;
 import com.squareup.picasso.Picasso;
 
@@ -19,14 +20,15 @@ import java.util.List;
  */
 
 public class EditPlacePhotosRecyclerViewAdapter extends RecyclerView.Adapter<EditPlacePhotosRecyclerViewAdapter.ViewHolder> {
-    private List<PlacePhoto> mPhotos;
+    private List<PlacePhotoResponse> mPhotos;
     private Context mContext;
-    private List<PlacePhoto> photosToDelete;
+    private EditPlacePhotosRecyclerViewAdapterListener listener;
 
-    public EditPlacePhotosRecyclerViewAdapter(Context context, List<PlacePhoto> photos, List<PlacePhoto> photosToDelete){
+    public EditPlacePhotosRecyclerViewAdapter(Context context, List<PlacePhotoResponse> photos,
+                                              EditPlacePhotosRecyclerViewAdapterListener listener){
         this.mPhotos = photos;
         this.mContext = context;
-        this.photosToDelete = photosToDelete;
+        this.listener = listener;
     }
 
     @Override
@@ -43,14 +45,12 @@ public class EditPlacePhotosRecyclerViewAdapter extends RecyclerView.Adapter<Edi
 
         if (mPhotos != null){
             Picasso.with(mContext)
-                    .load(mPhotos.get(position).getImage())
+                    .load(mPhotos.get(position).getPlacePhotoUrl())
                     .noPlaceholder()
                     .fit()
                     .centerCrop()
                     .into(holder.mImageView);
         }
-
-
     }
 
     @Override
@@ -75,11 +75,11 @@ public class EditPlacePhotosRecyclerViewAdapter extends RecyclerView.Adapter<Edi
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            PlacePhoto placePhoto = mPhotos.get(position);
-            photosToDelete.add(placePhoto);
-            mPhotos.remove(position);
-            notifyItemRemoved(position);
+            listener.onClickDeletePhotoButton(mPhotos.get(position), position);
         }
     }
 
+    public interface EditPlacePhotosRecyclerViewAdapterListener{
+        void onClickDeletePhotoButton(PlacePhotoResponse placePhotoResponse, int position);
+    }
 }

@@ -19,13 +19,4 @@
             android:title="@string/archive_of_places" />
     </group>
 
-    <item android:title="Pozostałe">
-        <menu>
-            <item
-                android:id="@+id/nav_login"
-                android:icon="@drawable/ic_person_pin"
-                android:title="@string/login" />
-        </menu>
-    </item>
-
 </menu>

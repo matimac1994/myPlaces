@@ -8,6 +8,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Path;
 
 /**
@@ -17,8 +18,9 @@ import retrofit2.http.Path;
 public interface TopPlacesService {
 
     @GET(ServerConfig.BASE_URL + "/top")
-    Call<List<TopPlaceResponseList>> getTopPlaces();
+    Call<List<TopPlaceResponseList>> getTopPlaces(@Header(ServerConfig.TOKEN_NAME) String token);
 
     @GET(ServerConfig.BASE_URL + "/top/{topPlaceId}")
-    Call<TopPlaceResponse> getTopPlaceById(@Path("topPlaceId") Long topPlaceId);
+    Call<TopPlaceResponse> getTopPlaceById(@Header(ServerConfig.TOKEN_NAME) String token,
+            @Path("topPlaceId") Long topPlaceId);
 }

@@ -15,7 +15,8 @@ public class PlacePhotoRepository {
 
     public PlacePhoto createPlacePhoto(String image ,Place place){
         PlacePhoto placePhoto = new PlacePhoto();
-        placePhoto.setImage(image);
+        placePhoto.setPlacePhotoPath(image);
+        placePhoto.setPlacePhotoUrl(image);
         placePhoto.setPlace(place);
         placePhoto.save();
         return placePhoto;
@@ -32,5 +33,9 @@ public class PlacePhotoRepository {
 
     public List<PlacePhoto> getAllPlacePhotos(){
         return SQLite.select().from(PlacePhoto.class).queryList();
+    }
+
+    public List<PlacePhoto> getPlacePhotoByIds(List<Long> idsFromPlacePhotoResponseList) {
+        return SQLite.select().from(PlacePhoto.class).where(PlacePhoto_Table.id.in(idsFromPlacePhotoResponseList)).queryList();
     }
 }

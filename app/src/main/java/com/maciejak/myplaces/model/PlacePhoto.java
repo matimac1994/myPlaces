@@ -18,7 +18,10 @@ public class PlacePhoto extends BaseModel {
     long id;
 
     @Column
-    String image;
+    private String placePhotoUrl;
+
+    @Column
+    private String placePhotoPath;
 
     @Column
     @ForeignKey(stubbedRelationship = true)
@@ -32,12 +35,20 @@ public class PlacePhoto extends BaseModel {
         this.id = id;
     }
 
-    public String getImage() {
-        return image;
+    public String getPlacePhotoUrl() {
+        return placePhotoUrl;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setPlacePhotoUrl(String placePhotoUrl) {
+        this.placePhotoUrl = placePhotoUrl;
+    }
+
+    public String getPlacePhotoPath() {
+        return placePhotoPath;
+    }
+
+    public void setPlacePhotoPath(String placePhotoPath) {
+        this.placePhotoPath = placePhotoPath;
     }
 
     public Place getPlace() {

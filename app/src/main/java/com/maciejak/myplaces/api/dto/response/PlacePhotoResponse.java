@@ -7,15 +7,15 @@ package com.maciejak.myplaces.api.dto.response;
 public class PlacePhotoResponse {
 
     private Long id;
-    private String photoUrl;
+    private String placePhotoUrl;
     private Long placeId;
 
     public PlacePhotoResponse() {
     }
 
-    public PlacePhotoResponse(Long id, String photoUrl, Long placeId) {
+    public PlacePhotoResponse(Long id, String placePhotoUrl, Long placeId) {
         this.id = id;
-        this.photoUrl = photoUrl;
+        this.placePhotoUrl = placePhotoUrl;
         this.placeId = placeId;
     }
 
@@ -27,12 +27,12 @@ public class PlacePhotoResponse {
         this.id = id;
     }
 
-    public String getPhotoUrl() {
-        return photoUrl;
+    public String getPlacePhotoUrl() {
+        return placePhotoUrl;
     }
 
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
+    public void setPlacePhotoUrl(String placePhotoUrl) {
+        this.placePhotoUrl = placePhotoUrl;
     }
 
     public Long getPlaceId() {

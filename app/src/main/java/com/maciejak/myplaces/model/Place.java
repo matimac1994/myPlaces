@@ -21,36 +21,16 @@ import java.util.List;
 @Table(database = MyPlacesDatabase.class)
 public class Place extends BaseModel {
 
-    @PrimaryKey(autoincrement = true)
-    long id;
-
-    @Column
-    String title;
-
-    @Column
-    Double latitude;
-
-    @Column
-    Double longitude;
-
-    @Column
-    String note;
-
-    @Column
-    String description;
-
-    @Column
-    String mapPhoto;
-
-    @Column
-    Long createdAt;
-
-    @Column
-    Long updatedAt;
-
-    @Column
-    Long deletedAt;
-
+    @PrimaryKey(autoincrement = true) long id;
+    @Column String title;
+    @Column Double latitude;
+    @Column Double longitude;
+    @Column(length = 10000) String note;
+    @Column(length = 10000) String description;
+    @Column String mapPhoto;
+    @Column Long createdAt;
+    @Column Long updatedAt;
+    @Column Long deletedAt;
     List<PlacePhoto> photos;
 
     @OneToMany(methods = {OneToMany.Method.ALL}, variableName = "photos")

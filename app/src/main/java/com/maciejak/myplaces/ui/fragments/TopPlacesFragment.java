@@ -57,6 +57,10 @@ public class TopPlacesFragment extends BaseFragment
     public static TopPlacesFragment newInstance(){return new TopPlacesFragment();}
 
     private void setupControls(View view) {
+
+        getActivity().setTitle(R.string.top_places);
+
+
         mTopPlaces = new ArrayList<>();
         mTopPlacesFragmentManager = new TopPlacesFragmentManager(mContext, this, this);
         setupRecyclerView();

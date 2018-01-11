@@ -123,12 +123,6 @@ public class MainActivity extends BaseActivity
                 mFragment = TopPlacesFragment.newInstance();
                 mCurrentPosition = R.id.nav_top_places;
                 break;
-            case R.id.nav_logout:
-                LogoutHandler.logout(this, getString(R.string.logout_complete));
-                break;
-            case R.id.nav_login:
-                LogoutHandler.logout(this, getString(R.string.login_or_register));
-                break;
         }
         mNavigationView.setCheckedItem(mCurrentPosition);
         mDrawerLayout.closeDrawer(GravityCompat.START);

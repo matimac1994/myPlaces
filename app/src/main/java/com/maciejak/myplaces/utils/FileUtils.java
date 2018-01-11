@@ -67,5 +67,14 @@ public class FileUtils {
         return image;
     }
 
+    public static boolean removeFileFromDevice(Uri uri) {
+        File file = new File(uri.toString());
+        return file.delete();
+    }
+
+    public static boolean removeFileFromDevice(String uri) {
+        File file = new File(uri);
+        return file.delete();
+    }
 
 }

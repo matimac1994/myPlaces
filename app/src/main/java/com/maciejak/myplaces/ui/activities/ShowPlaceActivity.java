@@ -125,7 +125,19 @@ public class ShowPlaceActivity extends BaseActivity implements ShowPlaceManager.
     @OnClick(R.id.show_place_delete_fab)
     public void deleteOnClick(){
         if (mPlace.getDeletedAt() != null){
-            mShowPlaceManager.deletePlaceById(mPlace.getId());
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.are_you_sure_to_delete));
+
+            builder.setPositiveButton(getString(R.string.delete), (dialog, which) -> {
+
+                mShowPlaceManager.deletePlaceById(mPlace.getId());
+
+            }).setNegativeButton(getString(R.string.back), (dialog, which) -> dialog.dismiss());
+
+            AlertDialog dialog = builder.show();
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.Red));
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.Green));
+
         }
         else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);

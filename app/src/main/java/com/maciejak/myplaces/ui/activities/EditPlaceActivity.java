@@ -25,11 +25,17 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.maciejak.myplaces.R;
+import com.maciejak.myplaces.api.dto.response.PlacePhotoResponse;
+import com.maciejak.myplaces.api.dto.response.PlaceResponse;
+import com.maciejak.myplaces.api.dto.response.error.ErrorResponse;
+import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
+import com.maciejak.myplaces.managers.EditPlaceManager;
 import com.maciejak.myplaces.model.Place;
 import com.maciejak.myplaces.model.PlacePhoto;
 import com.maciejak.myplaces.repositories.PlacePhotoRepository;
 import com.maciejak.myplaces.repositories.PlaceRepository;
 import com.maciejak.myplaces.ui.adapters.EditPlacePhotosRecyclerViewAdapter;
+import com.maciejak.myplaces.utils.FileUtils;
 import com.maciejak.myplaces.utils.PermissionUtils;
 import com.squareup.picasso.Picasso;
 
@@ -45,7 +51,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class EditPlaceActivity extends BaseActivity {
+public class EditPlaceActivity extends BaseActivity
+        implements EditPlaceManager.EditPlaceResponseListener,
+        ServerErrorResponseListener, EditPlacePhotosRecyclerViewAdapter.EditPlacePhotosRecyclerViewAdapterListener {
 
     public static final String PLACE_ID = "EditPlaceActivity PLACE_ID";
     private static final int REQUEST_CAMERA = 11;
@@ -71,16 +79,13 @@ public class EditPlaceActivity extends BaseActivity {
     @BindView(R.id.edit_place_describe)
     EditText placeDescription;
 
-
-
     long mPlaceId;
-    Place mPlace;
-    List<PlacePhoto> mPhotos;
-    List<PlacePhoto> photosToDelete;
+    PlaceResponse mPlace;
+    List<PlacePhotoResponse> mPhotos;
 
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final int RESULT_TAKE_PHOTO= 2;
-    private PlaceRepository mPlaceRepository;
+    private EditPlaceManager mEditPlaceManager;
     private Uri photoURI;
 
     @Override
@@ -96,21 +101,18 @@ public class EditPlaceActivity extends BaseActivity {
 
     private void setupControls() {
         super.setupToolbar();
-        this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
+        if (this.getSupportActionBar() != null)
+            this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
         collapsingToolbar.setTitle(getString(R.string.edit_place));
 
-        mPlaceRepository = new PlaceRepository();
-        mPlace = mPlaceRepository.getPlaceById(mPlaceId);
-        mPhotos = mPlace.getPhotos();
-        photosToDelete = new ArrayList<>();
-        setUpRecyclerView(mPhotos);
-        fillControls(mPlace);
+        mEditPlaceManager = new EditPlaceManager(this, this, this);
+        mEditPlaceManager.getPlaceById(mPlaceId);
     }
 
-    private void setUpRecyclerView(List<PlacePhoto> photos){
+    private void setUpRecyclerView(List<PlacePhotoResponse> photos){
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, OrientationHelper.HORIZONTAL, false);
         mEditPlacePhotoRecyclerView.setLayoutManager(layoutManager);
-        mEditPlacePhotoRecyclerViewAdapter = new EditPlacePhotosRecyclerViewAdapter(this, photos, photosToDelete);
+        mEditPlacePhotoRecyclerViewAdapter = new EditPlacePhotosRecyclerViewAdapter(this, photos, this);
         mEditPlacePhotoRecyclerView.setAdapter(mEditPlacePhotoRecyclerViewAdapter);
         mEditPlacePhotoRecyclerViewAdapter.notifyDataSetChanged();
     }
@@ -120,7 +122,7 @@ public class EditPlaceActivity extends BaseActivity {
         super.onStart();
     }
 
-    private void fillControls(Place place){
+    private void fillControls(PlaceResponse place){
         placeTitle.setText(place.getTitle());
         placeDescription.setText(place.getDescription());
         placeNote.setText(place.getNote());
@@ -158,53 +160,26 @@ public class EditPlaceActivity extends BaseActivity {
             case RESULT_LOAD_IMAGE:
                 if(resultCode==RESULT_OK)
                 {
-                    java.io.OutputStream os;
-                    try {
-                        Uri selectedImg = data.getData();
-                        File file = createImageFile();
-                        Bitmap bitmapPhoto = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImg);
-                        os = new FileOutputStream(file);
-                        bitmapPhoto.compress(Bitmap.CompressFormat.JPEG, 75, os);
-                        os.flush();
-                        os.close();
-                        addPlacePhotoToListFromUri(Uri.fromFile(file));
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
+                    File file = FileUtils.savePhotoToFile(data.getData(), this);
+                    mEditPlaceManager.addPhoto(Uri.fromFile(file));
                 }
                 break;
             case RESULT_TAKE_PHOTO:
                 if(resultCode==RESULT_OK)
                 {
-                    addPlacePhotoToListFromUri(photoURI);
+                    mEditPlaceManager.addPhoto(photoURI);
                 }
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void addPlacePhotoToListFromUri(Uri uri){
-        PlacePhotoRepository placePhotoRepository = new PlacePhotoRepository();
-        PlacePhoto placePhoto = placePhotoRepository.createPlacePhoto(uri.toString(), mPlace);
-        mPhotos.add(placePhoto);
-        mEditPlacePhotoRecyclerViewAdapter.notifyItemInserted(mPhotos.size() - 1);
-        mEditPlacePhotoRecyclerView.smoothScrollToPosition(mEditPlacePhotoRecyclerViewAdapter.getItemCount() - 1);
-    }
-
     private void editPlaceDone() {
-//        mPlaceRepository.editPlace(mPlace.getId(),
-//                placeTitle.getText().toString(),
-//                placeNote.getText().toString(),
-//                placeDescription.getText().toString(),
-//                mPhotos,
-//                photosToDelete);
-//
-//        Toast.makeText(this, getText(R.string.saved), Toast.LENGTH_SHORT).show();
-//        Intent intent = new Intent("AddPlaceOnMapActivity.ADD_PLACE_DONE");
-//        setResult(Activity.RESULT_OK ,intent);
-        this.finish();
+        mEditPlaceManager.editPlace(mPlace.getId(),
+                placeTitle.getText().toString(),
+                placeDescription.getText().toString(),
+                placeNote.getText().toString(),
+                mPhotos);
     }
 
     @OnClick(R.id.edit_place_add_photo_fab)
@@ -251,36 +226,13 @@ public class EditPlaceActivity extends BaseActivity {
         } else {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE_SECURE);
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                java.io.File photoFile = null;
-                try {
-                    photoFile = createImageFile();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                // Continue only if the File was successfully created
-                if (photoFile != null) {
-                    photoURI = FileProvider.getUriForFile(this,
-                            "com.maciejak.myplaces.fileprovider",
-                            photoFile);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    photoURI = FileUtils.createUriForTakePhoto(this);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                     startActivityForResult(takePictureIntent, RESULT_TAKE_PHOTO);
                 }
             }
         }
-    }
-
-    private java.io.File createImageFile() throws IOException {
-
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        java.io.File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        java.io.File image = java.io.File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        return image;
     }
 
     /**
@@ -312,4 +264,46 @@ public class EditPlaceActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onGetPlace(PlaceResponse placeResponse) {
+        mPlace = placeResponse;
+        mPhotos = mPlace.getPhotos();
+        setUpRecyclerView(mPhotos);
+        fillControls(mPlace);
+    }
+
+    @Override
+    public void onSuccessResponse() {
+        Toast.makeText(this, getText(R.string.saved), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent("AddPlaceOnMapActivity.ADD_PLACE_DONE");
+        setResult(Activity.RESULT_OK ,intent);
+        this.finish();
+    }
+
+    @Override
+    public void onGetPlaceError(String string) {
+
+    }
+
+    @Override
+    public void onUploadPhoto(PlacePhotoResponse placePhotoResponse) {
+        mPhotos.add(placePhotoResponse);
+        mEditPlacePhotoRecyclerViewAdapter.notifyItemInserted(mEditPlacePhotoRecyclerViewAdapter.getItemCount());
+    }
+
+    @Override
+    public void onErrorResponse(ErrorResponse response) {
+
+    }
+
+    @Override
+    public void onFailure(String message) {
+
+    }
+
+    @Override
+    public void onClickDeletePhotoButton(PlacePhotoResponse placePhotoResponse, int position) {
+        mPhotos.remove(position);
+        mEditPlacePhotoRecyclerViewAdapter.notifyItemRemoved(position);
+    }
 }

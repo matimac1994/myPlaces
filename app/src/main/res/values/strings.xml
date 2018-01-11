@@ -62,6 +62,7 @@
     <string name="login_email">Email</string>
     <string name="register">Zarejestruj</string>
     <string name="login">Zaloguj</string>
+    <string name="login_login">Login</string>
     <string name="login_locally_use">Korzystaj z aplikacji bez logowania</string>
     <string name="login_locally_use_alert_title">Ostrzeżenie</string>
     <string name="login_locally_use_alert_message">Używając aplikacje lokalnie stracisz zapisane miejsca i zdjęcia po odinstalowaniu aplikacji!</string>
@@ -108,4 +109,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="top_places">Top miejsc</string>
+    <string name="problem_with_delete_photo">Problem z usunięciem zdjęcia</string>
+    <string name="are_you_sure_to_delete">Jesteś pewny że chcesz trwale usunąć?</string>
 </resources>

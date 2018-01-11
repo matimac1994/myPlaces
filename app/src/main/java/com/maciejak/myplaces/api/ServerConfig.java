@@ -6,7 +6,7 @@ package com.maciejak.myplaces.api;
 
 public class ServerConfig {
 
-    public static final String SERVER_URL = "http://192.168.0.7:9494";
+    public static final String SERVER_URL = "http://192.168.1.13:9494";
 
     public static final String BASE_URL = "/api/myplaces";
 

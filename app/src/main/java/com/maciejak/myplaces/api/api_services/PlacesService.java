@@ -49,12 +49,9 @@ public interface PlacesService {
     @POST(ServerConfig.BASE_URL + "/delete")
     Call<Void> deletePlaces(@Header(ServerConfig.TOKEN_NAME) String token, @Body IdsRequest idsRequest);
 
-//    @Multipart
     @POST(ServerConfig.BASE_URL + "/add")
     Call<AddPlaceResponse> addPlace(@Header(ServerConfig.TOKEN_NAME) String token,
                                     @Body AddPlaceRequest addPlaceRequest);
-//                                    @Part("addPlaceRequest") RequestBody body,
-//                                    @Part List<MultipartBody.Part> photos);
 
     @POST(ServerConfig.BASE_URL + "/edit")
     Call<Void> editPlace(@Header(ServerConfig.TOKEN_NAME) String token, @Body EditPlaceRequest editPlaceRequest);

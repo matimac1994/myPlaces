@@ -8,6 +8,7 @@ import com.maciejak.myplaces.api.dto.response.TopPlaceResponse;
 import com.maciejak.myplaces.listeners.ServerErrorResponseListener;
 import com.maciejak.myplaces.managers.BaseRemoteManager;
 import com.maciejak.myplaces.managers.ShowPlaceManager;
+import com.maciejak.myplaces.utils.TokenUtil;
 
 import java.nio.file.Path;
 
@@ -35,7 +36,7 @@ public class ShowTopPlaceManager extends BaseRemoteManager {
     }
 
     public void getTopPlaceById(Long id){
-        Call<TopPlaceResponse> call = mTopPlacesService.getTopPlaceById(id);
+        Call<TopPlaceResponse> call = mTopPlacesService.getTopPlaceById(TokenUtil.getToken(), id);
         call.enqueue(new Callback<TopPlaceResponse>() {
             @Override
             public void onResponse(Call<TopPlaceResponse> call, Response<TopPlaceResponse> response) {
